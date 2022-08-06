@@ -1,0 +1,7 @@
+.vs/
+bin/
+obj/
+TestResults/
+PublishProfiles/
+ServiceDependencies/
+*Zip Deploy.json*
