@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TotovBuilder.Configurator
 {
     /// <summary>
     /// Represents a logger.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class Logger
     {
         /// <summary>

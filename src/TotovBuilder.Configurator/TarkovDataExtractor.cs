@@ -35,13 +35,13 @@ namespace TotovBuilder.Configurator
         /// <inheritdoc/>
         public async Task Extract()
         {
+            Logger.LogInformation(string.Format(Properties.Resources.ReadingTarkovResourcesFile, ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath));
+
             string tarkovResourcesFileContent = await File.ReadAllTextAsync(ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath);
 
             if (string.IsNullOrWhiteSpace(tarkovResourcesFileContent))
             {
-                throw new Exception(string.Format(
-                    Properties.Resources.CannotReadTarkovResourcesFileContent,
-                    ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath));
+                throw new Exception(string.Format(Properties.Resources.CannotReadTarkovResourcesFileContent));
             }
             
             Task.WaitAll(ExtractItems(tarkovResourcesFileContent), ExtractPresets(tarkovResourcesFileContent));
@@ -63,7 +63,11 @@ namespace TotovBuilder.Configurator
 
             if (File.Exists(fileToArchivePath))
             {
-                File.Move(fileToArchivePath, Path.Combine(archiveDirectory, archivedFileName));
+                string destinationPath = Path.Combine(archiveDirectory, archivedFileName);
+
+                Logger.LogInformation(string.Format(Properties.Resources.ArchivingFile, fileToArchivePath, destinationPath));
+
+                File.Move(fileToArchivePath, destinationPath);
             }
         }
 
@@ -249,48 +253,54 @@ namespace TotovBuilder.Configurator
         /// Extracts the items and saves them in a file in the configurations directory.
         /// </summary>
         /// <param name="tarkovResourcesFileContent">Tarkov resource file content.</param>
-        private async Task ExtractItems(string tarkovResourcesFileContent)
+        private Task ExtractItems(string tarkovResourcesFileContent)
         {
-            Logger.LogInformation(string.Format(Properties.Resources.ExtractingItems));
-
-            string tarkovItemsJson = IsolateItemsInTarkovResourcesFileContent(tarkovResourcesFileContent);
-            IEnumerable<ItemMissingProperties> items = DeserializeItems(tarkovItemsJson);
-            string itemsJson = JsonSerializer.Serialize(items, new JsonSerializerOptions()
+            return Task.Run(() =>
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            
-            string presetsFilePath = Path.Combine(
-                ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                ConfigurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName);
-            ArchiveConfigurationFile(presetsFilePath);
-            File.WriteAllText(presetsFilePath, itemsJson);
+                Logger.LogInformation(string.Format(Properties.Resources.ExtractingItems));
 
-            Logger.LogSuccess(string.Format(Properties.Resources.ItemsExtracted, items.Count()));
+                string tarkovItemsJson = IsolateItemsInTarkovResourcesFileContent(tarkovResourcesFileContent);
+                IEnumerable<ItemMissingProperties> items = DeserializeItems(tarkovItemsJson);
+                string itemsJson = JsonSerializer.Serialize(items, new JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+
+                string presetsFilePath = Path.Combine(
+                    ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
+                    ConfigurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName);
+                ArchiveConfigurationFile(presetsFilePath);
+                File.WriteAllText(presetsFilePath, itemsJson);
+
+                Logger.LogSuccess(string.Format(Properties.Resources.ItemsExtracted, items.Count()));
+            });
         }
 
         /// <summary>
         /// Extracts the presets and saves them in a file in the configurations directory.
         /// </summary>
         /// <param name="tarkovResourcesFileContent">Tarkov resource file content.</param>
-        private async Task ExtractPresets(string tarkovResourcesFileContent)
+        private Task ExtractPresets(string tarkovResourcesFileContent)
         {
-            Logger.LogInformation(string.Format(Properties.Resources.ExtractingPresets));
-
-            string tarkovPresetsJson = IsolatePresetsInTarkovResourcesFileContent(tarkovResourcesFileContent);
-            IEnumerable<InventoryItem> presets = DeserializePresets(tarkovPresetsJson);
-            string presetsJson = JsonSerializer.Serialize(presets, new JsonSerializerOptions()
+            return Task.Run(() =>
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            
-            string presetsFilePath = Path.Combine(
-                ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                ConfigurationReader.AzureFunctionsConfiguration.AzurePresetsBlobName);
-            ArchiveConfigurationFile(presetsFilePath);
-            File.WriteAllText(presetsFilePath, presetsJson);
+                Logger.LogInformation(string.Format(Properties.Resources.ExtractingPresets));
 
-            Logger.LogSuccess(string.Format(Properties.Resources.PresetsExtracted, presets.Count()));
+                string tarkovPresetsJson = IsolatePresetsInTarkovResourcesFileContent(tarkovResourcesFileContent);
+                IEnumerable<InventoryItem> presets = DeserializePresets(tarkovPresetsJson);
+                string presetsJson = JsonSerializer.Serialize(presets, new JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+
+                string presetsFilePath = Path.Combine(
+                    ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
+                    ConfigurationReader.AzureFunctionsConfiguration.AzurePresetsBlobName);
+                ArchiveConfigurationFile(presetsFilePath);
+                File.WriteAllText(presetsFilePath, presetsJson);
+
+                Logger.LogSuccess(string.Format(Properties.Resources.PresetsExtracted, presets.Count()));
+            });
         }
 
         /// <summary>

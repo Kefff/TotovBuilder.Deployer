@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TotovBuilder.Model\src\TotovBuilder.Model.Test\TotovBuilder.Model.Test.csproj" />
     <ProjectReference Include="..\..\..\TotovBuilder.Model\src\TotovBuilder.Model\TotovBuilder.Model.csproj" />
     <ProjectReference Include="..\TotovBuilder.Configurator\TotovBuilder.Configurator.csproj" />
   </ItemGroup>

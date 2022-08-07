@@ -63,7 +63,16 @@ namespace TotovBuilder.Configurator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot read Tarkov resources file content ({0})..
+        ///   Looks up a localized string similar to Archiving file &quot;{0}&quot; to &quot;{1}&quot;..
+        /// </summary>
+        internal static string ArchivingFile {
+            get {
+                return ResourceManager.GetString("ArchivingFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot read Tarkov resources file content..
         /// </summary>
         internal static string CannotReadTarkovResourcesFileContent {
             get {
@@ -149,6 +158,15 @@ namespace TotovBuilder.Configurator.Properties {
         internal static string ReadingNonStandardPresetNames {
             get {
                 return ResourceManager.GetString("ReadingNonStandardPresetNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading Tarkov resources file ({0})..
+        /// </summary>
+        internal static string ReadingTarkovResourcesFile {
+            get {
+                return ResourceManager.GetString("ReadingTarkovResourcesFile", resourceCulture);
             }
         }
         

@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArchivingFile" xml:space="preserve">
+    <value>Archiving file "{0}" to "{1}".</value>
+  </data>
   <data name="CannotReadTarkovResourcesFileContent" xml:space="preserve">
-    <value>Cannot read Tarkov resources file content ({0}).</value>
+    <value>Cannot read Tarkov resources file content.</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error :</value>
@@ -146,6 +149,9 @@
   </data>
   <data name="ReadingNonStandardPresetNames" xml:space="preserve">
     <value>Reading non standard preset names.</value>
+  </data>
+  <data name="ReadingTarkovResourcesFile" xml:space="preserve">
+    <value>Reading Tarkov resources file ({0}).</value>
   </data>
   <data name="Uploading" xml:space="preserve">
     <value>Uploading file "{0}".</value>
