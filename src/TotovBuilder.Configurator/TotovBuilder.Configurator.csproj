@@ -36,20 +36,21 @@
 
 	<ItemGroup>
 		<None Include="App.config" />
-		<None Include="App.Debug.config">
+		<None Include="App.Publish-PROD.config">
 			<DependentUpon>App.config</DependentUpon>
 		</None>
-		<None Include="App.Release.config">
+		<None Include="App.Publish-TEST.config">
 			<DependentUpon>App.config</DependentUpon>
 		</None>
+		<!-- Leave all other files in the group as they are -->
 	</ItemGroup>
-	
-	<Target Name="SetAppConfig" BeforeTargets="Compile">
+
+	<Target Name="CopyAppConfigToPublishedProject" AfterTargets="Publish" >
+		<Copy SourceFiles="App.Publish-TEST.config" DestinationFiles="$(PublishDir)TotovBuilder.Configurator.dll.config" Condition=" '$(Configuration)' == 'Debug' " />
+		<Copy SourceFiles="App.Publish-PROD.config" DestinationFiles="$(PublishDir)TotovBuilder.Configurator.dll.config" Condition=" '$(Configuration)' == 'Release' " />
 		<!--
-            Copies Debug or Release App.config to the output directory.
-            Cf. https://stackoverflow.com/a/61452546.
+            Copies App.Publish-PROD or App.Publish-TEST when publishing.
+			Cf https://docs.microsoft.com/fr-fr/visualstudio/msbuild/msbuild-task-reference?view=vs-2022
         -->
-		<Copy SourceFiles="App.Debug.config" DestinationFiles="App.config" OverwriteReadOnlyFiles="true" Condition=" '$(Configuration)' == 'Debug' " />
-		<Copy SourceFiles="App.Release.config" DestinationFiles="App.config" OverwriteReadOnlyFiles="true" Condition=" '$(Configuration)' == 'Release' " />
 	</Target>
 </Project>

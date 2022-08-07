@@ -5,3 +5,5 @@ TestResults/
 PublishProfiles/
 ServiceDependencies/
 *Zip Deploy.json*
+publish/
+*.user
