@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using Moq;
-using TotovBuilder.Configurator.Abstractions;
 using Xunit;
 
 namespace TotovBuilder.Configurator.Test

@@ -48,11 +48,11 @@ namespace TotovBuilder.Configurator
             List<Task> uploadTasks = new List<Task>();
             IEnumerable<string> blobNames = ConfigurationReader.AzureFunctionsConfiguration.GetBlobNames();
 
-            foreach (string file in Directory.GetFiles(ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory).Where(f => blobNames.Contains(f)))
+            foreach (string file in Directory.GetFiles(ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
             {
                 uploadTasks.Add(Upload(file));
             }
-
+            
             Task.WaitAll(uploadTasks.ToArray());
         }
 
@@ -61,11 +61,10 @@ namespace TotovBuilder.Configurator
         /// </summary>
         private async Task Initialize()
         {
-            string connectionString = ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageConnectionString;
-            string containerName = ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageContainerName;
+            await ConfigurationReader.WaitForLoading();
 
-            BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
-            BlobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            BlobServiceClient blobServiceClient = new BlobServiceClient(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageConnectionString);
+            BlobContainerClient = blobServiceClient.GetBlobContainerClient(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageContainerName);
             await BlobContainerClient.CreateIfNotExistsAsync();
         }
 
@@ -78,7 +77,7 @@ namespace TotovBuilder.Configurator
         {
             string fileName = Path.GetFileName(file);
             Logger.LogInformation(string.Format(Properties.Resources.Uploading, fileName));
-                
+
             BlobClient blobClient = BlobContainerClient!.GetBlobClient(fileName);
             blobClient.DeleteIfExists();
 
