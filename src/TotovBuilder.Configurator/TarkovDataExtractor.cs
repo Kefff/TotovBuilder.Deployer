@@ -159,7 +159,12 @@ namespace TotovBuilder.Configurator
             // RicochetChance
             if (propsJson.TryGetProperty("RicochetParams", out JsonElement ricochetParamsJson))
             {
-                itemMissingProperties.RicochetXValue = ricochetParamsJson.GetProperty("x").GetDouble();
+                double ricochetXValue = ricochetParamsJson.GetProperty("x").GetDouble();
+
+                if (ricochetXValue > 0)
+                {
+                    itemMissingProperties.RicochetXValue = ricochetParamsJson.GetProperty("x").GetDouble();
+                }
             }
 
             if (itemMissingProperties.AcceptedAmmunitionIds.Length > 0
@@ -272,7 +277,8 @@ namespace TotovBuilder.Configurator
                 IEnumerable<ItemMissingProperties> items = DeserializeItems(tarkovItemsJson);
                 string itemsJson = JsonSerializer.Serialize(items, new JsonSerializerOptions()
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = true
                 });
 
                 string presetsFilePath = Path.Combine(
@@ -299,7 +305,8 @@ namespace TotovBuilder.Configurator
                 IEnumerable<InventoryItem> presets = DeserializePresets(tarkovPresetsJson);
                 string presetsJson = JsonSerializer.Serialize(presets, new JsonSerializerOptions()
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = true
                 });
 
                 string presetsFilePath = Path.Combine(
