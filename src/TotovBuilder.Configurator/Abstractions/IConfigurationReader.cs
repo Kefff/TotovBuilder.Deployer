@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using TotovBuilder.Model;
+using TotovBuilder.Model.Configuration;
 
 namespace TotovBuilder.Configurator.Abstractions
 {

@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TotovBuilder.Configurator.Abstractions;
-using TotovBuilder.Model;
 using TotovBuilder.Model.Builds;
+using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Items;
 using static System.Text.Json.JsonElement;
 
@@ -108,6 +108,7 @@ namespace TotovBuilder.Configurator
 
             JsonElement propsJson = itemJson.Value.GetProperty("_props");
 
+            // MaxStackableAmount
             if (propsJson.TryGetProperty("StackMaxSize", out JsonElement stackMaxSizeJson))
             {
                 itemMissingProperties.MaxStackableAmount = stackMaxSizeJson.GetDouble();
@@ -127,11 +128,13 @@ namespace TotovBuilder.Configurator
                 }
             }
 
+            // ConflictingItemIds
             if (propsJson.TryGetProperty("ConflictingItems", out JsonElement conflictingItemsJson))
             {
                 itemMissingProperties.ConflictingItemIds = conflictingItemsJson.EnumerateArray().Select(ci => ci.GetString()).ToArray();
             }
 
+            // Chambers & ModSLots
             List<ModSlot> modSlots = new List<ModSlot>();
 
             if (propsJson.TryGetProperty("Chambers", out JsonElement chambersJson))
@@ -152,6 +155,12 @@ namespace TotovBuilder.Configurator
             }
 
             itemMissingProperties.ModSlots = modSlots.ToArray();
+
+            // RicochetChance
+            if (propsJson.TryGetProperty("RicochetParams", out JsonElement ricochetParamsJson))
+            {
+                itemMissingProperties.RicochetXValue = ricochetParamsJson.GetProperty("x").GetDouble();
+            }
 
             if (itemMissingProperties.AcceptedAmmunitionIds.Length > 0
                 || itemMissingProperties.ConflictingItemIds.Length > 0
