@@ -114,28 +114,14 @@ namespace TotovBuilder.Configurator
                 itemMissingProperties.MaxStackableAmount = stackMaxSizeJson.GetDouble();
             };
 
-            if (propsJson.TryGetProperty("Cartridges", out JsonElement cartridgesJson))
-            {
-                ArrayEnumerator cartridgesJsonEnumerator = cartridgesJson.EnumerateArray();
-
-                if (cartridgesJsonEnumerator.Count() > 0)
-                {
-                    itemMissingProperties.AcceptedAmmunitionIds = cartridgesJsonEnumerator.First()
-                        .GetProperty("_props")
-                        .GetProperty("filters").EnumerateArray().First()
-                        .GetProperty("Filter").EnumerateArray().Select(f => f.GetString())
-                        .ToArray();
-                }
-            }
-
             // ConflictingItemIds
             if (propsJson.TryGetProperty("ConflictingItems", out JsonElement conflictingItemsJson))
             {
                 itemMissingProperties.ConflictingItemIds = conflictingItemsJson.EnumerateArray().Select(ci => ci.GetString()).ToArray();
             }
 
-            // Chambers & ModSLots
-            List<ModSlot> modSlots = new List<ModSlot>();
+            // Chambers
+            List<ModSlot> rangedWeaponChambers = new List<ModSlot>();
 
             if (propsJson.TryGetProperty("Chambers", out JsonElement chambersJson))
             {
@@ -146,15 +132,8 @@ namespace TotovBuilder.Configurator
                     chambers[i].Name = "chamber" + i;
                 }
 
-                modSlots.AddRange(chambers);
+                itemMissingProperties.RangedWeaponChambers = chambers;
             }
-
-            if (propsJson.TryGetProperty("Slots", out JsonElement slotsJson))
-            {
-                modSlots.AddRange(DeserializeItemModSlots(slotsJson));
-            }
-
-            itemMissingProperties.ModSlots = modSlots.ToArray();
 
             // RicochetChance
             if (propsJson.TryGetProperty("RicochetParams", out JsonElement ricochetParamsJson))
@@ -167,10 +146,10 @@ namespace TotovBuilder.Configurator
                 }
             }
 
-            if (itemMissingProperties.AcceptedAmmunitionIds.Length > 0
-                || itemMissingProperties.ConflictingItemIds.Length > 0
+            if (itemMissingProperties.ConflictingItemIds.Length > 0
                 || itemMissingProperties.MaxStackableAmount > 1
-                || itemMissingProperties.ModSlots.Length > 0)
+                || itemMissingProperties.RangedWeaponChambers.Length > 0
+                || (itemMissingProperties.RicochetXValue ?? 0) > 0)
             {
                 return itemMissingProperties;
             }
