@@ -172,7 +172,6 @@ namespace TotovBuilder.Configurator
             {
                 ModSlot modSlot = new ModSlot()
                 {
-                    Id = slotJson.GetProperty("_id").GetString(),
                     Name = slotJson.GetProperty("_name").GetString(),
                     Required = slotJson.GetProperty("_required").GetBoolean(),
                     CompatibleItemIds = slotJson
