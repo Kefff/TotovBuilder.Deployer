@@ -135,21 +135,9 @@ namespace TotovBuilder.Configurator
                 itemMissingProperties.RangedWeaponChambers = chambers;
             }
 
-            // RicochetChance
-            if (propsJson.TryGetProperty("RicochetParams", out JsonElement ricochetParamsJson))
-            {
-                double ricochetXValue = ricochetParamsJson.GetProperty("x").GetDouble();
-
-                if (ricochetXValue > 0)
-                {
-                    itemMissingProperties.RicochetXValue = ricochetParamsJson.GetProperty("x").GetDouble();
-                }
-            }
-
             if (itemMissingProperties.ConflictingItemIds.Length > 0
                 || itemMissingProperties.MaxStackableAmount > 1
-                || itemMissingProperties.RangedWeaponChambers.Length > 0
-                || (itemMissingProperties.RicochetXValue ?? 0) > 0)
+                || itemMissingProperties.RangedWeaponChambers.Length > 0)
             {
                 return itemMissingProperties;
             }

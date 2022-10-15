@@ -53,7 +53,13 @@ namespace TotovBuilder.Configurator.Test
 
                 foreach (ItemMissingProperties expectedItemMissingProperties in TestData.ItemMissingProperties)
                 {
-                    ItemMissingProperties item = items.Single(p => p.Id == expectedItemMissingProperties.Id);
+                    ItemMissingProperties? item = items.SingleOrDefault(p => p.Id == expectedItemMissingProperties.Id);
+
+                    if (item == null)
+                    {
+                        throw new Exception($"Cannot find missing properties for item \"{expectedItemMissingProperties.Id}\"");
+                    }
+
                     item.Should().BeEquivalentTo(expectedItemMissingProperties);
                 }
 
