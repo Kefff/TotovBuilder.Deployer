@@ -27,9 +27,9 @@ namespace TotovBuilder.Configurator
         public InventoryItem ToInventoryItem()
         {
             PresetItem mainItem = Items.Single(i => i.ParentID == null && i.SlotName == null);
-            List<InventoryItemModSlot> modSlots = new List<InventoryItemModSlot>();
+            List<InventoryItemModSlot> modSlots = new();
 
-            InventoryItem inventoryItem = new InventoryItem()
+            InventoryItem inventoryItem = new()
             {
                 ItemId = mainItem.ItemId
             };

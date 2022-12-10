@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 	  <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
     <ProjectConfigFileName>App.config</ProjectConfigFileName>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,7 +46,7 @@
 		<!-- Leave all other files in the group as they are -->
 	</ItemGroup>
 
-	<Target Name="CopyAppConfigToPublishedProject" AfterTargets="Publish" >
+	<Target Name="CopyAppConfigToPublishedProject" AfterTargets="Publish">
 		<Copy SourceFiles="App.Publish-TEST.config" DestinationFiles="$(PublishDir)TotovBuilder.Configurator.dll.config" Condition=" '$(Configuration)' == 'Debug' " />
 		<Copy SourceFiles="App.Publish-PROD.config" DestinationFiles="$(PublishDir)TotovBuilder.Configurator.dll.config" Condition=" '$(Configuration)' == 'Release' " />
 		<!--

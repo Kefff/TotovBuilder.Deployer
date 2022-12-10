@@ -28,13 +28,13 @@ namespace TotovBuilder.Configurator.Test
 
             try
             {
-                ConfigurationReader configurationReader = new ConfigurationReader();
+                ConfigurationReader configurationReader = new();
                 await configurationReader.WaitForLoading();
                 configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where items and presets will be extracted after the configuration has been loaded
 
                 File.WriteAllText(Path.Combine(extractionTestDirectory, configurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName), string.Empty);
 
-                TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReader);
+                TarkovDataExtractor tarkovDataExtractor = new(configurationReader);
 
                 // Act
                 await tarkovDataExtractor.Extract();
@@ -84,13 +84,13 @@ namespace TotovBuilder.Configurator.Test
 
             try
             {
-                ConfigurationReader configurationReader = new ConfigurationReader();
+                ConfigurationReader configurationReader = new();
                 await configurationReader.WaitForLoading();
                 configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where items and presets will be extracted after the configuration has been loaded
                 
                 File.WriteAllText(Path.Combine(extractionTestDirectory, configurationReader.AzureFunctionsConfiguration.AzurePresetsBlobName), string.Empty);
 
-                TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReader);
+                TarkovDataExtractor tarkovDataExtractor = new(configurationReader);
 
                 // Act
                 await tarkovDataExtractor.Extract();
@@ -138,15 +138,15 @@ namespace TotovBuilder.Configurator.Test
             try
             {
                 // Arrange
-                ConfiguratorConfiguration configuratorConfiguration = new ConfiguratorConfiguration()
+                ConfiguratorConfiguration configuratorConfiguration = new()
                 {
                     TarkovResourcesFilePath = tarkovResourcesFilePath
                 };
 
-                Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+                Mock<IConfigurationReader> configurationReaderMock = new();
                 configurationReaderMock.SetupGet(m => m.ConfiguratorConfiguration).Returns(configuratorConfiguration);
 
-                TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReaderMock.Object);
+                TarkovDataExtractor tarkovDataExtractor = new(configurationReaderMock.Object);
 
                 // Act
                 Func<Task> act = () => tarkovDataExtractor.Extract();

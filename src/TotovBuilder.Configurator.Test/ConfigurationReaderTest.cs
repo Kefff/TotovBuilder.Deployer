@@ -13,7 +13,7 @@ namespace TotovBuilder.Configurator.Test
         public async Task WaitForLoading_ShouldWaitForConfigurationToBeLoaded()
         {
             // Arrange
-            ConfigurationReader configurationReader = new ConfigurationReader();
+            ConfigurationReader configurationReader = new();
 
             // Act
             await configurationReader.WaitForLoading();

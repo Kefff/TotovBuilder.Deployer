@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TotovBuilder.Configurator.Abstractions;
 using TotovBuilder.Model.Builds;
@@ -76,9 +77,9 @@ namespace TotovBuilder.Configurator
         /// </summary>
         /// <param name="tarkovItemsJson">Json string representing the items.</param>
         /// <returns>Items.</returns>
-        private IEnumerable<ItemMissingProperties> DeserializeItems(string tarkovItemsJson)
+        private static IEnumerable<ItemMissingProperties> DeserializeItems(string tarkovItemsJson)
         {
-            List<ItemMissingProperties> extractedItems = new List<ItemMissingProperties>();
+            List<ItemMissingProperties> extractedItems = new();
             JsonElement itemsJson = JsonDocument.Parse(tarkovItemsJson).RootElement;
 
             foreach (JsonProperty itemJson in itemsJson.EnumerateObject())
@@ -99,9 +100,9 @@ namespace TotovBuilder.Configurator
         /// </summary>
         /// <param name="itemJson">Json property representing the item.</param>
         /// <returns>Item.</returns>
-        private ItemMissingProperties? DeserializeItem(JsonProperty itemJson)
+        private static ItemMissingProperties? DeserializeItem(JsonProperty itemJson)
         {
-            ItemMissingProperties itemMissingProperties = new ItemMissingProperties()
+            ItemMissingProperties itemMissingProperties = new()
             {
                 Id = itemJson.Value.GetProperty("_id").GetString()
             };
@@ -121,7 +122,7 @@ namespace TotovBuilder.Configurator
             }
 
             // Chambers
-            List<ModSlot> rangedWeaponChambers = new List<ModSlot>();
+            List<ModSlot> rangedWeaponChambers = new();
 
             if (propsJson.TryGetProperty("Chambers", out JsonElement chambersJson))
             {
@@ -152,13 +153,13 @@ namespace TotovBuilder.Configurator
         /// </summary>
         /// <param name="slotsJson">Json element representing the mod slots.</param>
         /// <returns>Mods slots.</returns>
-        private ModSlot[] DeserializeItemModSlots(JsonElement slotsJson)
+        private static ModSlot[] DeserializeItemModSlots(JsonElement slotsJson)
         {
-            List<ModSlot> modSlots = new List<ModSlot>();
+            List<ModSlot> modSlots = new();
 
             foreach (JsonElement slotJson in slotsJson.EnumerateArray())
             {
-                ModSlot modSlot = new ModSlot()
+                ModSlot modSlot = new()
                 {
                     Name = slotJson.GetProperty("_name").GetString(),
                     Required = slotJson.GetProperty("_required").GetBoolean(),
@@ -182,12 +183,12 @@ namespace TotovBuilder.Configurator
         /// <returns>Presets.</returns>
         private IEnumerable<InventoryItem> DeserializePresets(string tarkovPresetsJson)
         {
-            List<Preset> extractedPresets = new List<Preset>();
+            List<Preset> extractedPresets = new();
             JsonElement presetsJson = JsonDocument.Parse(tarkovPresetsJson).RootElement;
 
             foreach (JsonProperty presetJson in presetsJson.EnumerateObject())
             {
-                Preset preset = new Preset()
+                Preset preset = new()
                 {
                     Name = presetJson.Value.GetProperty("_name").GetString(),
                     Items = presetJson.Value.GetProperty("_items").EnumerateArray().Select(pi => DeserializePresetItem(pi)).ToArray()
@@ -208,9 +209,9 @@ namespace TotovBuilder.Configurator
         /// </summary>
         /// <param name="presetItemJson">Json element representing the preset item.</param>
         /// <returns>Preset item.</returns>
-        private PresetItem DeserializePresetItem(JsonElement presetItemJson)
+        private static PresetItem DeserializePresetItem(JsonElement presetItemJson)
         {
-            PresetItem presetItem = new PresetItem()
+            PresetItem presetItem = new()
             {
                 Id = presetItemJson.GetProperty("_id").GetString(),
                 ItemId = presetItemJson.GetProperty("_tpl").GetString()
@@ -243,8 +244,8 @@ namespace TotovBuilder.Configurator
                 IEnumerable<ItemMissingProperties> items = DeserializeItems(tarkovItemsJson);
                 string itemsJson = JsonSerializer.Serialize(items, new JsonSerializerOptions()
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    IgnoreNullValues = true
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
 
                 string presetsFilePath = Path.Combine(
@@ -271,8 +272,8 @@ namespace TotovBuilder.Configurator
                 IEnumerable<InventoryItem> presets = DeserializePresets(tarkovPresetsJson);
                 string presetsJson = JsonSerializer.Serialize(presets, new JsonSerializerOptions()
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    IgnoreNullValues = true
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
 
                 string presetsFilePath = Path.Combine(
