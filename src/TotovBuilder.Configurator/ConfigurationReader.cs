@@ -53,14 +53,14 @@ namespace TotovBuilder.Configurator
         {
             Logger.LogInformation(string.Format(Properties.Resources.ReadingConfiguratorConfiguration));
 
-            string configurationsDirectory = ConfigurationManager.AppSettings.Get(ConfigurationsDirectoryKey);
-            string configuratorConfigurationFileName = ConfigurationManager.AppSettings.Get(ConfiguratorConfigurationFileNameKey);
-            
+            string configurationsDirectory = ConfigurationManager.AppSettings.Get(ConfigurationsDirectoryKey)!;
+            string configuratorConfigurationFileName = ConfigurationManager.AppSettings.Get(ConfiguratorConfigurationFileNameKey)!;
+
             string configuratorConfigurationJson = await File.ReadAllTextAsync(Path.Combine(configurationsDirectory, configuratorConfigurationFileName));
             ConfiguratorConfiguration = JsonSerializer.Deserialize<ConfiguratorConfiguration>(configuratorConfigurationJson, new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true
-            });
+            })!;
             ConfiguratorConfiguration.ConfigurationsDirectory = configurationsDirectory;
             ConfiguratorConfiguration.ConfiguratorConfigurationFileName = configuratorConfigurationFileName;
 
@@ -70,11 +70,11 @@ namespace TotovBuilder.Configurator
             AzureFunctionsConfiguration = JsonSerializer.Deserialize<AzureFunctionsConfiguration>(azureFunctionsConfigurationJson, new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true
-            });
+            })!;
 
             Logger.LogInformation(string.Format(Properties.Resources.ReadingNonStandardPresetNames));
             string nonStandardPresetNamesJson = await File.ReadAllTextAsync(Path.Combine(ConfiguratorConfiguration.ConfigurationsDirectory, ConfiguratorConfiguration.NonStandardPresetNamesFileName));
-            ConfiguratorConfiguration.NonStandardPresetNames = JsonSerializer.Deserialize<string[]>(nonStandardPresetNamesJson);
+            ConfiguratorConfiguration.NonStandardPresetNames = JsonSerializer.Deserialize<string[]>(nonStandardPresetNamesJson)!;
         }
     }
 }

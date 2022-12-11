@@ -52,7 +52,7 @@ namespace TotovBuilder.Configurator
             {
                 uploadTasks.Add(Upload(file));
             }
-            
+
             Task.WaitAll(uploadTasks.ToArray());
         }
 

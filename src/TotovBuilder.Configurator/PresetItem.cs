@@ -45,7 +45,7 @@ namespace TotovBuilder.Configurator
             foreach (PresetItem childItem in presetItems.Where(i => i.ParentID == Id))
             {
                 InventoryItemModSlot childModSlot = childItem.ToInventoryItemModSlot(presetItems);
-                childModSlots.Add(childModSlot);                
+                childModSlots.Add(childModSlot);
             }
 
             inventoryItem.ModSlots = childModSlots.ToArray();

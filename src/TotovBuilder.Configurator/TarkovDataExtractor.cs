@@ -9,7 +9,6 @@ using TotovBuilder.Configurator.Abstractions;
 using TotovBuilder.Model.Builds;
 using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Items;
-using static System.Text.Json.JsonElement;
 
 namespace TotovBuilder.Configurator
 {
@@ -44,7 +43,7 @@ namespace TotovBuilder.Configurator
             {
                 throw new Exception(string.Format(Properties.Resources.CannotReadTarkovResourcesFileContent));
             }
-            
+
             Task.WaitAll(ExtractItems(tarkovResourcesFileContent), ExtractPresets(tarkovResourcesFileContent));
         }
 
@@ -59,7 +58,7 @@ namespace TotovBuilder.Configurator
                 ConfigurationReader.ConfiguratorConfiguration.PreviousExtractionsArchiveDirectory);
             string fileName = Path.GetFileName(fileToArchivePath);
             string archivedFileName = DateTime.Now.ToString("yyyyMMddHHmmss_") + fileName;
-            
+
             Directory.CreateDirectory(archiveDirectory);
 
             if (File.Exists(fileToArchivePath))
@@ -104,7 +103,7 @@ namespace TotovBuilder.Configurator
         {
             ItemMissingProperties itemMissingProperties = new()
             {
-                Id = itemJson.Value.GetProperty("_id").GetString()
+                Id = itemJson.Value.GetProperty("_id").GetString()!
             };
 
             JsonElement propsJson = itemJson.Value.GetProperty("_props");
@@ -118,7 +117,7 @@ namespace TotovBuilder.Configurator
             // ConflictingItemIds
             if (propsJson.TryGetProperty("ConflictingItems", out JsonElement conflictingItemsJson))
             {
-                itemMissingProperties.ConflictingItemIds = conflictingItemsJson.EnumerateArray().Select(ci => ci.GetString()).ToArray();
+                itemMissingProperties.ConflictingItemIds = conflictingItemsJson.EnumerateArray().Select(ci => ci.GetString()!).ToArray();
             }
 
             // Chambers
@@ -161,12 +160,12 @@ namespace TotovBuilder.Configurator
             {
                 ModSlot modSlot = new()
                 {
-                    Name = slotJson.GetProperty("_name").GetString(),
+                    Name = slotJson.GetProperty("_name").GetString()!,
                     Required = slotJson.GetProperty("_required").GetBoolean(),
                     CompatibleItemIds = slotJson
                         .GetProperty("_props")
                         .GetProperty("filters").EnumerateArray().First()
-                        .GetProperty("Filter").EnumerateArray().Select(f => f.GetString())
+                        .GetProperty("Filter").EnumerateArray().Select(f => f.GetString()!)
                         .ToArray()
                 };
 
@@ -190,7 +189,7 @@ namespace TotovBuilder.Configurator
             {
                 Preset preset = new()
                 {
-                    Name = presetJson.Value.GetProperty("_name").GetString(),
+                    Name = presetJson.Value.GetProperty("_name").GetString()!,
                     Items = presetJson.Value.GetProperty("_items").EnumerateArray().Select(pi => DeserializePresetItem(pi)).ToArray()
                 };
 
@@ -213,8 +212,8 @@ namespace TotovBuilder.Configurator
         {
             PresetItem presetItem = new()
             {
-                Id = presetItemJson.GetProperty("_id").GetString(),
-                ItemId = presetItemJson.GetProperty("_tpl").GetString()
+                Id = presetItemJson.GetProperty("_id").GetString()!,
+                ItemId = presetItemJson.GetProperty("_tpl").GetString()!
             };
 
             if (presetItemJson.TryGetProperty("parentId", out JsonElement parentIdJson))
