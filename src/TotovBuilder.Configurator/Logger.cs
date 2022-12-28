@@ -17,7 +17,7 @@ namespace TotovBuilder.Configurator
         {
             Console.WriteLine(message);
         }
-        
+
         /// <summary>
         /// Logs an error message.
         /// </summary>
@@ -29,7 +29,7 @@ namespace TotovBuilder.Configurator
             Console.WriteLine(message);
             Console.ForegroundColor = ConsoleColor.White;
         }
-        
+
         /// <summary>
         /// Logs a success message.
         /// </summary>

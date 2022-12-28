@@ -36,20 +36,20 @@ namespace TotovBuilder.Configurator
         /// <returns>Inventory item mod slot</returns>
         public InventoryItemModSlot ToInventoryItemModSlot(IEnumerable<PresetItem> presetItems)
         {
-            InventoryItem inventoryItem = new InventoryItem()
+            InventoryItem inventoryItem = new()
             {
                 ItemId = ItemId
             };
-            List<InventoryItemModSlot> childModSlots = new List<InventoryItemModSlot>();
+            List<InventoryItemModSlot> childModSlots = new();
 
             foreach (PresetItem childItem in presetItems.Where(i => i.ParentID == Id))
             {
                 InventoryItemModSlot childModSlot = childItem.ToInventoryItemModSlot(presetItems);
-                childModSlots.Add(childModSlot);                
+                childModSlots.Add(childModSlot);
             }
 
             inventoryItem.ModSlots = childModSlots.ToArray();
-            InventoryItemModSlot modSlot = new InventoryItemModSlot()
+            InventoryItemModSlot modSlot = new()
             {
                 Item = inventoryItem,
                 ModSlotName = SlotName!

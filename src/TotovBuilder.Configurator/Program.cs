@@ -18,7 +18,7 @@ namespace TotovBuilder.Configurator
         public async static Task Main(string[] args)
         {
             bool upload = args.Contains("-u") || args.Contains("--upload");
-            
+
             try
             {
                 IConfigurationReader configurationReader = new ConfigurationReader();
@@ -27,7 +27,7 @@ namespace TotovBuilder.Configurator
                     new TarkovDataExtractor(configurationReader),
                     upload ? new AzureBlobDataUploader(configurationReader) : null);
                 await configurator.Execute();
-            }            
+            }
             catch (Exception e)
             {
                 Logger.LogError(e.ToString());

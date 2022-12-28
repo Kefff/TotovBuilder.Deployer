@@ -45,14 +45,14 @@ namespace TotovBuilder.Configurator
         {
             await InitializationTask;
 
-            List<Task> uploadTasks = new List<Task>();
+            List<Task> uploadTasks = new();
             IEnumerable<string> blobNames = ConfigurationReader.AzureFunctionsConfiguration.GetBlobNames();
 
             foreach (string file in Directory.GetFiles(ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
             {
                 uploadTasks.Add(Upload(file));
             }
-            
+
             Task.WaitAll(uploadTasks.ToArray());
         }
 
@@ -63,7 +63,7 @@ namespace TotovBuilder.Configurator
         {
             await ConfigurationReader.WaitForLoading();
 
-            BlobServiceClient blobServiceClient = new BlobServiceClient(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageConnectionString);
+            BlobServiceClient blobServiceClient = new(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageConnectionString);
             BlobContainerClient = blobServiceClient.GetBlobContainerClient(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageContainerName);
             await BlobContainerClient.CreateIfNotExistsAsync();
         }
@@ -81,7 +81,7 @@ namespace TotovBuilder.Configurator
             BlobClient blobClient = BlobContainerClient!.GetBlobClient(fileName);
             blobClient.DeleteIfExists();
 
-            using FileStream fileStream = new FileStream(file, FileMode.Open);
+            using FileStream fileStream = new(file, FileMode.Open);
             await blobClient.UploadAsync(fileStream);
 
             Logger.LogSuccess(string.Format(Properties.Resources.FileUploaded, fileName));

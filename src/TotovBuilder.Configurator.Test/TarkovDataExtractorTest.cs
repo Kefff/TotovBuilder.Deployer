@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using TotovBuilder.Configurator.Abstractions;
-using TotovBuilder.Model;
 using TotovBuilder.Model.Builds;
 using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Test;
@@ -28,13 +27,13 @@ namespace TotovBuilder.Configurator.Test
 
             try
             {
-                ConfigurationReader configurationReader = new ConfigurationReader();
+                ConfigurationReader configurationReader = new();
                 await configurationReader.WaitForLoading();
                 configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where items and presets will be extracted after the configuration has been loaded
 
                 File.WriteAllText(Path.Combine(extractionTestDirectory, configurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName), string.Empty);
 
-                TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReader);
+                TarkovDataExtractor tarkovDataExtractor = new(configurationReader);
 
                 // Act
                 await tarkovDataExtractor.Extract();
@@ -46,10 +45,10 @@ namespace TotovBuilder.Configurator.Test
                 ItemMissingProperties[] items = JsonSerializer.Deserialize<ItemMissingProperties[]>(itemsJson, new JsonSerializerOptions()
                 {
                     PropertyNameCaseInsensitive = true
-                });
+                })!;
 
                 // Assert
-                items.Length.Should().BeGreaterThan(0);               
+                items.Length.Should().BeGreaterThan(0);
 
                 foreach (ItemMissingProperties expectedItemMissingProperties in TestData.ItemMissingProperties)
                 {
@@ -74,7 +73,7 @@ namespace TotovBuilder.Configurator.Test
                 Directory.Delete(extractionTestDirectory, true);
             }
         }
-        
+
         [Fact]
         public async Task Extract_ShouldExtractPresets()
         {
@@ -84,13 +83,13 @@ namespace TotovBuilder.Configurator.Test
 
             try
             {
-                ConfigurationReader configurationReader = new ConfigurationReader();
+                ConfigurationReader configurationReader = new();
                 await configurationReader.WaitForLoading();
                 configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where items and presets will be extracted after the configuration has been loaded
-                
+
                 File.WriteAllText(Path.Combine(extractionTestDirectory, configurationReader.AzureFunctionsConfiguration.AzurePresetsBlobName), string.Empty);
 
-                TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReader);
+                TarkovDataExtractor tarkovDataExtractor = new(configurationReader);
 
                 // Act
                 await tarkovDataExtractor.Extract();
@@ -102,7 +101,7 @@ namespace TotovBuilder.Configurator.Test
                 InventoryItem[] presets = JsonSerializer.Deserialize<InventoryItem[]>(itemsJson, new JsonSerializerOptions()
                 {
                     PropertyNameCaseInsensitive = true
-                });
+                })!;
 
                 // Assert
                 presets.Length.Should().BeGreaterThan(0);
@@ -138,15 +137,15 @@ namespace TotovBuilder.Configurator.Test
             try
             {
                 // Arrange
-                ConfiguratorConfiguration configuratorConfiguration = new ConfiguratorConfiguration()
+                ConfiguratorConfiguration configuratorConfiguration = new()
                 {
                     TarkovResourcesFilePath = tarkovResourcesFilePath
                 };
 
-                Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+                Mock<IConfigurationReader> configurationReaderMock = new();
                 configurationReaderMock.SetupGet(m => m.ConfiguratorConfiguration).Returns(configuratorConfiguration);
 
-                TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReaderMock.Object);
+                TarkovDataExtractor tarkovDataExtractor = new(configurationReaderMock.Object);
 
                 // Act
                 Func<Task> act = () => tarkovDataExtractor.Extract();
