@@ -29,7 +29,7 @@ namespace TotovBuilder.Configurator.Test
             {
                 ConfigurationReader configurationReader = new();
                 await configurationReader.WaitForLoading();
-                configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where items and presets will be extracted after the configuration has been loaded
+                configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where data will be extracted after the configuration has been loaded
 
                 File.WriteAllText(Path.Combine(extractionTestDirectory, configurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName), string.Empty);
 
@@ -67,56 +67,6 @@ namespace TotovBuilder.Configurator.Test
                         configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
                         configurationReader.ConfiguratorConfiguration.PreviousExtractionsArchiveDirectory));
                 archivedFiles.Any(f => f.EndsWith(configurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName)).Should().BeTrue();
-            }
-            finally
-            {
-                Directory.Delete(extractionTestDirectory, true);
-            }
-        }
-
-        [Fact]
-        public async Task Extract_ShouldExtractPresets()
-        {
-            // Arrange
-            string extractionTestDirectory = Path.Combine(Path.GetTempPath(), "TotovBuilder.Configurator.Test");
-            Directory.CreateDirectory(extractionTestDirectory);
-
-            try
-            {
-                ConfigurationReader configurationReader = new();
-                await configurationReader.WaitForLoading();
-                configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where items and presets will be extracted after the configuration has been loaded
-
-                File.WriteAllText(Path.Combine(extractionTestDirectory, configurationReader.AzureFunctionsConfiguration.AzurePresetsBlobName), string.Empty);
-
-                TarkovDataExtractor tarkovDataExtractor = new(configurationReader);
-
-                // Act
-                await tarkovDataExtractor.Extract();
-
-                string itemsJson = await File.ReadAllTextAsync(
-                    Path.Combine(
-                        configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                        configurationReader.AzureFunctionsConfiguration.AzurePresetsBlobName));
-                InventoryItem[] presets = JsonSerializer.Deserialize<InventoryItem[]>(itemsJson, new JsonSerializerOptions()
-                {
-                    PropertyNameCaseInsensitive = true
-                })!;
-
-                // Assert
-                presets.Length.Should().BeGreaterThan(0);
-
-                foreach (InventoryItem expectedPreset in TestData.Presets)
-                {
-                    InventoryItem preset = presets.Single(p => p.ItemId == expectedPreset.ItemId);
-                    preset.Should().BeEquivalentTo(expectedPreset);
-                }
-
-                string[] archivedFiles = Directory.GetFiles(
-                    Path.Combine(
-                        configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                        configurationReader.ConfiguratorConfiguration.PreviousExtractionsArchiveDirectory));
-                archivedFiles.Any(f => f.EndsWith(configurationReader.AzureFunctionsConfiguration.AzurePresetsBlobName)).Should().BeTrue();
             }
             finally
             {

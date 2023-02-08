@@ -71,10 +71,6 @@ namespace TotovBuilder.Configurator
             {
                 PropertyNameCaseInsensitive = true
             })!;
-
-            Logger.LogInformation(string.Format(Properties.Resources.ReadingNonStandardPresetNames));
-            string nonStandardPresetNamesJson = await File.ReadAllTextAsync(Path.Combine(ConfiguratorConfiguration.ConfigurationsDirectory, ConfiguratorConfiguration.NonStandardPresetNamesFileName));
-            ConfiguratorConfiguration.NonStandardPresetNames = JsonSerializer.Deserialize<string[]>(nonStandardPresetNamesJson)!;
         }
     }
 }

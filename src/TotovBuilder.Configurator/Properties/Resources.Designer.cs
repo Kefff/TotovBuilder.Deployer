@@ -10,9 +10,8 @@
 
 namespace TotovBuilder.Configurator.Properties {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,7 +22,6 @@ namespace TotovBuilder.Configurator.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [ExcludeFromCodeCoverage]
     internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
@@ -99,15 +97,6 @@ namespace TotovBuilder.Configurator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extracting presets form Tarkov resources file..
-        /// </summary>
-        internal static string ExtractingPresets {
-            get {
-                return ResourceManager.GetString("ExtractingPresets", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to File &quot;{0}&quot; uploaded with success..
         /// </summary>
         internal static string FileUploaded {
@@ -126,15 +115,6 @@ namespace TotovBuilder.Configurator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} presets extracted with success from Tarkov resources file..
-        /// </summary>
-        internal static string PresetsExtracted {
-            get {
-                return ResourceManager.GetString("PresetsExtracted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Reading Azure Functions configuration..
         /// </summary>
         internal static string ReadingAzureFunctionsConfiguration {
@@ -149,15 +129,6 @@ namespace TotovBuilder.Configurator.Properties {
         internal static string ReadingConfiguratorConfiguration {
             get {
                 return ResourceManager.GetString("ReadingConfiguratorConfiguration", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reading non standard preset names..
-        /// </summary>
-        internal static string ReadingNonStandardPresetNames {
-            get {
-                return ResourceManager.GetString("ReadingNonStandardPresetNames", resourceCulture);
             }
         }
         
