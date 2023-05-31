@@ -44,7 +44,7 @@ namespace TotovBuilder.Configurator
                 throw new Exception(string.Format(Properties.Resources.CannotReadTarkovResourcesFileContent));
             }
 
-            Task.WaitAll(ExtractItems(tarkovResourcesFileContent), ExtractPresets(tarkovResourcesFileContent));
+            await ExtractItemMissingProperties(tarkovResourcesFileContent);
         }
 
         /// <summary>
@@ -72,18 +72,18 @@ namespace TotovBuilder.Configurator
         }
 
         /// <summary>
-        /// Deserializes items.
+        /// Deserializes item missing properties.
         /// </summary>
         /// <param name="tarkovItemsJson">Json string representing the items.</param>
         /// <returns>Items.</returns>
-        private static IEnumerable<ItemMissingProperties> DeserializeItems(string tarkovItemsJson)
+        private static IEnumerable<ItemMissingProperties> DeserializeItemMissingProperties(string tarkovItemsJson)
         {
             List<ItemMissingProperties> extractedItems = new();
             JsonElement itemsJson = JsonDocument.Parse(tarkovItemsJson).RootElement;
 
             foreach (JsonProperty itemJson in itemsJson.EnumerateObject())
             {
-                ItemMissingProperties? itemMissingProperties = DeserializeItem(itemJson);
+                ItemMissingProperties? itemMissingProperties = DeserializeItemMissingProperties(itemJson);
 
                 if (itemMissingProperties != null)
                 {
@@ -95,11 +95,11 @@ namespace TotovBuilder.Configurator
         }
 
         /// <summary>
-        /// Deserializes an item.
+        /// Deserializes the missing properties of an item.
         /// </summary>
         /// <param name="itemJson">Json property representing the item.</param>
         /// <returns>Item.</returns>
-        private static ItemMissingProperties? DeserializeItem(JsonProperty itemJson)
+        private static ItemMissingProperties? DeserializeItemMissingProperties(JsonProperty itemJson)
         {
             ItemMissingProperties itemMissingProperties = new()
             {
@@ -176,112 +176,30 @@ namespace TotovBuilder.Configurator
         }
 
         /// <summary>
-        /// Deserializes presets.
-        /// </summary>
-        /// <param name="tarkovPresetsJson">Json string representing the presets.</param>
-        /// <returns>Presets.</returns>
-        private IEnumerable<InventoryItem> DeserializePresets(string tarkovPresetsJson)
-        {
-            List<Preset> extractedPresets = new();
-            JsonElement presetsJson = JsonDocument.Parse(tarkovPresetsJson).RootElement;
-
-            foreach (JsonProperty presetJson in presetsJson.EnumerateObject())
-            {
-                Preset preset = new()
-                {
-                    Name = presetJson.Value.GetProperty("_name").GetString()!,
-                    Items = presetJson.Value.GetProperty("_items").EnumerateArray().Select(pi => DeserializePresetItem(pi)).ToArray()
-                };
-
-                extractedPresets.Add(preset);
-            }
-
-            IEnumerable<InventoryItem> presets = extractedPresets
-                .Where(p => p.Name.ToLowerInvariant().EndsWith("default") || ConfigurationReader.ConfiguratorConfiguration.NonStandardPresetNames.Contains(p.Name))
-                .Select(p => p.ToInventoryItem());
-
-            return presets;
-        }
-
-        /// <summary>
-        /// Deserializes a preset item.
-        /// </summary>
-        /// <param name="presetItemJson">Json element representing the preset item.</param>
-        /// <returns>Preset item.</returns>
-        private static PresetItem DeserializePresetItem(JsonElement presetItemJson)
-        {
-            PresetItem presetItem = new()
-            {
-                Id = presetItemJson.GetProperty("_id").GetString()!,
-                ItemId = presetItemJson.GetProperty("_tpl").GetString()!
-            };
-
-            if (presetItemJson.TryGetProperty("parentId", out JsonElement parentIdJson))
-            {
-                presetItem.ParentID = parentIdJson.GetString();
-            }
-
-            if (presetItemJson.TryGetProperty("slotId", out JsonElement slotIdJson))
-            {
-                presetItem.SlotName = slotIdJson.GetString();
-            }
-
-            return presetItem;
-        }
-
-        /// <summary>
-        /// Extracts the items and saves them in a file in the configurations directory.
+        /// Extracts the item missing properties and saves them in a file in the configurations directory.
         /// </summary>
         /// <param name="tarkovResourcesFileContent">Tarkov resource file content.</param>
-        private Task ExtractItems(string tarkovResourcesFileContent)
+        private Task ExtractItemMissingProperties(string tarkovResourcesFileContent)
         {
             return Task.Run(() =>
             {
                 Logger.LogInformation(string.Format(Properties.Resources.ExtractingItems));
 
                 string tarkovItemsJson = IsolateItemsInTarkovResourcesFileContent(tarkovResourcesFileContent);
-                IEnumerable<ItemMissingProperties> items = DeserializeItems(tarkovItemsJson);
+                IEnumerable<ItemMissingProperties> items = DeserializeItemMissingProperties(tarkovItemsJson);
                 string itemsJson = JsonSerializer.Serialize(items, new JsonSerializerOptions()
                 {
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
 
-                string presetsFilePath = Path.Combine(
+                string missingItemPropertiesFilePath = Path.Combine(
                     ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
                     ConfigurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName);
-                ArchiveConfigurationFile(presetsFilePath);
-                File.WriteAllText(presetsFilePath, itemsJson);
+                ArchiveConfigurationFile(missingItemPropertiesFilePath);
+                File.WriteAllText(missingItemPropertiesFilePath, itemsJson);
 
                 Logger.LogSuccess(string.Format(Properties.Resources.ItemsExtracted, items.Count()));
-            });
-        }
-
-        /// <summary>
-        /// Extracts the presets and saves them in a file in the configurations directory.
-        /// </summary>
-        /// <param name="tarkovResourcesFileContent">Tarkov resource file content.</param>
-        private Task ExtractPresets(string tarkovResourcesFileContent)
-        {
-            return Task.Run(() =>
-            {
-                Logger.LogInformation(string.Format(Properties.Resources.ExtractingPresets));
-
-                string tarkovPresetsJson = IsolatePresetsInTarkovResourcesFileContent(tarkovResourcesFileContent);
-                IEnumerable<InventoryItem> presets = DeserializePresets(tarkovPresetsJson);
-                string presetsJson = JsonSerializer.Serialize(presets, new JsonSerializerOptions()
-                {
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                });
-
-                string presetsFilePath = Path.Combine(
-                    ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                    ConfigurationReader.AzureFunctionsConfiguration.AzurePresetsBlobName);
-                ArchiveConfigurationFile(presetsFilePath);
-                File.WriteAllText(presetsFilePath, presetsJson);
-
-                Logger.LogSuccess(string.Format(Properties.Resources.PresetsExtracted, presets.Count()));
             });
         }
 
@@ -309,35 +227,6 @@ namespace TotovBuilder.Configurator
             {
                 tarkovResourcesFileContent = tarkovResourcesFileContent[..endIndex];
                 endIndex = tarkovResourcesFileContent.LastIndexOf('}');
-                tarkovResourcesFileContent = tarkovResourcesFileContent[..endIndex];
-            }
-
-            return tarkovResourcesFileContent;
-        }
-
-        /// <summary>
-        /// Finds and isolates presets in the Tarkov resource file content.
-        /// </summary>
-        /// <param name="tarkovResourcesFileContent">Tarkov resource file content.</param>
-        /// <returns>Isolated prests.</returns>
-        private string IsolatePresetsInTarkovResourcesFileContent(string tarkovResourcesFileContent)
-        {
-            // Deleting the start of the content
-            int startIndex = tarkovResourcesFileContent.IndexOf(ConfigurationReader.ConfiguratorConfiguration.PresetsExtractionStartSearchString);
-
-            if (startIndex >= 0)
-            {
-                startIndex = tarkovResourcesFileContent.IndexOf('{', startIndex);
-                tarkovResourcesFileContent = tarkovResourcesFileContent[startIndex..];
-            }
-
-            // Deleting the end of the content
-            int endIndex = tarkovResourcesFileContent.IndexOf(ConfigurationReader.ConfiguratorConfiguration.PresetsExtractionEndSearchString);
-
-            if (endIndex >= 0)
-            {
-                tarkovResourcesFileContent = tarkovResourcesFileContent[..endIndex];
-                endIndex = tarkovResourcesFileContent.LastIndexOf(',');
                 tarkovResourcesFileContent = tarkovResourcesFileContent[..endIndex];
             }
 
