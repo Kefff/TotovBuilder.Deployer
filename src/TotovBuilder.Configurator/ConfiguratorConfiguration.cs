@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TotovBuilder.Configurator
+﻿namespace TotovBuilder.Configurator
 {
     /// <summary>
     /// Represents the configuration of the Totov Builder configurator.

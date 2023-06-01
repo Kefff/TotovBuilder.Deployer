@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TotovBuilder.Configurator.Abstractions;
-using TotovBuilder.Model.Builds;
 using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Items;
 
@@ -37,14 +37,42 @@ namespace TotovBuilder.Configurator
         {
             Logger.LogInformation(string.Format(Properties.Resources.ReadingTarkovResourcesFile, ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath));
 
-            string tarkovResourcesFileContent = await File.ReadAllTextAsync(ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath);
+            StringBuilder tarkovResourcesFileContentStringBuilder = new();
 
-            if (string.IsNullOrWhiteSpace(tarkovResourcesFileContent))
+            using (StreamReader sr = new(ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath))
+            {
+                bool takeLines = false;
+                string? line;
+
+                while ((line = sr.ReadLine()) != null)
+                {
+                    // Reading only lines in the section that interests us
+                    if (line.Contains(ConfigurationReader.ConfiguratorConfiguration.ItemsExtractionStartSearchString))
+                    {
+                        takeLines = true;
+                    }
+
+                    if (takeLines)
+                    {
+                        tarkovResourcesFileContentStringBuilder.AppendLine(line);
+                    }
+
+                    if (line.Contains(ConfigurationReader.ConfiguratorConfiguration.ItemsExtractionEndSearchString))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            string tarkovResourcesFileContent = tarkovResourcesFileContentStringBuilder.ToString();
+            string tarkovItemsJson = IsolateItemsInTarkovResourcesFileContent(tarkovResourcesFileContent);
+
+            if (string.IsNullOrWhiteSpace(tarkovItemsJson))
             {
                 throw new Exception(string.Format(Properties.Resources.CannotReadTarkovResourcesFileContent));
             }
 
-            await ExtractItemMissingProperties(tarkovResourcesFileContent);
+            await ExtractItemMissingProperties(tarkovItemsJson);
         }
 
         /// <summary>
@@ -178,14 +206,13 @@ namespace TotovBuilder.Configurator
         /// <summary>
         /// Extracts the item missing properties and saves them in a file in the configurations directory.
         /// </summary>
-        /// <param name="tarkovResourcesFileContent">Tarkov resource file content.</param>
-        private Task ExtractItemMissingProperties(string tarkovResourcesFileContent)
+        /// <param name="tarkovItemsJson">Json representing the tarkov items.</param>
+        private Task ExtractItemMissingProperties(string tarkovItemsJson)
         {
             return Task.Run(() =>
             {
                 Logger.LogInformation(string.Format(Properties.Resources.ExtractingItems));
 
-                string tarkovItemsJson = IsolateItemsInTarkovResourcesFileContent(tarkovResourcesFileContent);
                 IEnumerable<ItemMissingProperties> items = DeserializeItemMissingProperties(tarkovItemsJson);
                 string itemsJson = JsonSerializer.Serialize(items, new JsonSerializerOptions()
                 {

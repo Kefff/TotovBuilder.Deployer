@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using TotovBuilder.Configurator.Abstractions;
-using TotovBuilder.Model.Builds;
 using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Test;
 using Xunit;
