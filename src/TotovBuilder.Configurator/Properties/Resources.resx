@@ -129,26 +129,17 @@
   <data name="ExtractingItems" xml:space="preserve">
     <value>Extracting items form Tarkov resources file.</value>
   </data>
-  <data name="ExtractingPresets" xml:space="preserve">
-    <value>Extracting presets form Tarkov resources file.</value>
-  </data>
   <data name="FileUploaded" xml:space="preserve">
     <value>File "{0}" uploaded with success.</value>
   </data>
   <data name="ItemsExtracted" xml:space="preserve">
     <value>{0} items extracted with success from Tarkov resources file.</value>
   </data>
-  <data name="PresetsExtracted" xml:space="preserve">
-    <value>{0} presets extracted with success from Tarkov resources file.</value>
-  </data>
   <data name="ReadingAzureFunctionsConfiguration" xml:space="preserve">
     <value>Reading Azure Functions configuration.</value>
   </data>
   <data name="ReadingConfiguratorConfiguration" xml:space="preserve">
     <value>Reading configurator configuration.</value>
-  </data>
-  <data name="ReadingNonStandardPresetNames" xml:space="preserve">
-    <value>Reading non standard preset names.</value>
   </data>
   <data name="ReadingTarkovResourcesFile" xml:space="preserve">
     <value>Reading Tarkov resources file ({0}).</value>
