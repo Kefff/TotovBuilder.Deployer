@@ -37,9 +37,9 @@ namespace TotovBuilder.Configurator
         {
             Logger.LogInformation(string.Format(Properties.Resources.ReadingTarkovResourcesFile, ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath));
 
-            StringBuilder tarkovResourcesFileContentStringBuilder = new();
+            StringBuilder tarkovResourcesFileContentStringBuilder = new StringBuilder();
 
-            using (StreamReader sr = new(ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath))
+            using (StreamReader sr = new StreamReader(ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath))
             {
                 bool takeLines = false;
                 string? line;
@@ -106,7 +106,7 @@ namespace TotovBuilder.Configurator
         /// <returns>Items.</returns>
         private static IEnumerable<ItemMissingProperties> DeserializeItemMissingProperties(string tarkovItemsJson)
         {
-            List<ItemMissingProperties> extractedItems = new();
+            List<ItemMissingProperties> extractedItems = new List<ItemMissingProperties>();
             JsonElement itemsJson = JsonDocument.Parse(tarkovItemsJson).RootElement;
 
             foreach (JsonProperty itemJson in itemsJson.EnumerateObject())
@@ -129,7 +129,7 @@ namespace TotovBuilder.Configurator
         /// <returns>Item.</returns>
         private static ItemMissingProperties? DeserializeItemMissingProperties(JsonProperty itemJson)
         {
-            ItemMissingProperties itemMissingProperties = new()
+            ItemMissingProperties itemMissingProperties = new ItemMissingProperties()
             {
                 Id = itemJson.Value.GetProperty("_id").GetString()!
             };
@@ -149,7 +149,7 @@ namespace TotovBuilder.Configurator
             }
 
             // Chambers
-            List<ModSlot> rangedWeaponChambers = new();
+            List<ModSlot> rangedWeaponChambers = new List<ModSlot>();
 
             if (propsJson.TryGetProperty("Chambers", out JsonElement chambersJson))
             {
@@ -182,11 +182,11 @@ namespace TotovBuilder.Configurator
         /// <returns>Mods slots.</returns>
         private static ModSlot[] DeserializeItemModSlots(JsonElement slotsJson)
         {
-            List<ModSlot> modSlots = new();
+            List<ModSlot> modSlots = new List<ModSlot>();
 
             foreach (JsonElement slotJson in slotsJson.EnumerateArray())
             {
-                ModSlot modSlot = new()
+                ModSlot modSlot = new ModSlot()
                 {
                     Name = slotJson.GetProperty("_name").GetString()!,
                     Required = slotJson.GetProperty("_required").GetBoolean(),
@@ -222,7 +222,7 @@ namespace TotovBuilder.Configurator
 
                 string missingItemPropertiesFilePath = Path.Combine(
                     ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                    ConfigurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName);
+                    ConfigurationReader.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName);
                 ArchiveConfigurationFile(missingItemPropertiesFilePath);
                 File.WriteAllText(missingItemPropertiesFilePath, itemsJson);
 

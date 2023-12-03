@@ -13,14 +13,14 @@ namespace TotovBuilder.Configurator.Test
         public async Task WaitForLoading_ShouldWaitForConfigurationToBeLoaded()
         {
             // Arrange
-            ConfigurationReader configurationReader = new();
+            ConfigurationReader configurationReader = new ConfigurationReader();
 
             // Act
             await configurationReader.WaitForLoading();
 
             // Assert
             configurationReader.AzureFunctionsConfiguration.AzureBlobStorageConnectionString.Should().NotBeEmpty();
-            configurationReader.AzureFunctionsConfiguration.AzureBlobStorageContainerName.Should().NotBeEmpty();
+            configurationReader.AzureFunctionsConfiguration.AzureBlobStorageRawDataContainerName.Should().NotBeEmpty();
             configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory.Should().NotBeEmpty();
             configurationReader.ConfiguratorConfiguration.ConfiguratorConfigurationFileName.Should().NotBeEmpty();
         }

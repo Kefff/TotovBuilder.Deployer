@@ -16,10 +16,10 @@ namespace TotovBuilder.Configurator.Test
         public async Task Execute_ShouldExecute(bool upload)
         {
             // Arrange
-            Mock<IConfigurationReader> configurationReaderMock = new();
-            Mock<ITarkovDataExtractor> tarkovDataExtractorMock = new();
+            Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+            Mock<ITarkovDataExtractor> tarkovDataExtractorMock = new Mock<ITarkovDataExtractor>();
             Mock<IAzureBlobDataUploader>? azureBlobDataUploaderMock = upload ? new Mock<IAzureBlobDataUploader>() : null;
-            Configurator configurator = new(configurationReaderMock.Object, tarkovDataExtractorMock.Object, azureBlobDataUploaderMock?.Object);
+            Configurator configurator = new Configurator(configurationReaderMock.Object, tarkovDataExtractorMock.Object, azureBlobDataUploaderMock?.Object);
 
             // Act
             await configurator.Execute();
