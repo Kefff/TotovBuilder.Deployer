@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using TotovBuilder.Configurator.Abstractions;
@@ -9,7 +8,6 @@ namespace TotovBuilder.Configurator
     /// <summary>
     /// Represents the application entry point.
     /// </summary>
-    [ExcludeFromCodeCoverage]
     public class Program
     {
         /// <summary>

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System;
-using TotovBuilder.Model.Configuration;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using TotovBuilder.Model.Configuration;
 
 namespace TotovBuilder.Configurator.Extensions
 {
@@ -22,6 +22,6 @@ namespace TotovBuilder.Configurator.Extensions
                 .Select(p => p.GetValue(azureFunctionsConfiguration) as string ?? string.Empty);
 
             return blobsToUpload;
-        } 
+        }
     }
 }
