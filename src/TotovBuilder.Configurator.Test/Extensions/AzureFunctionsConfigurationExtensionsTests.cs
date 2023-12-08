@@ -44,7 +44,8 @@ namespace TotovBuilder.Configurator.Test.Extensions
                 "raw-item-categories.json",
                 "raw-item-missing-properties.json",
                 "raw-tarkov-values.json",
-                "raw-website-configuration.json"
+                "raw-website-configuration.json",
+                "azure-functions-configuration.json"
             });
         }
     }

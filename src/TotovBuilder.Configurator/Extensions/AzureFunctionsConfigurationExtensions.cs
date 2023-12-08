@@ -17,9 +17,11 @@ namespace TotovBuilder.Configurator.Extensions
         public static IEnumerable<string> GetBlobToUploadNames(this AzureFunctionsConfiguration azureFunctionsConfiguration)
         {
             Type azureFunctionsConfigurationType = typeof(AzureFunctionsConfiguration);
-            IEnumerable<string> blobsToUpload = azureFunctionsConfigurationType.GetProperties()
+            List<string> blobsToUpload = azureFunctionsConfigurationType.GetProperties()
                 .Where(p => p.Name.StartsWith("Raw") && p.Name.EndsWith("BlobName"))
-                .Select(p => p.GetValue(azureFunctionsConfiguration) as string ?? string.Empty);
+                .Select(p => p.GetValue(azureFunctionsConfiguration) as string ?? string.Empty)
+                .ToList();
+            blobsToUpload.Add(azureFunctionsConfiguration.AzureFunctionsConfigurationBlobName);
 
             return blobsToUpload;
         }
