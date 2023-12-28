@@ -8,7 +8,6 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TotovBuilder.Configurator.Abstractions;
 using TotovBuilder.Model.Configuration;
-using TotovBuilder.Model.Items;
 
 namespace TotovBuilder.Configurator
 {
@@ -142,30 +141,7 @@ namespace TotovBuilder.Configurator
                 itemMissingProperties.MaxStackableAmount = stackMaxSizeJson.GetDouble();
             };
 
-            // ConflictingItemIds
-            if (propsJson.TryGetProperty("ConflictingItems", out JsonElement conflictingItemsJson))
-            {
-                itemMissingProperties.ConflictingItemIds = conflictingItemsJson.EnumerateArray().Select(ci => ci.GetString()!).ToArray();
-            }
-
-            // Chambers
-            List<ModSlot> rangedWeaponChambers = new List<ModSlot>();
-
-            if (propsJson.TryGetProperty("Chambers", out JsonElement chambersJson))
-            {
-                ModSlot[] chambers = DeserializeItemModSlots(chambersJson);
-
-                for (int i = 0; i < chambers.Length; i++)
-                {
-                    chambers[i].Name = "chamber" + i;
-                }
-
-                itemMissingProperties.RangedWeaponChambers = chambers;
-            }
-
-            if (itemMissingProperties.ConflictingItemIds.Length > 0
-                || itemMissingProperties.MaxStackableAmount > 1
-                || itemMissingProperties.RangedWeaponChambers.Length > 0)
+            if (itemMissingProperties.MaxStackableAmount > 1)
             {
                 return itemMissingProperties;
             }
@@ -173,34 +149,6 @@ namespace TotovBuilder.Configurator
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Deserializes the mod slots of an item.
-        /// </summary>
-        /// <param name="slotsJson">Json element representing the mod slots.</param>
-        /// <returns>Mods slots.</returns>
-        private static ModSlot[] DeserializeItemModSlots(JsonElement slotsJson)
-        {
-            List<ModSlot> modSlots = new List<ModSlot>();
-
-            foreach (JsonElement slotJson in slotsJson.EnumerateArray())
-            {
-                ModSlot modSlot = new ModSlot()
-                {
-                    Name = slotJson.GetProperty("_name").GetString()!,
-                    Required = slotJson.GetProperty("_required").GetBoolean(),
-                    CompatibleItemIds = slotJson
-                        .GetProperty("_props")
-                        .GetProperty("filters").EnumerateArray().First()
-                        .GetProperty("Filter").EnumerateArray().Select(f => f.GetString()!)
-                        .ToArray()
-                };
-
-                modSlots.Add(modSlot);
-            }
-
-            return modSlots.ToArray();
         }
 
         /// <summary>
