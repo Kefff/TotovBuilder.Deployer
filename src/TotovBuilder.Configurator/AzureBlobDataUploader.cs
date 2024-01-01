@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using TotovBuilder.Configurator.Abstractions;
+using TotovBuilder.Configurator.Extensions;
 
 namespace TotovBuilder.Configurator
 {
@@ -45,8 +46,8 @@ namespace TotovBuilder.Configurator
         {
             await InitializationTask;
 
-            List<Task> uploadTasks = new();
-            IEnumerable<string> blobNames = ConfigurationReader.AzureFunctionsConfiguration.GetBlobNames();
+            List<Task> uploadTasks = new List<Task>();
+            IEnumerable<string> blobNames = ConfigurationReader.AzureFunctionsConfiguration.GetBlobToUploadNames();
 
             foreach (string file in Directory.GetFiles(ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
             {
@@ -63,8 +64,8 @@ namespace TotovBuilder.Configurator
         {
             await ConfigurationReader.WaitForLoading();
 
-            BlobServiceClient blobServiceClient = new(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageConnectionString);
-            BlobContainerClient = blobServiceClient.GetBlobContainerClient(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageContainerName);
+            BlobServiceClient blobServiceClient = new BlobServiceClient(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageConnectionString);
+            BlobContainerClient = blobServiceClient.GetBlobContainerClient(ConfigurationReader.AzureFunctionsConfiguration.AzureBlobStorageRawDataContainerName);
             await BlobContainerClient.CreateIfNotExistsAsync();
         }
 
@@ -81,7 +82,7 @@ namespace TotovBuilder.Configurator
             BlobClient blobClient = BlobContainerClient!.GetBlobClient(fileName);
             blobClient.DeleteIfExists();
 
-            using FileStream fileStream = new(file, FileMode.Open);
+            using FileStream fileStream = new FileStream(file, FileMode.Open);
             await blobClient.UploadAsync(fileStream);
 
             Logger.LogSuccess(string.Format(Properties.Resources.FileUploaded, fileName));

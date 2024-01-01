@@ -26,13 +26,13 @@ namespace TotovBuilder.Configurator.Test
 
             try
             {
-                ConfigurationReader configurationReader = new();
+                ConfigurationReader configurationReader = new ConfigurationReader();
                 await configurationReader.WaitForLoading();
                 configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where data will be extracted after the configuration has been loaded
 
-                File.WriteAllText(Path.Combine(extractionTestDirectory, configurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName), string.Empty);
+                File.WriteAllText(Path.Combine(extractionTestDirectory, configurationReader.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName), string.Empty);
 
-                TarkovDataExtractor tarkovDataExtractor = new(configurationReader);
+                TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReader);
 
                 // Act
                 await tarkovDataExtractor.Extract();
@@ -40,7 +40,7 @@ namespace TotovBuilder.Configurator.Test
                 string itemsJson = await File.ReadAllTextAsync(
                     Path.Combine(
                         configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                        configurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName));
+                        configurationReader.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName));
                 ItemMissingProperties[] items = JsonSerializer.Deserialize<ItemMissingProperties[]>(itemsJson, new JsonSerializerOptions()
                 {
                     PropertyNameCaseInsensitive = true
@@ -65,7 +65,7 @@ namespace TotovBuilder.Configurator.Test
                     Path.Combine(
                         configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
                         configurationReader.ConfiguratorConfiguration.PreviousExtractionsArchiveDirectory));
-                archivedFiles.Any(f => f.EndsWith(configurationReader.AzureFunctionsConfiguration.AzureItemMissingPropertiesBlobName)).Should().BeTrue();
+                archivedFiles.Any(f => f.EndsWith(configurationReader.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName)).Should().BeTrue();
             }
             finally
             {
@@ -86,15 +86,15 @@ namespace TotovBuilder.Configurator.Test
             try
             {
                 // Arrange
-                ConfiguratorConfiguration configuratorConfiguration = new()
+                ConfiguratorConfiguration configuratorConfiguration = new ConfiguratorConfiguration()
                 {
                     TarkovResourcesFilePath = tarkovResourcesFilePath
                 };
 
-                Mock<IConfigurationReader> configurationReaderMock = new();
+                Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
                 configurationReaderMock.SetupGet(m => m.ConfiguratorConfiguration).Returns(configuratorConfiguration);
 
-                TarkovDataExtractor tarkovDataExtractor = new(configurationReaderMock.Object);
+                TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReaderMock.Object);
 
                 // Act
                 Func<Task> act = () => tarkovDataExtractor.Extract();
