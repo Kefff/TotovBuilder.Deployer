@@ -6,7 +6,7 @@ using Xunit;
 namespace TotovBuilder.Deployer.Test
 {
     /// <summary>
-    /// Represents tests on the <see cref="Configurator"/> class.
+    /// Represents tests on the <see cref="Deployer"/> class.
     /// </summary>
     public class ConfiguratorTest
     {
@@ -16,13 +16,13 @@ namespace TotovBuilder.Deployer.Test
         public async Task Execute_ShouldExecute(bool upload)
         {
             // Arrange
-            Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+            Mock<IConfigurationLoader> configurationReaderMock = new Mock<IConfigurationLoader>();
             Mock<ITarkovDataExtractor> tarkovDataExtractorMock = new Mock<ITarkovDataExtractor>();
             Mock<IAzureBlobDataUploader>? azureBlobDataUploaderMock = upload ? new Mock<IAzureBlobDataUploader>() : null;
-            Configurator configurator = new Configurator(configurationReaderMock.Object, tarkovDataExtractorMock.Object, azureBlobDataUploaderMock?.Object);
+            Deployer configurator = new Deployer(configurationReaderMock.Object, tarkovDataExtractorMock.Object, azureBlobDataUploaderMock?.Object);
 
             // Act
-            await configurator.Execute();
+            await configurator.Run();
 
             // Assert
             configurationReaderMock.Verify(m => m.WaitForLoading());

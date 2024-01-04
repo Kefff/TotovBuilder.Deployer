@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using TotovBuilder.Deployer.Abstractions;
 
 namespace TotovBuilder.Deployer
@@ -15,21 +17,20 @@ namespace TotovBuilder.Deployer
         /// </summary>
         public async static Task Main(string[] args)
         {
-            bool upload = args.Contains("-u") || args.Contains("--upload");
+            Console.WriteLine("TotovBuilder deployment tool");
 
-            try
-            {
-                IConfigurationReader configurationReader = new ConfigurationReader();
-                IConfigurator configurator = new Configurator(
-                    configurationReader,
-                    new TarkovDataExtractor(configurationReader),
-                    upload ? new AzureBlobDataUploader(configurationReader) : null);
-                await configurator.Execute();
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e.ToString());
-            }
+            IHost host = Host.CreateDefaultBuilder(args)
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddSingleton<IApplicationConfiguration, ApplicationConfiguration>();
+                    services.AddSingleton<IConfigurationLoader, ConfigurationLoader>();
+                    services.AddSingleton<IDeployer, Deployer>();
+                    services.AddSingleton<ITarkovDataExtractor, TarkovDataExtractor>();
+                })
+                .Build();
+            
+            IDeployer deployer = host.Services.GetRequiredService<IDeployer>();
+            await deployer.Run();
         }
     }
 }

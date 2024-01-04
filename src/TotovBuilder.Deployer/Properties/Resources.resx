@@ -120,8 +120,17 @@
   <data name="ArchivingFile" xml:space="preserve">
     <value>Archiving file "{0}" to "{1}".</value>
   </data>
+  <data name="AzureFunctionsConfigurationLoading" xml:space="preserve">
+    <value>Loging Azure Functions configuration from "{0}".</value>
+  </data>
   <data name="CannotReadTarkovResourcesFileContent" xml:space="preserve">
     <value>Cannot read Tarkov resources file content.</value>
+  </data>
+  <data name="ConfigurationLoaded" xml:space="preserve">
+    <value>Configuration loaded.</value>
+  </data>
+  <data name="DeployerConfigurationLoading" xml:space="preserve">
+    <value>Loading deployer configuration from "{0}".</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error :</value>
@@ -134,12 +143,6 @@
   </data>
   <data name="ItemsExtracted" xml:space="preserve">
     <value>{0} items extracted with success from Tarkov resources file.</value>
-  </data>
-  <data name="ReadingAzureFunctionsConfiguration" xml:space="preserve">
-    <value>Reading Azure Functions configuration.</value>
-  </data>
-  <data name="ReadingConfiguratorConfiguration" xml:space="preserve">
-    <value>Reading configurator configuration.</value>
   </data>
   <data name="ReadingTarkovResourcesFile" xml:space="preserve">
     <value>Reading Tarkov resources file ({0}).</value>

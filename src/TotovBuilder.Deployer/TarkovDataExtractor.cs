@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Model.Configuration;
 
@@ -16,29 +17,34 @@ namespace TotovBuilder.Deployer
     /// </summary>
     public class TarkovDataExtractor : ITarkovDataExtractor
     {
+        /// <summary>
+        /// Configuration.
+        /// </summary>
+        private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
-        /// Configuration reader.
+        /// Logger.
         /// </summary>
-        private readonly IConfigurationReader ConfigurationReader;
+        private readonly ILogger<TarkovDataExtractor> Logger;
 
         /// <summary>
         /// Initilizes a new instances of the <see cref="TarkovDataExtractor"/> class.
         /// </summary>
-        /// <param name="configurationReader"></param>
-        public TarkovDataExtractor(IConfigurationReader configurationReader)
+        /// <param name="configuration"></param>
+        public TarkovDataExtractor(ILogger<TarkovDataExtractor> logger, IApplicationConfiguration configuration)
         {
-            ConfigurationReader = configurationReader;
+            Configuration = configuration;
+            Logger = logger;
         }
 
         /// <inheritdoc/>
         public async Task Extract()
         {
-            Logger.LogInformation(string.Format(Properties.Resources.ReadingTarkovResourcesFile, ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath));
+            Logger.LogInformation(string.Format(Properties.Resources.ReadingTarkovResourcesFile, Configuration.ConfiguratorConfiguration.TarkovResourcesFilePath));
 
             StringBuilder tarkovResourcesFileContentStringBuilder = new StringBuilder();
 
-            using (StreamReader sr = new StreamReader(ConfigurationReader.ConfiguratorConfiguration.TarkovResourcesFilePath))
+            using (StreamReader sr = new StreamReader(Configuration.ConfiguratorConfiguration.TarkovResourcesFilePath))
             {
                 bool takeLines = false;
                 string? line;
@@ -46,7 +52,7 @@ namespace TotovBuilder.Deployer
                 while ((line = sr.ReadLine()) != null)
                 {
                     // Reading only lines in the section that interests us
-                    if (line.Contains(ConfigurationReader.ConfiguratorConfiguration.ItemsExtractionStartSearchString))
+                    if (line.Contains(Configuration.ConfiguratorConfiguration.ItemsExtractionStartSearchString))
                     {
                         takeLines = true;
                     }
@@ -56,7 +62,7 @@ namespace TotovBuilder.Deployer
                         tarkovResourcesFileContentStringBuilder.AppendLine(line);
                     }
 
-                    if (line.Contains(ConfigurationReader.ConfiguratorConfiguration.ItemsExtractionEndSearchString))
+                    if (line.Contains(Configuration.ConfiguratorConfiguration.ItemsExtractionEndSearchString))
                     {
                         break;
                     }
@@ -81,8 +87,8 @@ namespace TotovBuilder.Deployer
         private void ArchiveConfigurationFile(string fileToArchivePath)
         {
             string archiveDirectory = Path.Combine(
-                ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                ConfigurationReader.ConfiguratorConfiguration.PreviousExtractionsArchiveDirectory);
+                Configuration.ConfiguratorConfiguration.ConfigurationsDirectory,
+                Configuration.ConfiguratorConfiguration.PreviousExtractionsArchiveDirectory);
             string fileName = Path.GetFileName(fileToArchivePath);
             string archivedFileName = DateTime.Now.ToString("yyyyMMddHHmmss_") + fileName;
 
@@ -169,12 +175,12 @@ namespace TotovBuilder.Deployer
                 });
 
                 string missingItemPropertiesFilePath = Path.Combine(
-                    ConfigurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-                    ConfigurationReader.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName);
+                    Configuration.ConfiguratorConfiguration.ConfigurationsDirectory,
+                    Configuration.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName);
                 ArchiveConfigurationFile(missingItemPropertiesFilePath);
                 File.WriteAllText(missingItemPropertiesFilePath, itemsJson);
 
-                Logger.LogSuccess(string.Format(Properties.Resources.ItemsExtracted, items.Count()));
+                Logger.LogInformation(string.Format(Properties.Resources.ItemsExtracted, items.Count()));
             });
         }
 
@@ -186,7 +192,7 @@ namespace TotovBuilder.Deployer
         private string IsolateItemsInTarkovResourcesFileContent(string tarkovResourcesFileContent)
         {
             // Deleting the start of the content
-            int startIndex = tarkovResourcesFileContent.IndexOf(ConfigurationReader.ConfiguratorConfiguration.ItemsExtractionStartSearchString);
+            int startIndex = tarkovResourcesFileContent.IndexOf(Configuration.ConfiguratorConfiguration.ItemsExtractionStartSearchString);
 
             if (startIndex >= 0)
             {
@@ -196,7 +202,7 @@ namespace TotovBuilder.Deployer
             }
 
             // Deleting the end of the content
-            int endIndex = tarkovResourcesFileContent.IndexOf(ConfigurationReader.ConfiguratorConfiguration.ItemsExtractionEndSearchString);
+            int endIndex = tarkovResourcesFileContent.IndexOf(Configuration.ConfiguratorConfiguration.ItemsExtractionEndSearchString);
 
             if (endIndex >= 0)
             {

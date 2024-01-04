@@ -26,7 +26,7 @@ namespace TotovBuilder.Deployer.Test
 
             try
             {
-                ConfigurationReader configurationReader = new ConfigurationReader();
+                ConfigurationLoader configurationReader = new ConfigurationLoader();
                 await configurationReader.WaitForLoading();
                 configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory = extractionTestDirectory; // Changing the directory where data will be extracted after the configuration has been loaded
 
@@ -86,12 +86,12 @@ namespace TotovBuilder.Deployer.Test
             try
             {
                 // Arrange
-                ConfiguratorConfiguration configuratorConfiguration = new ConfiguratorConfiguration()
+                DeployerConfiguration configuratorConfiguration = new DeployerConfiguration()
                 {
                     TarkovResourcesFilePath = tarkovResourcesFilePath
                 };
 
-                Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+                Mock<IConfigurationLoader> configurationReaderMock = new Mock<IConfigurationLoader>();
                 configurationReaderMock.SetupGet(m => m.ConfiguratorConfiguration).Returns(configuratorConfiguration);
 
                 TarkovDataExtractor tarkovDataExtractor = new TarkovDataExtractor(configurationReaderMock.Object);

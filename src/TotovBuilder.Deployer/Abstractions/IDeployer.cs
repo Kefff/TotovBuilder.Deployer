@@ -3,13 +3,13 @@
 namespace TotovBuilder.Deployer.Abstractions
 {
     /// <summary>
-    /// Provides the functionalities of a configurator.
+    /// Provides the functionalities of the deployer.
     /// </summary>
-    public interface IConfigurator
+    public interface IDeployer
     {
         /// <summary>
-        /// Executes the configurator.
+        /// Runs the deployer.
         /// </summary>
-        Task Execute();
+        Task Run();
     }
 }
