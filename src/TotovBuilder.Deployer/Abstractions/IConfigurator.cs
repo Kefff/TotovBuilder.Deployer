@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace TotovBuilder.Configurator.Abstractions
+namespace TotovBuilder.Deployer.Abstractions
 {
     /// <summary>
     /// Provides the functionalities of a configurator.

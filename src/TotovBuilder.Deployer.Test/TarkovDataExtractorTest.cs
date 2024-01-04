@@ -5,12 +5,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using TotovBuilder.Configurator.Abstractions;
+using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Test;
 using Xunit;
 
-namespace TotovBuilder.Configurator.Test
+namespace TotovBuilder.Deployer.Test
 {
     /// <summary>
     /// Represents tests on the <see cref="TarkovDataExtractor"/> class.
@@ -21,7 +21,7 @@ namespace TotovBuilder.Configurator.Test
         public async Task Extract_ShouldExtractItems()
         {
             // Arrange
-            string extractionTestDirectory = Path.Combine(Path.GetTempPath(), "TotovBuilder.Configurator.Test");
+            string extractionTestDirectory = Path.Combine(Path.GetTempPath(), "TotovBuilder.Deployer.Test");
             Directory.CreateDirectory(extractionTestDirectory);
 
             try
@@ -76,7 +76,7 @@ namespace TotovBuilder.Configurator.Test
         [Fact]
         public void Extract_WithInvalidTarkovResourceFileContent_ShouldThrow()
         {
-            string extractionTestDirectory = Path.Combine(Path.GetTempPath(), "TotovBuilder.Configurator.Test");
+            string extractionTestDirectory = Path.Combine(Path.GetTempPath(), "TotovBuilder.Deployer.Test");
             Directory.CreateDirectory(extractionTestDirectory);
 
             string tarkovResourcesFileName = "empty-resources.assets";

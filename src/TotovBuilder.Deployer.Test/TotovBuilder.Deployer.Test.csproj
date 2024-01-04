@@ -18,15 +18,15 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="FluentAssertions" Version="6.7.0" />
-	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-	  <PackageReference Include="Moq" Version="4.18.2" />
-	  <PackageReference Include="xunit" Version="2.4.1" />
+	  <PackageReference Include="FluentAssertions" Version="6.12.0" />
+	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+	  <PackageReference Include="Moq" Version="4.20.70" />
+	  <PackageReference Include="xunit" Version="2.4.2" />
 	  <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
 	  </PackageReference>
-	  <PackageReference Include="coverlet.collector" Version="3.0.2">
+	  <PackageReference Include="coverlet.collector" Version="3.2.0">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
 	  </PackageReference>
@@ -35,7 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\TotovBuilder.Model\src\TotovBuilder.Model.Test\TotovBuilder.Model.Test.csproj" />
     <ProjectReference Include="..\..\..\TotovBuilder.Model\src\TotovBuilder.Model\TotovBuilder.Model.csproj" />
-    <ProjectReference Include="..\TotovBuilder.Configurator\TotovBuilder.Configurator.csproj" />
+    <ProjectReference Include="..\TotovBuilder.Deployer\TotovBuilder.Deployer.csproj" />
   </ItemGroup>
 
     <Target Name="CopyAppConfig" AfterTargets="AfterBuild">
@@ -43,7 +43,7 @@
             Copies the test equivalent of App.config to the output directory.
             Cf. https://github.com/dotnet/runtime/issues/22720#issuecomment-371018696.
         -->
-	    <Copy SourceFiles="$(OutDir)\TotovBuilder.Configurator.dll.config" DestinationFiles="$(OutDir)\testhost.dll.config" />
+	    <Copy SourceFiles="$(OutDir)\TotovBuilder.Deployer.dll.config" DestinationFiles="$(OutDir)\testhost.dll.config" />
     </Target>
 
 </Project>

@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
-using TotovBuilder.Configurator.Abstractions;
-using TotovBuilder.Configurator.Extensions;
+using TotovBuilder.Deployer.Abstractions;
+using TotovBuilder.Deployer.Extensions;
 
-namespace TotovBuilder.Configurator
+namespace TotovBuilder.Deployer
 {
     /// <summary>
     /// Represents an Azure Blob data updloader.

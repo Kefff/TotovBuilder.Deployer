@@ -1,2 +1,2 @@
-..\publish\TEST\TotovBuilder.Configurator.exe --upload
+..\publish\TEST\TotovBuilder.Deployer.exe --upload
 pause

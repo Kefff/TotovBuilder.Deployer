@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TotovBuilder.Model.Configuration;
 
-namespace TotovBuilder.Configurator.Extensions
+namespace TotovBuilder.Deployer.Extensions
 {
     /// <summary>
     /// Represents an extention class for <see cref="AzureFunctionsConfiguration"/>.

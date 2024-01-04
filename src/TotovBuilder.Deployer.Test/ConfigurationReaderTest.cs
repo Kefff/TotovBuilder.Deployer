@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace TotovBuilder.Configurator.Test
+namespace TotovBuilder.Deployer.Test
 {
     /// <summary>
     /// Represents tests on the <see cref="ConfigurationReader"/> class.

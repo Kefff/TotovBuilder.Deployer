@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using TotovBuilder.Configurator.Abstractions;
+using TotovBuilder.Deployer.Abstractions;
 
-namespace TotovBuilder.Configurator
+namespace TotovBuilder.Deployer
 {
     /// <summary>
     /// Represents a configurator.

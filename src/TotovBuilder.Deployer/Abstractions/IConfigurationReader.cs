@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using TotovBuilder.Model.Configuration;
 
-namespace TotovBuilder.Configurator.Abstractions
+namespace TotovBuilder.Deployer.Abstractions
 {
     /// <summary>
     /// Provides the functionalities of a configuration reader.

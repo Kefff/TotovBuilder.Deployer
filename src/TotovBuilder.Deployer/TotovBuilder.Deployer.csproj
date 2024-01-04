@@ -12,12 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\TotovBuilder.Model\src\TotovBuilder.Model\TotovBuilder.Model.csproj" />
+    <ProjectReference Include="..\..\..\TotovBuilder.Shared\src\TotovBuilder.Shared\TotovBuilder.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,8 +47,8 @@
 	</ItemGroup>
 
 	<Target Name="CopyAppConfigToPublishedProject" AfterTargets="Publish">
-		<Copy SourceFiles="App.Publish-TEST.config" DestinationFiles="$(PublishDir)TotovBuilder.Configurator.dll.config" Condition=" '$(Configuration)' == 'Debug' " />
-		<Copy SourceFiles="App.Publish-PROD.config" DestinationFiles="$(PublishDir)TotovBuilder.Configurator.dll.config" Condition=" '$(Configuration)' == 'Release' " />
+		<Copy SourceFiles="App.Publish-TEST.config" DestinationFiles="$(PublishDir)TotovBuilder.Deployer.dll.config" Condition=" '$(Configuration)' == 'Debug' " />
+		<Copy SourceFiles="App.Publish-PROD.config" DestinationFiles="$(PublishDir)TotovBuilder.Deployer.dll.config" Condition=" '$(Configuration)' == 'Release' " />
 		<!--
             Copies App.Publish-PROD or App.Publish-TEST when publishing.
 			Cf https://docs.microsoft.com/fr-fr/visualstudio/msbuild/msbuild-task-reference?view=vs-2022

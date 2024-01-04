@@ -1,2 +1,2 @@
-..\publish\PROD\TotovBuilder.Configurator.exe
+..\publish\PROD\TotovBuilder.Deployer.exe
 pause

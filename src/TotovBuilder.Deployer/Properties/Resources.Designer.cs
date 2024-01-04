@@ -8,10 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TotovBuilder.Configurator.Properties {
+namespace TotovBuilder.Deployer.Properties
+{
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -22,130 +23,158 @@ namespace TotovBuilder.Configurator.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
-        
+    internal class Resources
+    {
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Resources()
+        {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
-            get {
-                if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TotovBuilder.Configurator.Properties.Resources", typeof(Resources).Assembly);
+        internal static global::System.Resources.ResourceManager ResourceManager
+        {
+            get
+            {
+                if (object.ReferenceEquals(resourceMan, null))
+                {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TotovBuilder.Deployer.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
-            get {
+        internal static global::System.Globalization.CultureInfo Culture
+        {
+            get
+            {
                 return resourceCulture;
             }
-            set {
+            set
+            {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Archiving file &quot;{0}&quot; to &quot;{1}&quot;..
         /// </summary>
-        internal static string ArchivingFile {
-            get {
+        internal static string ArchivingFile
+        {
+            get
+            {
                 return ResourceManager.GetString("ArchivingFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cannot read Tarkov resources file content..
         /// </summary>
-        internal static string CannotReadTarkovResourcesFileContent {
-            get {
+        internal static string CannotReadTarkovResourcesFileContent
+        {
+            get
+            {
                 return ResourceManager.GetString("CannotReadTarkovResourcesFileContent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error :.
         /// </summary>
-        internal static string Error {
-            get {
+        internal static string Error
+        {
+            get
+            {
                 return ResourceManager.GetString("Error", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Extracting items form Tarkov resources file..
         /// </summary>
-        internal static string ExtractingItems {
-            get {
+        internal static string ExtractingItems
+        {
+            get
+            {
                 return ResourceManager.GetString("ExtractingItems", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to File &quot;{0}&quot; uploaded with success..
         /// </summary>
-        internal static string FileUploaded {
-            get {
+        internal static string FileUploaded
+        {
+            get
+            {
                 return ResourceManager.GetString("FileUploaded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} items extracted with success from Tarkov resources file..
         /// </summary>
-        internal static string ItemsExtracted {
-            get {
+        internal static string ItemsExtracted
+        {
+            get
+            {
                 return ResourceManager.GetString("ItemsExtracted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reading Azure Functions configuration..
         /// </summary>
-        internal static string ReadingAzureFunctionsConfiguration {
-            get {
+        internal static string ReadingAzureFunctionsConfiguration
+        {
+            get
+            {
                 return ResourceManager.GetString("ReadingAzureFunctionsConfiguration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reading configurator configuration..
         /// </summary>
-        internal static string ReadingConfiguratorConfiguration {
-            get {
+        internal static string ReadingConfiguratorConfiguration
+        {
+            get
+            {
                 return ResourceManager.GetString("ReadingConfiguratorConfiguration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reading Tarkov resources file ({0})..
         /// </summary>
-        internal static string ReadingTarkovResourcesFile {
-            get {
+        internal static string ReadingTarkovResourcesFile
+        {
+            get
+            {
                 return ResourceManager.GetString("ReadingTarkovResourcesFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Uploading file &quot;{0}&quot;..
         /// </summary>
-        internal static string Uploading {
-            get {
+        internal static string Uploading
+        {
+            get
+            {
                 return ResourceManager.GetString("Uploading", resourceCulture);
             }
         }

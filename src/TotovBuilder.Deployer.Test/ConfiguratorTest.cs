@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Moq;
-using TotovBuilder.Configurator.Abstractions;
+using TotovBuilder.Deployer.Abstractions;
 using Xunit;
 
-namespace TotovBuilder.Configurator.Test
+namespace TotovBuilder.Deployer.Test
 {
     /// <summary>
     /// Represents tests on the <see cref="Configurator"/> class.

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using TotovBuilder.Configurator.Extensions;
+using TotovBuilder.Deployer.Extensions;
 using TotovBuilder.Model.Configuration;
 using Xunit;
 
-namespace TotovBuilder.Configurator.Test.Extensions
+namespace TotovBuilder.Deployer.Test.Extensions
 {
     /// <summary>
     /// Represents tests on the <see cref="AzureFunctionsConfigurationExtensions"/> class.

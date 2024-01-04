@@ -2,10 +2,10 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using TotovBuilder.Configurator.Abstractions;
+using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Model.Configuration;
 
-namespace TotovBuilder.Configurator
+namespace TotovBuilder.Deployer
 {
     /// <summary>
     /// Represents a configuration reader.

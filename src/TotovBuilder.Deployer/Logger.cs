@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace TotovBuilder.Configurator
+namespace TotovBuilder.Deployer
 {
     /// <summary>
     /// Represents a logger.
