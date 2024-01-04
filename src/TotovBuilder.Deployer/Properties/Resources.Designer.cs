@@ -88,7 +88,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration loaded..
+        ///   Looks up a localized string similar to Configuration loaded with success..
         /// </summary>
         internal static string ConfigurationLoaded {
             get {

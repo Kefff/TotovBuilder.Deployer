@@ -127,7 +127,7 @@
     <value>Cannot read Tarkov resources file content.</value>
   </data>
   <data name="ConfigurationLoaded" xml:space="preserve">
-    <value>Configuration loaded.</value>
+    <value>Configuration loaded with success.</value>
   </data>
   <data name="DeployerConfigurationLoading" xml:space="preserve">
     <value>Loading deployer configuration from "{0}".</value>

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
@@ -25,12 +24,14 @@ namespace TotovBuilder.Deployer
         /// <summary>
         /// Logger.
         /// </summary>
-        private readonly ILogger<ConfigurationLoader> Logger;
+        private readonly IApplicationLogger Logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationLoader"/> class.
         /// </summary>
-        public ConfigurationLoader(ILogger<ConfigurationLoader> logger, IApplicationConfiguration configuration)
+        /// <param name="logger">Logger.</param>
+        /// <param name="configuration">Application configuration.</param>
+        public ConfigurationLoader(IApplicationLogger logger, IApplicationConfiguration configuration)
         {
             Logger = logger;
             Configuration = configuration;
@@ -52,7 +53,7 @@ namespace TotovBuilder.Deployer
             Configuration.ConfiguratorConfiguration = JsonSerializer.Deserialize<DeployerConfiguration>(deployerConfigurationJson, new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true
-            })! ;
+            })!;
             Configuration.ConfiguratorConfiguration.DeployerDeploymentMode = deploymentMode;
             Configuration.ConfiguratorConfiguration.ConfigurationsDirectory = configurationsDirectory;
             Configuration.ConfiguratorConfiguration.DeployerConfigurationFileName = deployerConfigurationFileName;
@@ -66,8 +67,8 @@ namespace TotovBuilder.Deployer
             {
                 PropertyNameCaseInsensitive = true
             })!;
-            
-            Logger.LogInformation(string.Format(Properties.Resources.ConfigurationLoaded));
+
+            Logger.LogSuccess(string.Format(Properties.Resources.ConfigurationLoaded));
         }
     }
 }

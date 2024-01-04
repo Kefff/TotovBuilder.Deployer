@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Sharprompt;
 using TotovBuilder.Deployer.Abstractions;
+using TotovBuilder.Deployer.Abstractions.Actions;
+using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Model;
 
 namespace TotovBuilder.Deployer
@@ -22,24 +26,76 @@ namespace TotovBuilder.Deployer
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
-        /// Tarkov data extractor.
+        /// Deployment actions that can be chosen by the user.
         /// </summary>
-        private readonly ITarkovDataExtractor TarkovDataExtractor;
+        private readonly List<IDeploymentAction> Actions;
+
+        /// <summary>
+        /// Change deployment mode action.
+        /// </summary>
+        private readonly DeploymentAction ChangeDeploymentModeAction;
+
+        /// <summary>
+        /// Deploy raw data action.
+        /// </summary>
+        private readonly DeployRawDataAction DeployRawDataAction;
+
+        /// <summary>
+        /// Exit action.
+        /// </summary>
+        private readonly DeploymentAction ExitAction;
+
+        /// <summary>
+        /// Tarkov data extraction action.
+        /// </summary>
+        private readonly ExtractTarkovDataAction ExtractTarkovDataAction;
 
         /// <summary>
         /// Initializes an new instance of the <see cref="Deployer"/> class.
         /// </summary>
         /// <param name="configurationReader">Configuration reader.</param>
         /// <param name="configuration">Configuration.</param>
-        /// <param name="tarkovDataExtractor">Tarkov data extractor.</param>
+        /// <param name="extractTarkovDataAction">Tarkov data extractor.</param>
         public Deployer(
             IConfigurationLoader configurationReader,
             IApplicationConfiguration configuration,
-            ITarkovDataExtractor tarkovDataExtractor)
+            DeployRawDataAction deployRawDataAction,
+            ExtractTarkovDataAction extractTarkovDataAction)
         {
             Configuration = configuration;
             ConfigurationLoader = configurationReader;
-            TarkovDataExtractor = tarkovDataExtractor;
+
+            ChangeDeploymentModeAction = new DeploymentAction(
+                () => $"Change deployment mode (current mode is \"{Configuration.ConfiguratorConfiguration.DeployerDeploymentMode}\")",
+                ChooseDeploymentMode);
+            DeployRawDataAction = deployRawDataAction;
+            ExitAction = new DeploymentAction(
+                "Exit",
+                () => Task.CompletedTask);
+            ExtractTarkovDataAction = extractTarkovDataAction;
+
+            Actions = new List<IDeploymentAction>()
+            {
+                ChangeDeploymentModeAction,
+                new DeploymentAction(
+                    () => "TODO : Update Tarkov",
+                    () => Task.CompletedTask),
+                ExtractTarkovDataAction,
+                DeployRawDataAction,
+                new DeploymentAction(
+                    () => "TODO : Deploy Azure Functions",
+                    () => Task.CompletedTask),
+                new DeploymentAction(
+                    () => "TODO : Execute Azure Functions to update website data before scheduled time",
+                    () => Task.CompletedTask),
+                new DeploymentAction(
+                    () => "TODO : Compile the website",
+                    () => Task.CompletedTask),
+                new DeploymentAction(
+                    () => "TODO : Deploy the website to Azure",
+                    () => Task.CompletedTask),
+                ExitAction
+            };
         }
 
         /// <inheritdoc/>
@@ -47,7 +103,7 @@ namespace TotovBuilder.Deployer
         {
             while (Configuration.ConfiguratorConfiguration.DeployerDeploymentMode == null)
             {
-                await DisplayDeploymentModeSelection();
+                await ChooseDeploymentMode();
             }
 
             bool displayMenu = true;
@@ -64,45 +120,27 @@ namespace TotovBuilder.Deployer
         /// <returns><c>true</c> when the menu must be displayed again after the action is executed; otherwise <c>false</c>.</returns>
         private async Task<bool> DisplayMenu()
         {
-            bool displayAgain = true;
-
-            string deploymentModeSelectionOption = $"Change deployment mode (current mode is \"{Configuration.ConfiguratorConfiguration.DeployerDeploymentMode}\")";
-            string extractionOption = "Extract missing item properties from Tarkov";
-
             string choice = Prompt.Select(
                 "Select an action",
-                new string[]
-                {
-                    deploymentModeSelectionOption,
-                    "Update Tarkov",
-                    extractionOption,
-                    "Deploy raw data to Azure",
-                    "Compile the website",
-                    "Deploy the website to Azure",
-                    "Exit"
-                });
+                Actions.Select(a => a.Caption));
 
-            if (choice == deploymentModeSelectionOption)
+            Console.Clear();
+            IDeploymentAction selectedAction = Actions.Single(a => a.Caption == choice);
+
+            if (selectedAction == ExitAction)
             {
-                await DisplayDeploymentModeSelection();
-            }
-            else if (choice == extractionOption)
-            {
-                await TarkovDataExtractor.Extract();
-            }
-            else if (choice == "Exit")
-            {
-                displayAgain = false;
+                return false;
             }
 
-            return displayAgain;
+            await selectedAction.ExecuteAction();
+
+            return true;
         }
 
         /// <summary>
-        /// Displays the deployment mode selection.
+        /// Displays the deployment mode selection and reloads the configuration matching the user's choice.
         /// </summary>
-        /// <returns>Chosen deployment mode.</returns>
-        private async Task DisplayDeploymentModeSelection()
+        private async Task ChooseDeploymentMode()
         {
             DeploymentMode choice = Prompt.Select(
                 "Deployment mode",

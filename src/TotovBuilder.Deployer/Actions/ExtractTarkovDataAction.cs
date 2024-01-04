@@ -6,17 +6,26 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
+using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Model.Configuration;
 
-namespace TotovBuilder.Deployer
+namespace TotovBuilder.Deployer.Actions
 {
     /// <summary>
-    /// Represents a Tarkov data extractor.
+    /// Represents an action to extract missing item properties from Tarkov data.
     /// </summary>
-    public class TarkovDataExtractor : ITarkovDataExtractor
+    public class ExtractTarkovDataAction : IDeploymentAction
     {
+        /// <inheritdoc/>
+        public string Caption
+        {
+            get
+            {
+                return "Extract missing item properties from Tarkov";
+            }
+        }
+
         /// <summary>
         /// Configuration.
         /// </summary>
@@ -25,20 +34,21 @@ namespace TotovBuilder.Deployer
         /// <summary>
         /// Logger.
         /// </summary>
-        private readonly ILogger<TarkovDataExtractor> Logger;
+        private readonly IApplicationLogger Logger;
 
         /// <summary>
         /// Initilizes a new instances of the <see cref="TarkovDataExtractor"/> class.
         /// </summary>
-        /// <param name="configuration"></param>
-        public TarkovDataExtractor(ILogger<TarkovDataExtractor> logger, IApplicationConfiguration configuration)
+        /// <param name="logger">Logger.</param>
+        /// <param name="configuration">Application configuration.</param>
+        public ExtractTarkovDataAction(IApplicationLogger logger, IApplicationConfiguration configuration)
         {
             Configuration = configuration;
             Logger = logger;
         }
 
         /// <inheritdoc/>
-        public async Task Extract()
+        public async Task ExecuteAction()
         {
             Logger.LogInformation(string.Format(Properties.Resources.ReadingTarkovResourcesFile, Configuration.ConfiguratorConfiguration.TarkovResourcesFilePath));
 
@@ -74,7 +84,9 @@ namespace TotovBuilder.Deployer
 
             if (string.IsNullOrWhiteSpace(tarkovItemsJson))
             {
-                throw new Exception(string.Format(Properties.Resources.CannotReadTarkovResourcesFileContent));
+                Logger.LogError(string.Format(Properties.Resources.CannotReadTarkovResourcesFileContent));
+
+                return;
             }
 
             await ExtractItemMissingProperties(tarkovItemsJson);
@@ -180,7 +192,7 @@ namespace TotovBuilder.Deployer
                 ArchiveConfigurationFile(missingItemPropertiesFilePath);
                 File.WriteAllText(missingItemPropertiesFilePath, itemsJson);
 
-                Logger.LogInformation(string.Format(Properties.Resources.ItemsExtracted, items.Count()));
+                Logger.LogSuccess(string.Format(Properties.Resources.ItemsExtracted, items.Count()));
             });
         }
 
