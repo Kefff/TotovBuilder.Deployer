@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Model.Configuration;
@@ -34,14 +35,14 @@ namespace TotovBuilder.Deployer.Actions
         /// <summary>
         /// Logger.
         /// </summary>
-        private readonly IApplicationLogger Logger;
+        private readonly IApplicationLogger<ExtractTarkovDataAction> Logger;
 
         /// <summary>
         /// Initilizes a new instances of the <see cref="TarkovDataExtractor"/> class.
         /// </summary>
         /// <param name="logger">Logger.</param>
         /// <param name="configuration">Application configuration.</param>
-        public ExtractTarkovDataAction(IApplicationLogger logger, IApplicationConfiguration configuration)
+        public ExtractTarkovDataAction(IApplicationLogger<ExtractTarkovDataAction> logger, IApplicationConfiguration configuration)
         {
             Configuration = configuration;
             Logger = logger;

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
@@ -24,14 +25,14 @@ namespace TotovBuilder.Deployer
         /// <summary>
         /// Logger.
         /// </summary>
-        private readonly IApplicationLogger Logger;
+        private readonly IApplicationLogger<ConfigurationLoader> Logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationLoader"/> class.
         /// </summary>
         /// <param name="logger">Logger.</param>
         /// <param name="configuration">Application configuration.</param>
-        public ConfigurationLoader(IApplicationLogger logger, IApplicationConfiguration configuration)
+        public ConfigurationLoader(IApplicationLogger<ConfigurationLoader> logger, IApplicationConfiguration configuration)
         {
             Logger = logger;
             Configuration = configuration;

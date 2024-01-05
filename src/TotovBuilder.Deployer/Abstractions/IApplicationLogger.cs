@@ -2,13 +2,16 @@
 
 namespace TotovBuilder.Deployer.Abstractions
 {
-    public interface IApplicationLogger
+    /// <summary>
+    /// Provides the functionalities of a logger.
+    /// </summary>
+    public interface IApplicationLogger<T> : ILogger<T>
     {
-        /// <summary>
-        /// Logs an information.
-        /// </summary>
-        /// <param name="message">Messages</param>
-        void LogInformation(string message);
+        ///// <summary>
+        ///// Logs an information.
+        ///// </summary>
+        ///// <param name="message">Messages</param>
+        //void LogInformation(string message);
 
         /// <summary>
         /// Logs an error message.

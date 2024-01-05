@@ -47,17 +47,17 @@ namespace TotovBuilder.Deployer.Actions
         /// <inheritdoc/>
         public Task ExecuteAction()
         {
-            List<Task> deploymentTasks = new List<Task>();
+            List<Task> uploadTasks = new List<Task>();
             IEnumerable<string> blobNames = Configuration.AzureFunctionsConfiguration.GetBlobToUploadNames();
 
             foreach (string file in Directory.GetFiles(Configuration.ConfiguratorConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
             {
                 string fileName = Path.GetFileName(file);
-                string fileContent = File.ReadAllText(file);
-                deploymentTasks.Add(AzureBlobStorageManager.UpdateBlob(Configuration.AzureFunctionsConfiguration.AzureBlobStorageRawDataContainerName, fileName, fileContent));
+                byte[] fileContent = File.ReadAllBytes(file);
+                uploadTasks.Add(AzureBlobStorageManager.UpdateBlob(Configuration.AzureFunctionsConfiguration.AzureBlobStorageRawDataContainerName, fileName, fileContent));
             }
 
-            return Task.WhenAll(deploymentTasks.ToArray());
+            return Task.WhenAll(uploadTasks.ToArray());
         }
     }
 }

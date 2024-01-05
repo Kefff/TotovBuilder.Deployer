@@ -31,57 +31,41 @@ namespace TotovBuilder.Deployer
         private readonly List<IDeploymentAction> Actions;
 
         /// <summary>
-        /// Change deployment mode action.
-        /// </summary>
-        private readonly DeploymentAction ChangeDeploymentModeAction;
-
-        /// <summary>
-        /// Deploy raw data action.
-        /// </summary>
-        private readonly DeployRawDataAction DeployRawDataAction;
-
-        /// <summary>
         /// Exit action.
         /// </summary>
         private readonly DeploymentAction ExitAction;
-
-        /// <summary>
-        /// Tarkov data extraction action.
-        /// </summary>
-        private readonly ExtractTarkovDataAction ExtractTarkovDataAction;
 
         /// <summary>
         /// Initializes an new instance of the <see cref="Deployer"/> class.
         /// </summary>
         /// <param name="configurationReader">Configuration reader.</param>
         /// <param name="configuration">Configuration.</param>
+        /// <param name="deployRawDataAction">Deploy raw data action.</param>
+        /// <param name="deployWebsiteAction">Deploy website action.</param>
         /// <param name="extractTarkovDataAction">Tarkov data extractor.</param>
         public Deployer(
             IConfigurationLoader configurationReader,
             IApplicationConfiguration configuration,
             DeployRawDataAction deployRawDataAction,
+            DeployWebsiteAction deployWebsiteAction,
             ExtractTarkovDataAction extractTarkovDataAction)
         {
             Configuration = configuration;
             ConfigurationLoader = configurationReader;
-
-            ChangeDeploymentModeAction = new DeploymentAction(
-                () => $"Change deployment mode (current mode is \"{Configuration.ConfiguratorConfiguration.DeployerDeploymentMode}\")",
-                ChooseDeploymentMode);
-            DeployRawDataAction = deployRawDataAction;
             ExitAction = new DeploymentAction(
                 "Exit",
                 () => Task.CompletedTask);
-            ExtractTarkovDataAction = extractTarkovDataAction;
 
             Actions = new List<IDeploymentAction>()
             {
-                ChangeDeploymentModeAction,
+                new DeploymentAction(
+                    () => $"Change deployment mode (current mode is \"{Configuration.ConfiguratorConfiguration.DeployerDeploymentMode}\")",
+                    ChooseDeploymentMode),
                 new DeploymentAction(
                     () => "TODO : Update Tarkov",
                     () => Task.CompletedTask),
-                ExtractTarkovDataAction,
-                DeployRawDataAction,
+                extractTarkovDataAction,
+                deployRawDataAction,
                 new DeploymentAction(
                     () => "TODO : Deploy Azure Functions",
                     () => Task.CompletedTask),
@@ -91,9 +75,7 @@ namespace TotovBuilder.Deployer
                 new DeploymentAction(
                     () => "TODO : Compile the website",
                     () => Task.CompletedTask),
-                new DeploymentAction(
-                    () => "TODO : Deploy the website to Azure",
-                    () => Task.CompletedTask),
+                deployWebsiteAction,
                 ExitAction
             };
         }
