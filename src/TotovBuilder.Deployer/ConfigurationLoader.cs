@@ -1,7 +1,9 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using FluentResults;
 using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Model;
@@ -38,38 +40,47 @@ namespace TotovBuilder.Deployer
             Configuration = configuration;
         }
 
-        /// <summary>
-        /// Waits for the configuration to be loaded.
-        /// </summary>
-        /// <param name="deploymentMode">Deployment mode.</param>
-        public async Task Load(DeploymentMode deploymentMode)
+        /// <inheritdoc/>
+        public async Task<bool> Load(DeploymentMode deploymentMode)
         {
-            string configurationsDirectory = Path.Combine(ConfigurationManager.AppSettings.Get(ConfigurationsDirectoryKey)!, deploymentMode.ToString().ToUpper());
-            string deployerConfigurationFileName = ConfigurationManager.AppSettings.Get(DeployerConfigurationFileNameKey)!;
-            string deployerConfigurationFilePath = Path.Combine(configurationsDirectory, deployerConfigurationFileName);
-
-            Logger.LogInformation(string.Format(Properties.Resources.DeployerConfigurationLoading, deployerConfigurationFilePath));
-
-            string deployerConfigurationJson = await File.ReadAllTextAsync(deployerConfigurationFilePath);
-            Configuration.ConfiguratorConfiguration = JsonSerializer.Deserialize<DeployerConfiguration>(deployerConfigurationJson, new JsonSerializerOptions()
+            try
             {
-                PropertyNameCaseInsensitive = true
-            })!;
-            Configuration.ConfiguratorConfiguration.DeployerDeploymentMode = deploymentMode;
-            Configuration.ConfiguratorConfiguration.ConfigurationsDirectory = configurationsDirectory;
-            Configuration.ConfiguratorConfiguration.DeployerConfigurationFileName = deployerConfigurationFileName;
+                string configurationsDirectory = Path.Combine(ConfigurationManager.AppSettings.Get(ConfigurationsDirectoryKey)!, deploymentMode.ToString().ToUpper());
+                string deployerConfigurationFileName = ConfigurationManager.AppSettings.Get(DeployerConfigurationFileNameKey)!;
+                string deployerConfigurationFilePath = Path.Combine(configurationsDirectory, deployerConfigurationFileName);
 
-            string azureFunctionsConfigurationFilePath = Path.Combine(Configuration.ConfiguratorConfiguration.ConfigurationsDirectory, Configuration.ConfiguratorConfiguration.AzureFunctionsConfigurationBlobName);
+                Logger.LogInformation(string.Format(Properties.Resources.DeployerConfigurationLoading, deployerConfigurationFilePath));
 
-            Logger.LogInformation(string.Format(Properties.Resources.AzureFunctionsConfigurationLoading, azureFunctionsConfigurationFilePath));
+                string deployerConfigurationJson = await File.ReadAllTextAsync(deployerConfigurationFilePath);
+                Configuration.ConfiguratorConfiguration = JsonSerializer.Deserialize<DeployerConfiguration>(deployerConfigurationJson, new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                })!;
+                Configuration.ConfiguratorConfiguration.DeployerDeploymentMode = deploymentMode;
+                Configuration.ConfiguratorConfiguration.ConfigurationsDirectory = configurationsDirectory;
+                Configuration.ConfiguratorConfiguration.DeployerConfigurationFileName = deployerConfigurationFileName;
 
-            string azureFunctionsConfigurationJson = await File.ReadAllTextAsync(azureFunctionsConfigurationFilePath);
-            Configuration.AzureFunctionsConfiguration = JsonSerializer.Deserialize<AzureFunctionsConfiguration>(azureFunctionsConfigurationJson, new JsonSerializerOptions()
+                string azureFunctionsConfigurationFilePath = Path.Combine(Configuration.ConfiguratorConfiguration.ConfigurationsDirectory, Configuration.ConfiguratorConfiguration.AzureFunctionsConfigurationBlobName);
+
+                Logger.LogInformation(string.Format(Properties.Resources.AzureFunctionsConfigurationLoading, azureFunctionsConfigurationFilePath));
+
+                string azureFunctionsConfigurationJson = await File.ReadAllTextAsync(azureFunctionsConfigurationFilePath);
+                Configuration.AzureFunctionsConfiguration = JsonSerializer.Deserialize<AzureFunctionsConfiguration>(azureFunctionsConfigurationJson, new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                })!;
+
+                Logger.LogSuccess(string.Format(Properties.Resources.ConfigurationLoaded));
+
+                return true;
+            }
+            catch (Exception e)
             {
-                PropertyNameCaseInsensitive = true
-            })!;
+                string error = e.ToString();
+                Logger.LogError(error);
 
-            Logger.LogSuccess(string.Format(Properties.Resources.ConfigurationLoaded));
+                return false;
+            }
         }
     }
 }

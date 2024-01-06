@@ -121,7 +121,7 @@
     <value>Archiving file "{0}" to "{1}".</value>
   </data>
   <data name="AzureFunctionsConfigurationLoading" xml:space="preserve">
-    <value>Loging Azure Functions configuration from "{0}".</value>
+    <value>Loading Azure Functions configuration from "{0}".</value>
   </data>
   <data name="CannotReadTarkovResourcesFileContent" xml:space="preserve">
     <value>Cannot read Tarkov resources file content.</value>

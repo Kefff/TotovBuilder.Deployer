@@ -6,6 +6,7 @@ using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Deployer.Extensions;
 using TotovBuilder.Shared.Abstractions.Azure;
+using TotovBuilder.Shared.Azure;
 
 namespace TotovBuilder.Deployer.Actions
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentResults;
 using Sharprompt;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
@@ -59,7 +60,7 @@ namespace TotovBuilder.Deployer
             Actions = new List<IDeploymentAction>()
             {
                 new DeploymentAction(
-                    () => $"Change deployment mode (current mode is \"{Configuration.ConfiguratorConfiguration.DeployerDeploymentMode}\")",
+                    () => $"Change deployment mode (current mode is \"{Configuration.ConfiguratorConfiguration.DeployerDeploymentMode.ToString()!.ToUpperInvariant()}\")",
                     ChooseDeploymentMode),
                 new DeploymentAction(
                     () => "TODO : Update Tarkov",
@@ -83,9 +84,11 @@ namespace TotovBuilder.Deployer
         /// <inheritdoc/>
         public async Task Run()
         {
-            while (Configuration.ConfiguratorConfiguration.DeployerDeploymentMode == null)
+            bool isConfigurationLoaded = false;
+
+            while (!isConfigurationLoaded)
             {
-                await ChooseDeploymentMode();
+                isConfigurationLoaded = await ChooseDeploymentMode();
             }
 
             bool displayMenu = true;
@@ -122,7 +125,8 @@ namespace TotovBuilder.Deployer
         /// <summary>
         /// Displays the deployment mode selection and reloads the configuration matching the user's choice.
         /// </summary>
-        private async Task ChooseDeploymentMode()
+        /// <returns><c>true</c> when the configuration matching the chosen deployment mode is loaded; otherwise false.</returns>
+        private async Task<bool> ChooseDeploymentMode()
         {
             DeploymentMode choice = Prompt.Select(
                 "Deployment mode",
@@ -138,11 +142,13 @@ namespace TotovBuilder.Deployer
 
                 if (!string.Equals(confirmation, "Yes", StringComparison.OrdinalIgnoreCase))
                 {
-                    return;
+                    return false;
                 }
             }
 
-            await ConfigurationLoader.Load(choice);
+            bool isLoaded = await ConfigurationLoader.Load(choice);
+            
+            return isLoaded;
         }
     }
 }

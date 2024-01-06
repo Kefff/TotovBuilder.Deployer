@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FluentResults;
 using TotovBuilder.Model;
 
 namespace TotovBuilder.Deployer.Abstractions
@@ -12,6 +13,7 @@ namespace TotovBuilder.Deployer.Abstractions
         /// Loads the configuration.
         /// </summary>
         /// <param name="deploymentMode">Deployment mode.</param>
-        Task Load(DeploymentMode deploymentMode);
+        /// <returns><c>true</c> when the configuration is loaded; otherwise false.</returns>
+        Task<bool> Load(DeploymentMode deploymentMode);
     }
 }

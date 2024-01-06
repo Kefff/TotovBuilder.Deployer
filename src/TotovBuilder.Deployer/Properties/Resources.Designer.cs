@@ -70,7 +70,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loging Azure Functions configuration from &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Loading Azure Functions configuration from &quot;{0}&quot;..
         /// </summary>
         internal static string AzureFunctionsConfigurationLoading {
             get {
