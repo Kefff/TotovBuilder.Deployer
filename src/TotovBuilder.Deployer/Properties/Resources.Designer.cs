@@ -70,16 +70,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading Azure Functions configuration from &quot;{0}&quot;..
-        /// </summary>
-        internal static string AzureFunctionsConfigurationLoading {
-            get {
-                return ResourceManager.GetString("AzureFunctionsConfigurationLoading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot read Tarkov resources file content..
+        ///   Looks up a localized string similar to Cannot read Escape from Tarkov resources file content..
         /// </summary>
         internal static string CannotReadTarkovResourcesFileContent {
             get {
@@ -88,7 +79,72 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuration loaded with success..
+        ///   Looks up a localized string similar to      Change deployment mode.
+        /// </summary>
+        internal static string ChangeDeploymentModeAction {
+            get {
+                return ResourceManager.GetString("ChangeDeploymentModeAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  4 - Check configuration files.
+        /// </summary>
+        internal static string CheckConfigurationFilesAction {
+            get {
+                return ResourceManager.GetString("CheckConfigurationFilesAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In the &quot;TotovBuilder.Configuration&quot; directory, check each configuration file to make sure everything looks fine.
+        ///
+        ///When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same..
+        /// </summary>
+        internal static string CheckConfigurationFilesInstructions {
+            get {
+                return ResourceManager.GetString("CheckConfigurationFilesInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10 - Check the website.
+        /// </summary>
+        internal static string CheckWebsiteAction {
+            get {
+                return ResourceManager.GetString("CheckWebsiteAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After the update, launch the website in a browser and check that new functionalities are present and that everything works..
+        /// </summary>
+        internal static string CheckWebsiteInstructions {
+            get {
+                return ResourceManager.GetString("CheckWebsiteInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  5 - Compile the website.
+        /// </summary>
+        internal static string CompileWebsiteAction {
+            get {
+                return ResourceManager.GetString("CompileWebsiteAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compiling the website using command &quot;{0}&quot; in &quot;{1}&quot;..
+        /// </summary>
+        internal static string CompilingWebsite {
+            get {
+                return ResourceManager.GetString("CompilingWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration loaded..
         /// </summary>
         internal static string ConfigurationLoaded {
             get {
@@ -97,11 +153,110 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading deployer configuration from &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Are you sure you want to use deployment mode &quot;{0}&quot;? Confirm by typing &quot;Yes&quot;.
         /// </summary>
-        internal static string DeployerConfigurationLoading {
+        internal static string ConfirmDeploymentMode {
             get {
-                return ResourceManager.GetString("DeployerConfigurationLoading", resourceCulture);
+                return ResourceManager.GetString("ConfirmDeploymentMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current deployment mode : .
+        /// </summary>
+        internal static string CurrentDeploymentMode {
+            get {
+                return ResourceManager.GetString("CurrentDeploymentMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  7 - Deploy Azure Functions to Azure.
+        /// </summary>
+        internal static string DeployAzureFunctionsAction {
+            get {
+                return ResourceManager.GetString("DeployAzureFunctionsAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Azure Functions must manually be published from Visual Studio :
+        ///- Open the &quot;TotovBuilder.AzureFunctions&quot; solution
+        ///- Right click on the &quot;TotovBuilder.AzureFunctions&quot; project and choose &quot;Publish&quot;.
+        ///
+        ///Make sure to CHOOSE THE RIGHT PROFILE at the top before publishing.
+        ///
+        ///When deploying in TEST, the &quot;TotovBuilder.AzureFunctions&quot; project can then be locally launched to immediatly update the website data files in the &quot;data&quot; folder of the website on Azure..
+        /// </summary>
+        internal static string DeployAzureFunctionsInstructions {
+            get {
+                return ResourceManager.GetString("DeployAzureFunctionsInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying raw data to Azure..
+        /// </summary>
+        internal static string DeployingRawData {
+            get {
+                return ResourceManager.GetString("DeployingRawData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying website to Azure..
+        /// </summary>
+        internal static string DeployingWebsite {
+            get {
+                return ResourceManager.GetString("DeployingWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment mode.
+        /// </summary>
+        internal static string DeploymentMode {
+            get {
+                return ResourceManager.GetString("DeploymentMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  6 - Deploy raw data to Azure.
+        /// </summary>
+        internal static string DeployRawDataAction {
+            get {
+                return ResourceManager.GetString("DeployRawDataAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  8 - Deploy website to Azure.
+        /// </summary>
+        internal static string DeployWebsiteAction {
+            get {
+                return ResourceManager.GetString("DeployWebsiteAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 12 - Annonce the update on Discord.
+        /// </summary>
+        internal static string DiscordAction {
+            get {
+                return ResourceManager.GetString("DiscordAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After everything is done, an update notification can be sent on Discord.
+        ///
+        ///On Discord, in the &quot;#announcement&quot; channel, post an update message with the changelog.
+        ///Make sure the post contains the right version number..
+        /// </summary>
+        internal static string DiscordInstructions {
+            get {
+                return ResourceManager.GetString("DiscordInstructions", resourceCulture);
             }
         }
         
@@ -115,34 +270,127 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extracting items form Tarkov resources file..
+        ///   Looks up a localized string similar to      Exit.
         /// </summary>
-        internal static string ExtractingItems {
+        internal static string ExitAction {
             get {
-                return ResourceManager.GetString("ExtractingItems", resourceCulture);
+                return ResourceManager.GetString("ExitAction", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File &quot;{0}&quot; uploaded with success..
+        ///   Looks up a localized string similar to Extracting missing items form Escape from Tarkov resources file..
         /// </summary>
-        internal static string FileUploaded {
+        internal static string ExtractingMissingItemProperties {
             get {
-                return ResourceManager.GetString("FileUploaded", resourceCulture);
+                return ResourceManager.GetString("ExtractingMissingItemProperties", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} items extracted with success from Tarkov resources file..
+        ///   Looks up a localized string similar to  2 - Extract missing item properties from Escape from Tarkov.
         /// </summary>
-        internal static string ItemsExtracted {
+        internal static string ExtractTarkovDataAction {
             get {
-                return ResourceManager.GetString("ItemsExtracted", resourceCulture);
+                return ResourceManager.GetString("ExtractTarkovDataAction", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading Tarkov resources file ({0})..
+        ///   Looks up a localized string similar to File &quot;{0}&quot; archived..
+        /// </summary>
+        internal static string FileArchived {
+            get {
+                return ResourceManager.GetString("FileArchived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 11 - Update Git.
+        /// </summary>
+        internal static string GitAction {
+            get {
+                return ResourceManager.GetString("GitAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After the website is updated and tested, the develop branch can be merged on the main branch with a new version tag.
+        ///
+        ///In Git, for each project :
+        ///- Merge &quot;develop&quot; on &quot;main&quot;
+        ///- Add a tag with the new version number on the head of the  &quot;main&quot; breanch
+        ///- Checkout the &quot;develop&quot; branch
+        ///- Push the &quot;main&quot; and &quot;develop&quot; branches.
+        /// </summary>
+        internal static string GitInstructions {
+            get {
+                return ResourceManager.GetString("GitInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Azure Functions configuration from &quot;{0}&quot;..
+        /// </summary>
+        internal static string LoadingAzureFunctionsConfiguration {
+            get {
+                return ResourceManager.GetString("LoadingAzureFunctionsConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading deployer configuration from &quot;{0}&quot;..
+        /// </summary>
+        internal static string LoadingDeployerConfiguration {
+            get {
+                return ResourceManager.GetString("LoadingDeployerConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing properties from {0} items extracted from Escape from Tarkov resources file..
+        /// </summary>
+        internal static string MissingItemPropertiesExtracted {
+            get {
+                return ResourceManager.GetString("MissingItemPropertiesExtracted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  9 - Purge the Content Delivery Network on Azure.
+        /// </summary>
+        internal static string PurgeCdnAction {
+            get {
+                return ResourceManager.GetString("PurgeCdnAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
+        ///
+        ///On Azure :
+        ///- Open the storage account
+        ///- Choose &quot;Front Door and CDN&quot;
+        ///- Select the website endpoint
+        ///- Click on &quot;Purge&quot;, check &quot;Purge all&quot; and click &quot;Purge&quot;.
+        /// </summary>
+        internal static string PurgeCdnInstructions {
+            get {
+                return ResourceManager.GetString("PurgeCdnInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Raw data deployed to Azure..
+        /// </summary>
+        internal static string RawDataDeployed {
+            get {
+                return ResourceManager.GetString("RawDataDeployed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading Escape from Tarkov resources file ({0})..
         /// </summary>
         internal static string ReadingTarkovResourcesFile {
             get {
@@ -151,11 +399,125 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uploading file &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Select an action.
         /// </summary>
-        internal static string Uploading {
+        internal static string SelectedAction {
             get {
-                return ResourceManager.GetString("Uploading", resourceCulture);
+                return ResourceManager.GetString("SelectedAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting Escape from Tarkov launcher at &quot;{0}&quot;..
+        /// </summary>
+        internal static string StartingTarkovLauncher {
+            get {
+                return ResourceManager.GetString("StartingTarkovLauncher", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Escape from Tarkov launcher started..
+        /// </summary>
+        internal static string TarkovLauncherStarted {
+            get {
+                return ResourceManager.GetString("TarkovLauncherStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /////////////////////////////////////////
+        /////                                     //
+        /////    .
+        /// </summary>
+        internal static string Title_Part1 {
+            get {
+                return ResourceManager.GetString("Title_Part1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totov .
+        /// </summary>
+        internal static string Title_Part2 {
+            get {
+                return ResourceManager.GetString("Title_Part2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Builder .
+        /// </summary>
+        internal static string Title_Part3 {
+            get {
+                return ResourceManager.GetString("Title_Part3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to deployment tool.
+        /// </summary>
+        internal static string Title_Part4 {
+            get {
+                return ResourceManager.GetString("Title_Part4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     //
+        /////                                     //
+        ////////////////////////////////////////////.
+        /// </summary>
+        internal static string Title_Part5 {
+            get {
+                return ResourceManager.GetString("Title_Part5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  3 - Update the changelog.
+        /// </summary>
+        internal static string UpdateChangelogAction {
+            get {
+                return ResourceManager.GetString("UpdateChangelogAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In the &quot;TotovBuilder.Configuration&quot; directory, update the &quot;changelog.json&quot; file with new functionalities.
+        ///
+        ///Make sure to set the right version number and language for each entry..
+        /// </summary>
+        internal static string UpdateChangelogInstructions {
+            get {
+                return ResourceManager.GetString("UpdateChangelogInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  1 - Update Escape from Tarkov.
+        /// </summary>
+        internal static string UpdateTarkovAction {
+            get {
+                return ResourceManager.GetString("UpdateTarkovAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website compiled..
+        /// </summary>
+        internal static string WebsiteCompiled {
+            get {
+                return ResourceManager.GetString("WebsiteCompiled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website deployed to Azure..
+        /// </summary>
+        internal static string WebsiteDeployed {
+            get {
+                return ResourceManager.GetString("WebsiteDeployed", resourceCulture);
             }
         }
     }

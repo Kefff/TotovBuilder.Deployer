@@ -2,11 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Deployer.Extensions;
 using TotovBuilder.Shared.Abstractions.Azure;
-using TotovBuilder.Shared.Azure;
 
 namespace TotovBuilder.Deployer.Actions
 {
@@ -20,12 +20,12 @@ namespace TotovBuilder.Deployer.Actions
         {
             get
             {
-                return "Deploy raw data to Azure";
+                return Properties.Resources.DeployRawDataAction;
             }
         }
 
         /// <summary>
-        /// Azure blobl storage manager.
+        /// Azure blob storage manager.
         /// </summary>
         private readonly IAzureBlobStorageManager AzureBlobStorageManager;
 
@@ -35,30 +35,43 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// Logger.
+        /// </summary>
+        private readonly IApplicationLogger<DeployRawDataAction> Logger;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DeployRawDataAction"/> class.
         /// </summary>
-        /// <param name="configuration"></param>
-        /// <param name="azureBlobStorageManager"></param>
-        public DeployRawDataAction(IApplicationConfiguration configuration, IAzureBlobStorageManager azureBlobStorageManager)
+        /// <param name="logger">Logger.</param>
+        /// <param name="configuration">Configuration.</param>
+        /// <param name="azureBlobStorageManager">Azure blob storage manager.</param>
+        public DeployRawDataAction(IApplicationLogger<DeployRawDataAction> logger, IApplicationConfiguration configuration, IAzureBlobStorageManager azureBlobStorageManager)
         {
             AzureBlobStorageManager = azureBlobStorageManager;
             Configuration = configuration;
+            Logger = logger;
         }
 
         /// <inheritdoc/>
         public Task ExecuteAction()
         {
+            Logger.LogInformation(Properties.Resources.DeployingRawData);
+
             List<Task> uploadTasks = new List<Task>();
             IEnumerable<string> blobNames = Configuration.AzureFunctionsConfiguration.GetBlobToUploadNames();
 
-            foreach (string file in Directory.GetFiles(Configuration.ConfiguratorConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
+            foreach (string file in Directory.GetFiles(Configuration.DeployerConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
             {
                 string fileName = Path.GetFileName(file);
                 byte[] fileContent = File.ReadAllBytes(file);
                 uploadTasks.Add(AzureBlobStorageManager.UpdateBlob(Configuration.AzureFunctionsConfiguration.AzureBlobStorageRawDataContainerName, fileName, fileContent));
             }
 
-            return Task.WhenAll(uploadTasks.ToArray());
+            Task.WaitAll(uploadTasks.ToArray());
+
+            Logger.LogSuccess(Properties.Resources.RawDataDeployed);
+
+            return Task.CompletedTask;
         }
     }
 }

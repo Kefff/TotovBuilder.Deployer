@@ -8,12 +8,13 @@ namespace TotovBuilder.Deployer
     /// <summary>
     /// Represents a logger.
     /// </summary>
-    [ExcludeFromCodeCoverage(Justification = "Only uses Console class")]
+    [ExcludeFromCodeCoverage(Justification = "Only uses Console class.")]
     public class ApplicationLogger<T> : IApplicationLogger<T>
     {
         /// <inheritdoc/>
         public IDisposable BeginScope<TState>(TState state)
         {
+            // Should never be called.
             throw new NotImplementedException();
         }
 
@@ -43,18 +44,26 @@ namespace TotovBuilder.Deployer
         /// <inheritdoc/>
         public void LogError(string message)
         {
+            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(Properties.Resources.Error);
             Console.WriteLine(message);
-            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.ForegroundColor = originalForegroundColor;
+            Console.WriteLine();
         }
 
         /// <inheritdoc/>
         public void LogSuccess(string message)
         {
+            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{message}");
-            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.ForegroundColor = originalForegroundColor;
+            Console.WriteLine();
         }
 
         /// <summary>

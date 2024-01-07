@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TotovBuilder.Deployer.Abstractions.Actions;
 
-namespace TotovBuilder.Deployer
+namespace TotovBuilder.Deployer.Actions
 {
     /// <summary>
     /// Represents a deployment action.

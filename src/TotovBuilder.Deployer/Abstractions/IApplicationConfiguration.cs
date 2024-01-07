@@ -13,8 +13,8 @@ namespace TotovBuilder.Deployer.Abstractions
         AzureFunctionsConfiguration AzureFunctionsConfiguration { get; set; }
 
         /// <summary>
-        /// Configurator configuration.
+        /// Deployer configuration.
         /// </summary>
-        DeployerConfiguration ConfiguratorConfiguration { get; set; }
+        DeployerConfiguration DeployerConfiguration { get; set; }
     }
 }

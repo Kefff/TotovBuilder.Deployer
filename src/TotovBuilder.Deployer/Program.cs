@@ -22,8 +22,6 @@ namespace TotovBuilder.Deployer
         /// </summary>
         public async static Task Main(string[] args)
         {
-            Console.WriteLine("TotovBuilder deployment tool");
-
             IHost host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((context, services) =>
                 {
@@ -32,9 +30,11 @@ namespace TotovBuilder.Deployer
                     services.AddSingleton<IApplicationConfiguration, ApplicationConfiguration>();
                     services.AddSingleton<IConfigurationLoader, ConfigurationLoader>();
                     services.AddSingleton<IDeployer, Deployer>();
+                    services.AddSingleton<CompileWebsiteAction>();
                     services.AddSingleton<DeployRawDataAction>();
                     services.AddSingleton<DeployWebsiteAction>();
                     services.AddSingleton<ExtractTarkovDataAction>();
+                    services.AddSingleton<UpdateTarkovAction>();
 
                     services.AddAzureBlobStorageManager(
                         (IServiceProvider serviceProvider) =>

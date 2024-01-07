@@ -12,6 +12,6 @@ namespace TotovBuilder.Deployer
         public AzureFunctionsConfiguration AzureFunctionsConfiguration { get; set; } = new AzureFunctionsConfiguration();
 
         /// <inheritdoc/>
-        public DeployerConfiguration ConfiguratorConfiguration { get; set; } = new DeployerConfiguration();
+        public DeployerConfiguration DeployerConfiguration { get; set; } = new DeployerConfiguration();
     }
 }

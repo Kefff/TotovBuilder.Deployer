@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Shared.Abstractions.Azure;
-using TotovBuilder.Shared.Azure;
 
 namespace TotovBuilder.Deployer.Actions
 {
@@ -21,12 +20,12 @@ namespace TotovBuilder.Deployer.Actions
         {
             get
             {
-                return "Deploy the website to Azure";
+                return Properties.Resources.DeployWebsiteAction;
             }
         }
 
         /// <summary>
-        /// Azure blobl storage manager.
+        /// Azure blob storage manager.
         /// </summary>
         private readonly IAzureBlobStorageManager AzureBlobStorageManager;
 
@@ -36,22 +35,31 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// Logger.
+        /// </summary>
+        private readonly IApplicationLogger<DeployRawDataAction> Logger;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DeployRawDataAction"/> class.
         /// </summary>
-        /// <param name="configuration"></param>
-        /// <param name="azureBlobStorageManager"></param>
-        public DeployWebsiteAction(IApplicationConfiguration configuration, IAzureBlobStorageManager azureBlobStorageManager)
+        /// <param name="logger">Logger.</param>
+        /// <param name="configuration">Configuration.</param>
+        /// <param name="azureBlobStorageManager">Azure blob manager.</param>
+        public DeployWebsiteAction(IApplicationLogger<DeployRawDataAction> logger, IApplicationConfiguration configuration, IAzureBlobStorageManager azureBlobStorageManager)
         {
             AzureBlobStorageManager = azureBlobStorageManager;
             Configuration = configuration;
+            Logger = logger;
         }
 
         /// <inheritdoc/>
         public async Task ExecuteAction()
         {
+            Logger.LogInformation(Properties.Resources.DeployingWebsite);
+
             Dictionary<string, byte[]> data = new Dictionary<string, byte[]>();
 
-            string websiteBuildDirectoryPath = Path.Combine(Configuration.ConfiguratorConfiguration.WebsiteDirectoryPath, Configuration.ConfiguratorConfiguration.WebsiteBuildDirectory);
+            string websiteBuildDirectoryPath = Path.Combine(Configuration.DeployerConfiguration.WebsiteDirectoryPath, Configuration.DeployerConfiguration.WebsiteBuildDirectory);
             IEnumerable<string> filePaths = GetDirectoryFilePaths(websiteBuildDirectoryPath);
 
             foreach (string filePath in filePaths)
@@ -61,11 +69,17 @@ namespace TotovBuilder.Deployer.Actions
                 data.Add(azureFilePath, fileContent);
             }
 
-            BlobHttpHeaders httpHeaders = new BlobHttpHeaders()
+            BlobHttpHeaders createHttpHeaders() => new BlobHttpHeaders
             {
                 CacheControl = Configuration.AzureFunctionsConfiguration.WebsiteFileCacheControl
             };
-            await AzureBlobStorageManager.UpdateContainer(Configuration.AzureFunctionsConfiguration.AzureBlobStorageWebsiteContainerName, data, httpHeaders, "data/.*");
+            await AzureBlobStorageManager.UpdateContainer(
+                Configuration.AzureFunctionsConfiguration.AzureBlobStorageWebsiteContainerName,
+                data,
+                createHttpHeaders,
+                Configuration.DeployerConfiguration.WebsiteDeploymentFileNotToDeletePattern);
+
+            Logger.LogSuccess(Properties.Resources.WebsiteDeployed);
         }
 
         /// <summary>

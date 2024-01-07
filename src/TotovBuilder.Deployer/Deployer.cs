@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentResults;
 using Sharprompt;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
@@ -17,6 +16,11 @@ namespace TotovBuilder.Deployer
     public class Deployer : IDeployer
     {
         /// <summary>
+        /// Deployment actions that can be chosen by the user.
+        /// </summary>
+        private readonly List<IDeploymentAction> Actions;
+
+        /// <summary>
         /// Configuration reader.
         /// </summary>
         private readonly IConfigurationLoader ConfigurationLoader;
@@ -27,56 +31,75 @@ namespace TotovBuilder.Deployer
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
-        /// Deployment actions that can be chosen by the user.
-        /// </summary>
-        private readonly List<IDeploymentAction> Actions;
-
-        /// <summary>
         /// Exit action.
         /// </summary>
         private readonly DeploymentAction ExitAction;
 
         /// <summary>
+        /// Logger.
+        /// </summary>
+        private readonly IApplicationLogger<Deployer> Logger;
+
+        /// <summary>
         /// Initializes an new instance of the <see cref="Deployer"/> class.
         /// </summary>
+        /// <param name="logger">Logger.</param>
         /// <param name="configurationReader">Configuration reader.</param>
         /// <param name="configuration">Configuration.</param>
-        /// <param name="deployRawDataAction">Deploy raw data action.</param>
-        /// <param name="deployWebsiteAction">Deploy website action.</param>
-        /// <param name="extractTarkovDataAction">Tarkov data extractor.</param>
+        /// <param name="compileWebsiteAction">Action to compile the Totov Builder website.</param>
+        /// <param name="deployRawDataAction">Action to deploy to Azure raw data used by Azure Functions to generated website data.</param>
+        /// <param name="deployWebsiteAction">Action to deploy the website to Azure.</param>
+        /// <param name="extractTarkovDataAction">Action to extract missing item properties from Tarkov data.</param>
+        /// <param name="launchTarkovAction">Action to launch the Escape from Tarkov launcher to update the game.</param>
         public Deployer(
+            IApplicationLogger<Deployer> logger,
             IConfigurationLoader configurationReader,
             IApplicationConfiguration configuration,
+            CompileWebsiteAction compileWebsiteAction,
             DeployRawDataAction deployRawDataAction,
             DeployWebsiteAction deployWebsiteAction,
-            ExtractTarkovDataAction extractTarkovDataAction)
+            ExtractTarkovDataAction extractTarkovDataAction,
+            UpdateTarkovAction launchTarkovAction)
         {
             Configuration = configuration;
             ConfigurationLoader = configurationReader;
+            Logger = logger;
+
             ExitAction = new DeploymentAction(
-                "Exit",
+                Properties.Resources.ExitAction,
                 () => Task.CompletedTask);
 
             Actions = new List<IDeploymentAction>()
             {
-                new DeploymentAction(
-                    () => $"Change deployment mode (current mode is \"{Configuration.ConfiguratorConfiguration.DeployerDeploymentMode.ToString()!.ToUpperInvariant()}\")",
-                    ChooseDeploymentMode),
-                new DeploymentAction(
-                    () => "TODO : Update Tarkov",
-                    () => Task.CompletedTask),
+                launchTarkovAction,
                 extractTarkovDataAction,
+                new DeploymentAction(
+                    () => Properties.Resources.UpdateChangelogAction,
+                    () => DisplayActionInstructions(Properties.Resources.UpdateChangelogInstructions)),
+                new DeploymentAction(
+                    () => Properties.Resources.CheckConfigurationFilesAction,
+                    () => DisplayActionInstructions(Properties.Resources.CheckConfigurationFilesInstructions)),
+                compileWebsiteAction,
                 deployRawDataAction,
                 new DeploymentAction(
-                    () => "TODO : Deploy Azure Functions",
-                    () => Task.CompletedTask),
-                new DeploymentAction(
-                    () => "TODO : Execute Azure Functions to update website data before scheduled time",
-                    () => Task.CompletedTask),
-                new DeploymentAction(
-                    () => "TODO : Compile the website",
-                    () => Task.CompletedTask),
+                    () => Properties.Resources.DeployAzureFunctionsAction,
+                    () => DisplayActionInstructions(Properties.Resources.DeployAzureFunctionsInstructions)),
                 deployWebsiteAction,
+                new DeploymentAction(
+                    () => Properties.Resources.PurgeCdnAction,
+                    () => DisplayActionInstructions(Properties.Resources.PurgeCdnInstructions)),
+                new DeploymentAction(
+                    () => Properties.Resources.CheckWebsiteAction,
+                    () => DisplayActionInstructions(Properties.Resources.CheckWebsiteInstructions)),
+                new DeploymentAction(
+                    () => Properties.Resources.GitAction,
+                    () => DisplayActionInstructions(Properties.Resources.GitInstructions)),
+                new DeploymentAction(
+                    () => Properties.Resources.DiscordAction,
+                    () => DisplayActionInstructions(Properties.Resources.DiscordInstructions)),
+                new DeploymentAction(
+                    () => Properties.Resources.ChangeDeploymentModeAction,
+                    ChooseDeploymentMode),
                 ExitAction
             };
         }
@@ -85,6 +108,8 @@ namespace TotovBuilder.Deployer
         public async Task Run()
         {
             bool isConfigurationLoaded = false;
+
+            DisplayTitle();
 
             while (!isConfigurationLoaded)
             {
@@ -106,10 +131,12 @@ namespace TotovBuilder.Deployer
         private async Task<bool> DisplayMenu()
         {
             string choice = Prompt.Select(
-                "Select an action",
+                Properties.Resources.SelectedAction,
                 Actions.Select(a => a.Caption));
 
-            Console.Clear();
+            DisplayTitle();
+            DisplayCurrentDeploymentMode();
+
             IDeploymentAction selectedAction = Actions.Single(a => a.Caption == choice);
 
             if (selectedAction == ExitAction)
@@ -117,7 +144,15 @@ namespace TotovBuilder.Deployer
                 return false;
             }
 
-            await selectedAction.ExecuteAction();
+            try
+            {
+                await selectedAction.ExecuteAction();
+            }
+            catch (Exception e)
+            {
+                string error = e.ToString();
+                Logger.LogError(error);
+            }
 
             return true;
         }
@@ -129,7 +164,7 @@ namespace TotovBuilder.Deployer
         private async Task<bool> ChooseDeploymentMode()
         {
             DeploymentMode choice = Prompt.Select(
-                "Deployment mode",
+                Properties.Resources.DeploymentMode,
                 new DeploymentMode[]
                 {
                    DeploymentMode.Test,
@@ -138,7 +173,7 @@ namespace TotovBuilder.Deployer
 
             if (choice == DeploymentMode.Production)
             {
-                string confirmation = Prompt.Input<string>($"Confirm \"{DeploymentMode.Production.ToString().ToUpperInvariant()}\" deployment mode (type \"Yes\")");
+                string confirmation = Prompt.Input<string>(string.Format(Properties.Resources.ConfirmDeploymentMode, DeploymentMode.Production.ToString().ToUpperInvariant()));
 
                 if (!string.Equals(confirmation, "Yes", StringComparison.OrdinalIgnoreCase))
                 {
@@ -146,9 +181,88 @@ namespace TotovBuilder.Deployer
                 }
             }
 
-            bool isLoaded = await ConfigurationLoader.Load(choice);
-            
-            return isLoaded;
+            try
+            {
+                await ConfigurationLoader.Load(choice);
+                DisplayCurrentDeploymentMode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                string error = e.ToString();
+                Logger.LogError(error);
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Displays in yellow the instructions of an action.
+        /// </summary>
+        /// <param name="instructions">Instructions.</param>
+        private static Task DisplayActionInstructions(string instructions)
+        {
+            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(instructions);
+
+            Console.ForegroundColor = originalForegroundColor;
+            Console.WriteLine();
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Displays the current deployment mode.
+        /// </summary>
+        private void DisplayCurrentDeploymentMode()
+        {
+            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+            Console.Write(Properties.Resources.CurrentDeploymentMode);
+
+            switch (Configuration.DeployerConfiguration.DeployerDeploymentMode)
+            {
+                case DeploymentMode.Production:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case DeploymentMode.Test:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+            }
+
+            Console.WriteLine(Configuration.DeployerConfiguration.DeployerDeploymentMode.ToString()!.ToUpperInvariant());
+
+            Console.ForegroundColor = originalForegroundColor;
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Displays the application title.
+        /// </summary>
+        private static void DisplayTitle()
+        {
+            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+
+            Console.Clear();
+            Console.ForegroundColor = Console.BackgroundColor;
+            Console.Write(Properties.Resources.Title_Part1);
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(Properties.Resources.Title_Part2);
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(Properties.Resources.Title_Part3);
+
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write(Properties.Resources.Title_Part4);
+
+            Console.ForegroundColor = Console.BackgroundColor;
+            Console.Write(Properties.Resources.Title_Part5);
+
+            Console.ForegroundColor = originalForegroundColor;
+            Console.WriteLine();
         }
     }
 }
