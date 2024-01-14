@@ -3,11 +3,13 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TotovBuilder.Deployer.Abstractions;
+using TotovBuilder.Deployer.Abstractions.Configuration;
+using TotovBuilder.Deployer.Abstractions.Logs;
 using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
+using TotovBuilder.Shared.Abstractions.Utils;
 
-namespace TotovBuilder.Deployer
+namespace TotovBuilder.Deployer.Configuration
 {
     /// <summary>
     /// Represents a configuration reader.
@@ -23,6 +25,11 @@ namespace TotovBuilder.Deployer
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// File wrapper.
+        /// </summary>
+        private readonly IFileWrapper FileWrapper;
+
+        /// <summary>
         /// Logger.
         /// </summary>
         private readonly IApplicationLogger<ConfigurationLoader> Logger;
@@ -32,10 +39,12 @@ namespace TotovBuilder.Deployer
         /// </summary>
         /// <param name="logger">Logger.</param>
         /// <param name="configuration">Application configuration.</param>
-        public ConfigurationLoader(IApplicationLogger<ConfigurationLoader> logger, IApplicationConfiguration configuration)
+        /// <param name="fileWrapper">File wrapper.</param>
+        public ConfigurationLoader(IApplicationLogger<ConfigurationLoader> logger, IApplicationConfiguration configuration, IFileWrapper fileWrapper)
         {
-            Logger = logger;
             Configuration = configuration;
+            FileWrapper = fileWrapper;
+            Logger = logger;
         }
 
         /// <inheritdoc/>
@@ -47,7 +56,7 @@ namespace TotovBuilder.Deployer
 
             Logger.LogInformation(string.Format(Properties.Resources.LoadingDeployerConfiguration, deployerConfigurationFilePath));
 
-            string deployerConfigurationJson = await File.ReadAllTextAsync(deployerConfigurationFilePath);
+            string deployerConfigurationJson = await FileWrapper.ReadAllTextAsync(deployerConfigurationFilePath);
             Configuration.DeployerConfiguration = JsonSerializer.Deserialize<DeployerConfiguration>(deployerConfigurationJson, new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true
@@ -60,7 +69,7 @@ namespace TotovBuilder.Deployer
 
             Logger.LogInformation(string.Format(Properties.Resources.LoadingAzureFunctionsConfiguration, azureFunctionsConfigurationFilePath));
 
-            string azureFunctionsConfigurationJson = await File.ReadAllTextAsync(azureFunctionsConfigurationFilePath);
+            string azureFunctionsConfigurationJson = await FileWrapper.ReadAllTextAsync(azureFunctionsConfigurationFilePath);
             Configuration.AzureFunctionsConfiguration = JsonSerializer.Deserialize<AzureFunctionsConfiguration>(azureFunctionsConfigurationJson, new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true

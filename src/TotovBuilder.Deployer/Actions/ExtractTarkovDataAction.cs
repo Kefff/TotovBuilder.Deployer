@@ -7,16 +7,18 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
+using TotovBuilder.Deployer.Abstractions.Configuration;
+using TotovBuilder.Deployer.Abstractions.Logs;
 using TotovBuilder.Model.Configuration;
+using TotovBuilder.Shared.Abstractions.Utils;
 
 namespace TotovBuilder.Deployer.Actions
 {
     /// <summary>
     /// Represents an action to extract missing item properties from Tarkov data.
     /// </summary>
-    public class ExtractTarkovDataAction : IDeploymentAction
+    public class ExtractTarkovDataAction : IDeploymentAction<ExtractTarkovDataAction>
     {
         /// <inheritdoc/>
         public string Caption
@@ -33,6 +35,11 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// File wrapper.
+        /// </summary>
+        private readonly IFileWrapper FileWrapper;
+
+        /// <summary>
         /// Logger.
         /// </summary>
         private readonly IApplicationLogger<ExtractTarkovDataAction> Logger;
@@ -42,9 +49,11 @@ namespace TotovBuilder.Deployer.Actions
         /// </summary>
         /// <param name="logger">Logger.</param>
         /// <param name="configuration">Application configuration.</param>
-        public ExtractTarkovDataAction(IApplicationLogger<ExtractTarkovDataAction> logger, IApplicationConfiguration configuration)
+        /// <param name="fileWrapper">File wrapper.</param>
+        public ExtractTarkovDataAction(IApplicationLogger<ExtractTarkovDataAction> logger, IApplicationConfiguration configuration, IFileWrapper fileWrapper)
         {
             Configuration = configuration;
+            FileWrapper = fileWrapper;
             Logger = logger;
         }
 
@@ -107,13 +116,13 @@ namespace TotovBuilder.Deployer.Actions
 
             Directory.CreateDirectory(archiveDirectory);
 
-            if (File.Exists(fileToArchivePath))
+            if (FileWrapper.Exists(fileToArchivePath))
             {
                 string destinationPath = Path.Combine(archiveDirectory, archivedFileName);
 
                 Logger.LogInformation(string.Format(Properties.Resources.ArchivingFile, fileToArchivePath, destinationPath));
 
-                File.Move(fileToArchivePath, destinationPath);
+                FileWrapper.Move(fileToArchivePath, destinationPath);
 
                 Logger.LogInformation(string.Format(Properties.Resources.FileArchived, fileToArchivePath));
             }
@@ -193,7 +202,7 @@ namespace TotovBuilder.Deployer.Actions
                     Configuration.DeployerConfiguration.ConfigurationsDirectory,
                     Configuration.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName);
                 ArchiveConfigurationFile(missingItemPropertiesFilePath);
-                File.WriteAllText(missingItemPropertiesFilePath, itemsJson);
+                FileWrapper.WriteAllText(missingItemPropertiesFilePath, itemsJson);
 
                 Logger.LogSuccess(string.Format(Properties.Resources.MissingItemPropertiesExtracted, items.Count()));
             });

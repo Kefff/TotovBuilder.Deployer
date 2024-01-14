@@ -4,16 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
-using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
+using TotovBuilder.Deployer.Abstractions.Configuration;
+using TotovBuilder.Deployer.Abstractions.Logs;
 using TotovBuilder.Shared.Abstractions.Azure;
+using TotovBuilder.Shared.Abstractions.Utils;
 
 namespace TotovBuilder.Deployer.Actions
 {
     /// <summary>
     /// Represents an action to deploy the website to Azure.
     /// </summary>
-    public class DeployWebsiteAction : IDeploymentAction
+    public class DeployWebsiteAction : IDeploymentAction<DeployWebsiteAction>
     {
         /// <inheritdoc/>
         public string Caption
@@ -35,20 +37,27 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// File wrapper.
+        /// </summary>
+        private readonly IFileWrapper FileWrapper;
+
+        /// <summary>
         /// Logger.
         /// </summary>
-        private readonly IApplicationLogger<DeployRawDataAction> Logger;
+        private readonly IApplicationLogger<DeployWebsiteAction> Logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeployRawDataAction"/> class.
         /// </summary>
         /// <param name="logger">Logger.</param>
         /// <param name="configuration">Configuration.</param>
+        /// <param name="fileWrapper">File wrapper.</param>
         /// <param name="azureBlobStorageManager">Azure blob manager.</param>
-        public DeployWebsiteAction(IApplicationLogger<DeployRawDataAction> logger, IApplicationConfiguration configuration, IAzureBlobStorageManager azureBlobStorageManager)
+        public DeployWebsiteAction(IApplicationLogger<DeployWebsiteAction> logger, IApplicationConfiguration configuration, IFileWrapper fileWrapper, IAzureBlobStorageManager azureBlobStorageManager)
         {
             AzureBlobStorageManager = azureBlobStorageManager;
             Configuration = configuration;
+            FileWrapper = fileWrapper;
             Logger = logger;
         }
 
@@ -64,7 +73,7 @@ namespace TotovBuilder.Deployer.Actions
 
             foreach (string filePath in filePaths)
             {
-                byte[] fileContent = File.ReadAllBytes(filePath);
+                byte[] fileContent = FileWrapper.ReadAllBytes(filePath);
                 string azureFilePath = filePath.Replace(websiteBuildDirectoryPath + Path.DirectorySeparatorChar, string.Empty);
                 data.Add(azureFilePath, fileContent);
             }

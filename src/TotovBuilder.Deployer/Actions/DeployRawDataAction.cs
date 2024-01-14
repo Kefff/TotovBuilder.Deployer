@@ -3,17 +3,19 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
+using TotovBuilder.Deployer.Abstractions.Configuration;
+using TotovBuilder.Deployer.Abstractions.Logs;
 using TotovBuilder.Deployer.Extensions;
 using TotovBuilder.Shared.Abstractions.Azure;
+using TotovBuilder.Shared.Abstractions.Utils;
 
 namespace TotovBuilder.Deployer.Actions
 {
     /// <summary>
     /// Represents an action to deploy to Azure raw data used by Azure Functions to generated website data.
     /// </summary>
-    public class DeployRawDataAction : IDeploymentAction
+    public class DeployRawDataAction : IDeploymentAction<DeployRawDataAction>
     {
         /// <inheritdoc/>
         public string Caption
@@ -35,6 +37,11 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// File wrapper.
+        /// </summary>
+        private readonly IFileWrapper FileWrapper;
+
+        /// <summary>
         /// Logger.
         /// </summary>
         private readonly IApplicationLogger<DeployRawDataAction> Logger;
@@ -44,11 +51,13 @@ namespace TotovBuilder.Deployer.Actions
         /// </summary>
         /// <param name="logger">Logger.</param>
         /// <param name="configuration">Configuration.</param>
+        /// <param name="fileWrapper">File wrapper.</param>
         /// <param name="azureBlobStorageManager">Azure blob storage manager.</param>
-        public DeployRawDataAction(IApplicationLogger<DeployRawDataAction> logger, IApplicationConfiguration configuration, IAzureBlobStorageManager azureBlobStorageManager)
+        public DeployRawDataAction(IApplicationLogger<DeployRawDataAction> logger, IApplicationConfiguration configuration, IFileWrapper fileWrapper, IAzureBlobStorageManager azureBlobStorageManager)
         {
             AzureBlobStorageManager = azureBlobStorageManager;
             Configuration = configuration;
+            FileWrapper = fileWrapper;
             Logger = logger;
         }
 
@@ -60,10 +69,10 @@ namespace TotovBuilder.Deployer.Actions
             List<Task> uploadTasks = new List<Task>();
             IEnumerable<string> blobNames = Configuration.AzureFunctionsConfiguration.GetBlobToUploadNames();
 
-            foreach (string file in Directory.GetFiles(Configuration.DeployerConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
+            foreach (string filePath in Directory.GetFiles(Configuration.DeployerConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
             {
-                string fileName = Path.GetFileName(file);
-                byte[] fileContent = File.ReadAllBytes(file);
+                string fileName = Path.GetFileName(filePath);
+                byte[] fileContent = FileWrapper.ReadAllBytes(filePath);
                 uploadTasks.Add(AzureBlobStorageManager.UpdateBlob(Configuration.AzureFunctionsConfiguration.AzureBlobStorageRawDataContainerName, fileName, fileContent));
             }
 

@@ -1,6 +1,6 @@
 ﻿using TotovBuilder.Model.Configuration;
 
-namespace TotovBuilder.Deployer.Abstractions
+namespace TotovBuilder.Deployer.Abstractions.Configuration
 {
     /// <summary>
     /// Provides the functionalities of the application configuration.

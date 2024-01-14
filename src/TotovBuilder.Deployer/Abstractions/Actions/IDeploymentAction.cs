@@ -18,4 +18,11 @@ namespace TotovBuilder.Deployer.Abstractions.Actions
         /// </summary>
         Task ExecuteAction();
     }
+
+    /// <summary>
+    /// Provides the functionalities of a deployment action.
+    /// </summary>
+    public interface IDeploymentAction<T> : IDeploymentAction
+    {
+    }
 }

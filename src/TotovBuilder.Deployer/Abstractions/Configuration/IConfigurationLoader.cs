@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using TotovBuilder.Model;
 
-namespace TotovBuilder.Deployer.Abstractions
+namespace TotovBuilder.Deployer.Abstractions.Configuration
 {
     /// <summary>
     /// Provides the functionalities of a configuration loader.

@@ -1,7 +1,7 @@
-﻿using TotovBuilder.Deployer.Abstractions;
+﻿using TotovBuilder.Deployer.Abstractions.Configuration;
 using TotovBuilder.Model.Configuration;
 
-namespace TotovBuilder.Deployer
+namespace TotovBuilder.Deployer.Configuration
 {
     /// <summary>
     /// Represents the application configuration.

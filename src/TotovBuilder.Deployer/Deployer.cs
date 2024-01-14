@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Sharprompt;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
+using TotovBuilder.Deployer.Abstractions.Configuration;
+using TotovBuilder.Deployer.Abstractions.Logs;
 using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Model;
 
@@ -31,6 +32,11 @@ namespace TotovBuilder.Deployer
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// Console wrapper.
+        /// </summary>
+        private readonly IConsoleWrapper ConsoleWrapper;
+
+        /// <summary>
         /// Exit action.
         /// </summary>
         private readonly DeploymentAction ExitAction;
@@ -41,29 +47,40 @@ namespace TotovBuilder.Deployer
         private readonly IApplicationLogger<Deployer> Logger;
 
         /// <summary>
+        /// Prompt wrapper.
+        /// </summary>
+        private readonly IPromtWrapper PromptWrapper;
+
+        /// <summary>
         /// Initializes an new instance of the <see cref="Deployer"/> class.
         /// </summary>
         /// <param name="logger">Logger.</param>
-        /// <param name="configurationReader">Configuration reader.</param>
+        /// <param name="consoleWrapper">Console wrapper.</param>
+        /// <param name="promptWrapper">Prompt wrapper.</param>
+        /// <param name="configurationLoader">Configuration loader.</param>
         /// <param name="configuration">Configuration.</param>
         /// <param name="compileWebsiteAction">Action to compile the Totov Builder website.</param>
         /// <param name="deployRawDataAction">Action to deploy to Azure raw data used by Azure Functions to generated website data.</param>
         /// <param name="deployWebsiteAction">Action to deploy the website to Azure.</param>
         /// <param name="extractTarkovDataAction">Action to extract missing item properties from Tarkov data.</param>
-        /// <param name="launchTarkovAction">Action to launch the Escape from Tarkov launcher to update the game.</param>
+        /// <param name="updateTarkovAction">Action to launch the Escape from Tarkov launcher to update the game.</param>
         public Deployer(
             IApplicationLogger<Deployer> logger,
-            IConfigurationLoader configurationReader,
+            IConsoleWrapper consoleWrapper,
+            IPromtWrapper promptWrapper,
+            IConfigurationLoader configurationLoader,
             IApplicationConfiguration configuration,
-            CompileWebsiteAction compileWebsiteAction,
-            DeployRawDataAction deployRawDataAction,
-            DeployWebsiteAction deployWebsiteAction,
-            ExtractTarkovDataAction extractTarkovDataAction,
-            UpdateTarkovAction launchTarkovAction)
+            IDeploymentAction<CompileWebsiteAction> compileWebsiteAction,
+            IDeploymentAction<DeployRawDataAction> deployRawDataAction,
+            IDeploymentAction<DeployWebsiteAction> deployWebsiteAction,
+            IDeploymentAction<ExtractTarkovDataAction> extractTarkovDataAction,
+            IDeploymentAction<UpdateTarkovAction> updateTarkovAction)
         {
             Configuration = configuration;
-            ConfigurationLoader = configurationReader;
+            ConfigurationLoader = configurationLoader;
+            ConsoleWrapper = consoleWrapper;
             Logger = logger;
+            PromptWrapper = promptWrapper;
 
             ExitAction = new DeploymentAction(
                 Properties.Resources.ExitAction,
@@ -71,7 +88,7 @@ namespace TotovBuilder.Deployer
 
             Actions = new List<IDeploymentAction>()
             {
-                launchTarkovAction,
+                updateTarkovAction,
                 extractTarkovDataAction,
                 new DeploymentAction(
                     () => Properties.Resources.UpdateChangelogAction,
@@ -130,19 +147,19 @@ namespace TotovBuilder.Deployer
         /// <returns><c>true</c> when the menu must be displayed again after the action is executed; otherwise <c>false</c>.</returns>
         private async Task<bool> DisplayMenu()
         {
-            string choice = Prompt.Select(
+            string choice = PromptWrapper.Select(
                 Properties.Resources.SelectedAction,
                 Actions.Select(a => a.Caption));
 
             DisplayTitle();
             DisplayCurrentDeploymentMode();
 
-            IDeploymentAction selectedAction = Actions.Single(a => a.Caption == choice);
-
-            if (selectedAction == ExitAction)
+            if (choice == ExitAction.Caption)
             {
                 return false;
             }
+
+            IDeploymentAction selectedAction = Actions.Single(a => a.Caption == choice);
 
             try
             {
@@ -158,12 +175,12 @@ namespace TotovBuilder.Deployer
         }
 
         /// <summary>
-        /// Displays the deployment mode selection and reloads the configuration matching the user's choice.
+        /// Displays the deployment mode selection and loads the configuration matching the user's choice.
         /// </summary>
         /// <returns><c>true</c> when the configuration matching the chosen deployment mode is loaded; otherwise false.</returns>
         private async Task<bool> ChooseDeploymentMode()
         {
-            DeploymentMode choice = Prompt.Select(
+            DeploymentMode choice = PromptWrapper.Select(
                 Properties.Resources.DeploymentMode,
                 new DeploymentMode[]
                 {
@@ -173,7 +190,7 @@ namespace TotovBuilder.Deployer
 
             if (choice == DeploymentMode.Production)
             {
-                string confirmation = Prompt.Input<string>(string.Format(Properties.Resources.ConfirmDeploymentMode, DeploymentMode.Production.ToString().ToUpperInvariant()));
+                string confirmation = PromptWrapper.Input<string>(string.Format(Properties.Resources.ConfirmDeploymentMode, DeploymentMode.Production.ToString().ToUpperInvariant()));
 
                 if (!string.Equals(confirmation, "Yes", StringComparison.OrdinalIgnoreCase))
                 {
@@ -201,15 +218,15 @@ namespace TotovBuilder.Deployer
         /// Displays in yellow the instructions of an action.
         /// </summary>
         /// <param name="instructions">Instructions.</param>
-        private static Task DisplayActionInstructions(string instructions)
+        private Task DisplayActionInstructions(string instructions)
         {
-            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+            ConsoleColor originalForegroundColor = ConsoleWrapper.ForegroundColor;
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(instructions);
+            ConsoleWrapper.ForegroundColor = ConsoleColor.Yellow;
+            ConsoleWrapper.WriteLine(instructions);
 
-            Console.ForegroundColor = originalForegroundColor;
-            Console.WriteLine();
+            ConsoleWrapper.ForegroundColor = originalForegroundColor;
+            ConsoleWrapper.WriteLine();
 
             return Task.CompletedTask;
         }
@@ -219,50 +236,50 @@ namespace TotovBuilder.Deployer
         /// </summary>
         private void DisplayCurrentDeploymentMode()
         {
-            ConsoleColor originalForegroundColor = Console.ForegroundColor;
-            Console.Write(Properties.Resources.CurrentDeploymentMode);
+            ConsoleColor originalForegroundColor = ConsoleWrapper.ForegroundColor;
+            ConsoleWrapper.Write(Properties.Resources.CurrentDeploymentMode);
 
             switch (Configuration.DeployerConfiguration.DeployerDeploymentMode)
             {
                 case DeploymentMode.Production:
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    ConsoleWrapper.ForegroundColor = ConsoleColor.Red;
                     break;
                 case DeploymentMode.Test:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    ConsoleWrapper.ForegroundColor = ConsoleColor.Yellow;
                     break;
             }
 
-            Console.WriteLine(Configuration.DeployerConfiguration.DeployerDeploymentMode.ToString()!.ToUpperInvariant());
+            ConsoleWrapper.WriteLine(Configuration.DeployerConfiguration.DeployerDeploymentMode.ToString()!.ToUpperInvariant());
 
-            Console.ForegroundColor = originalForegroundColor;
-            Console.WriteLine();
+            ConsoleWrapper.ForegroundColor = originalForegroundColor;
+            ConsoleWrapper.WriteLine();
         }
 
         /// <summary>
         /// Displays the application title.
         /// </summary>
-        private static void DisplayTitle()
+        private void DisplayTitle()
         {
-            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+            ConsoleColor originalForegroundColor = ConsoleWrapper.ForegroundColor;
 
-            Console.Clear();
-            Console.ForegroundColor = Console.BackgroundColor;
-            Console.Write(Properties.Resources.Title_Part1);
+            ConsoleWrapper.Clear();
+            ConsoleWrapper.ForegroundColor = ConsoleWrapper.BackgroundColor;
+            ConsoleWrapper.Write(Properties.Resources.Title_Part1);
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(Properties.Resources.Title_Part2);
+            ConsoleWrapper.ForegroundColor = ConsoleColor.White;
+            ConsoleWrapper.Write(Properties.Resources.Title_Part2);
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(Properties.Resources.Title_Part3);
+            ConsoleWrapper.ForegroundColor = ConsoleColor.Red;
+            ConsoleWrapper.Write(Properties.Resources.Title_Part3);
 
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.Write(Properties.Resources.Title_Part4);
+            ConsoleWrapper.ForegroundColor = ConsoleColor.DarkGray;
+            ConsoleWrapper.Write(Properties.Resources.Title_Part4);
 
-            Console.ForegroundColor = Console.BackgroundColor;
-            Console.Write(Properties.Resources.Title_Part5);
+            ConsoleWrapper.ForegroundColor = ConsoleWrapper.BackgroundColor;
+            ConsoleWrapper.Write(Properties.Resources.Title_Part5);
 
-            Console.ForegroundColor = originalForegroundColor;
-            Console.WriteLine();
+            ConsoleWrapper.ForegroundColor = originalForegroundColor;
+            ConsoleWrapper.WriteLine();
         }
     }
 }

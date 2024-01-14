@@ -5,9 +5,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
+using TotovBuilder.Deployer.Abstractions.Actions;
+using TotovBuilder.Deployer.Abstractions.Configuration;
+using TotovBuilder.Deployer.Abstractions.Logs;
 using TotovBuilder.Deployer.Actions;
+using TotovBuilder.Deployer.Configuration;
+using TotovBuilder.Deployer.Logs;
+using TotovBuilder.Shared.Abstractions.Utils;
 using TotovBuilder.Shared.Azure;
 using TotovBuilder.Shared.Extensions;
+using TotovBuilder.Shared.Utils;
 
 namespace TotovBuilder.Deployer
 {
@@ -29,12 +36,16 @@ namespace TotovBuilder.Deployer
                     services.AddSingleton(typeof(IApplicationLogger<>), typeof(ApplicationLogger<>));
                     services.AddSingleton<IApplicationConfiguration, ApplicationConfiguration>();
                     services.AddSingleton<IConfigurationLoader, ConfigurationLoader>();
+                    services.AddSingleton<IConsoleWrapper, ConsoleWrapper>();
                     services.AddSingleton<IDeployer, Deployer>();
-                    services.AddSingleton<CompileWebsiteAction>();
-                    services.AddSingleton<DeployRawDataAction>();
-                    services.AddSingleton<DeployWebsiteAction>();
-                    services.AddSingleton<ExtractTarkovDataAction>();
-                    services.AddSingleton<UpdateTarkovAction>();
+                    services.AddSingleton<IFileWrapper, FileWrapper>();
+                    services.AddSingleton<IPromtWrapper, PromptWrapper>();
+
+                    services.AddSingleton<IDeploymentAction<CompileWebsiteAction>, CompileWebsiteAction>();
+                    services.AddSingleton<IDeploymentAction<DeployRawDataAction>, DeployRawDataAction>();
+                    services.AddSingleton<IDeploymentAction<DeployWebsiteAction>, DeployWebsiteAction>();
+                    services.AddSingleton<IDeploymentAction<ExtractTarkovDataAction>, ExtractTarkovDataAction>();
+                    services.AddSingleton<IDeploymentAction<UpdateTarkovAction>, UpdateTarkovAction>();
 
                     services.AddAzureBlobStorageManager(
                         (IServiceProvider serviceProvider) =>

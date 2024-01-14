@@ -1,15 +1,16 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
+using TotovBuilder.Deployer.Abstractions.Configuration;
+using TotovBuilder.Deployer.Abstractions.Logs;
 
 namespace TotovBuilder.Deployer.Actions
 {
     /// <summary>
     /// Represents an action to launch the Escape from Tarkov launcher to update the game.
     /// </summary>
-    public class UpdateTarkovAction : IDeploymentAction
+    public class UpdateTarkovAction : IDeploymentAction<UpdateTarkovAction>
     {
         /// <inheritdoc/>
         public string Caption
@@ -28,14 +29,14 @@ namespace TotovBuilder.Deployer.Actions
         /// <summary>
         /// Logger.
         /// </summary>
-        private readonly IApplicationLogger<CompileWebsiteAction> Logger;
+        private readonly IApplicationLogger<UpdateTarkovAction> Logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateTarkovAction"/> class.
         /// </summary>
         /// <param name="Logger">Logger.</param>
         /// <param name="configuration">Configuration</param>
-        public UpdateTarkovAction(IApplicationLogger<CompileWebsiteAction> logger, IApplicationConfiguration configuration)
+        public UpdateTarkovAction(IApplicationLogger<UpdateTarkovAction> logger, IApplicationConfiguration configuration)
         {
             Configuration = configuration;
             Logger = logger;

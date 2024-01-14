@@ -2,15 +2,16 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
+using TotovBuilder.Deployer.Abstractions.Configuration;
+using TotovBuilder.Deployer.Abstractions.Logs;
 
 namespace TotovBuilder.Deployer.Actions
 {
     /// <summary>
     /// Represents an action to compile the Totov Builder website.
     /// </summary>
-    public class CompileWebsiteAction : IDeploymentAction
+    public class CompileWebsiteAction : IDeploymentAction<CompileWebsiteAction>
     {
         /// <inheritdoc/>
         public string Caption
