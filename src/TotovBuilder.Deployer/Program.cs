@@ -38,8 +38,10 @@ namespace TotovBuilder.Deployer
                     services.AddSingleton<IConfigurationLoader, ConfigurationLoader>();
                     services.AddSingleton<IConsoleWrapper, ConsoleWrapper>();
                     services.AddSingleton<IDeployer, Deployer>();
+                    services.AddSingleton<IDirectoryWrapper, DirectoryWrapper>();
                     services.AddSingleton<IFileWrapper, FileWrapper>();
                     services.AddSingleton<IPromtWrapper, PromptWrapper>();
+                    services.AddSingleton<IStreamReaderWrapperFactory, StreamReaderWrapperFactory>();
 
                     services.AddSingleton<IDeploymentAction<CompileWebsiteAction>, CompileWebsiteAction>();
                     services.AddSingleton<IDeploymentAction<DeployRawDataAction>, DeployRawDataAction>();

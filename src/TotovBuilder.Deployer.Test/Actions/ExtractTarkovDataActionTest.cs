@@ -1,4 +1,15 @@
-﻿using TotovBuilder.Deployer.Actions;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Moq;
+using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Actions;
+using TotovBuilder.Deployer.Configuration;
+using TotovBuilder.Model.Configuration;
+using TotovBuilder.Model.Test;
+using TotovBuilder.Shared.Abstractions.Utils;
+using Xunit;
 
 namespace TotovBuilder.Deployer.Test.Actions
 {
@@ -7,52 +18,85 @@ namespace TotovBuilder.Deployer.Test.Actions
     /// </summary>
     public class ExtractTarkovDataActionTest
     {
-        //[Fact]
-        //public async Task ExecuteAction_ShouldExtractItemMissingPropertiesAndArchiveOlderFile()
-        //{
-        //    // Arrange
-        //    Mock<IFileWrapper> fileWrapperMock = new Mock<IFileWrapper>();
+        [Fact]
+        public async Task ExecuteAction_ShouldExtractItemMissingPropertiesAndArchiveOlderFile()
+        {
+            // Arrange
+            string? extractionResultFileContent = null;
 
-        //    ApplicationConfiguration configuration = new ApplicationConfiguration();
+            ApplicationConfiguration configuration = new ApplicationConfiguration();
+            configuration.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName = "item-missing-properties.json";
+            configuration.DeployerConfiguration.ConfigurationsDirectory = "../../../../../../TotovBuilder.Configuration\\TEST";
+            configuration.DeployerConfiguration.ItemsExtractionEndSearchString = "LocalProfile";
+            configuration.DeployerConfiguration.ItemsExtractionStartSearchString = "TestItemTemplates";
+            configuration.DeployerConfiguration.PreviousExtractionsArchiveDirectory = "archive";
+            configuration.DeployerConfiguration.TarkovResourcesFilePath = "C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets";
 
-        //    ExtractTarkovDataAction extractTarkovDataAction = new ExtractTarkovDataAction(
-        //        new Mock<IApplicationLogger<ExtractTarkovDataAction>>().Object,
-        //        configuration,
-        //        fileWrapperMock.Object);
+            Mock<IFileWrapper> fileWrapperMock = new Mock<IFileWrapper>();
+            fileWrapperMock
+                .Setup(m => m.Exists("../../../../../../TotovBuilder.Configuration\\TEST\\item-missing-properties.json"))
+                .Returns(true)
+                .Verifiable();
+            fileWrapperMock
+                .Setup(m => m.Move("../../../../../../TotovBuilder.Configuration\\TEST\\item-missing-properties.json", $"../../../../../../TotovBuilder.Configuration\\TEST\\archive\\{DateTime.Now.ToString("yyyyMMddHHmmss_")}item-missing-properties.json"))
+                .Verifiable();
+            fileWrapperMock
+                .Setup(m => m.WriteAllText("../../../../../../TotovBuilder.Configuration\\TEST\\item-missing-properties.json", It.IsAny<string>()))
+                .Callback((string path, string contents) => extractionResultFileContent = contents)
+                .Verifiable();
 
-        //    // Act
-        //    await extractTarkovDataAction.ExecuteAction();
+            Mock<IDirectoryWrapper> directoryWrapperMock = new Mock<IDirectoryWrapper>();
+            directoryWrapperMock.Setup(m => m.CreateDirectory("../../../../../../TotovBuilder.Configuration\\TEST\\archive")).Verifiable();
 
-        //    string itemsJson = await File.ReadAllTextAsync(
-        //        Path.Combine(
-        //            configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-        //            configurationReader.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName));
-        //    ItemMissingProperties[] items = JsonSerializer.Deserialize<ItemMissingProperties[]>(itemsJson, new JsonSerializerOptions()
-        //    {
-        //        PropertyNameCaseInsensitive = true
-        //    })!;
+            string[] lines = File.ReadAllLines("./TestData/resources.assets");
+            int i = 0;
 
-        //    // Assert
-        //    items.Length.Should().BeGreaterThan(0);
+            Mock<IStreamReaderWrapper> streamReaderWrapperMock = new Mock<IStreamReaderWrapper>();
+            streamReaderWrapperMock.Setup(m => m.ReadLine()).Returns(() =>
+            {
+                string? line = null;
 
-        //    foreach (ItemMissingProperties expectedItemMissingProperties in TestData.ItemMissingProperties)
-        //    {
-        //        ItemMissingProperties? item = items.SingleOrDefault(p => p.Id == expectedItemMissingProperties.Id);
+                if (i < lines.Length)
+                {
+                    line = lines[i];
+                    i++;
+                }
 
-        //        if (item == null)
-        //        {
-        //            throw new Exception($"Cannot find missing properties for item \"{expectedItemMissingProperties.Id}\"");
-        //        }
+                return line;
+            }).Verifiable();
 
-        //        item.Should().BeEquivalentTo(expectedItemMissingProperties);
-        //    }
+            Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new Mock<IStreamReaderWrapperFactory>();
+            streamReaderWrapperFactoryMock.Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets")).Returns(streamReaderWrapperMock.Object);
 
-        //    string[] archivedFiles = Directory.GetFiles(
-        //        Path.Combine(
-        //            configurationReader.ConfiguratorConfiguration.ConfigurationsDirectory,
-        //            configurationReader.ConfiguratorConfiguration.PreviousExtractionsArchiveDirectory));
-        //    archivedFiles.Any(f => f.EndsWith(configurationReader.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName)).Should().BeTrue();
-        //}
+            ExtractTarkovDataAction extractTarkovDataAction = new ExtractTarkovDataAction(
+                new Mock<IApplicationLogger<ExtractTarkovDataAction>>().Object,
+                configuration,
+                fileWrapperMock.Object,
+                directoryWrapperMock.Object,
+                streamReaderWrapperFactoryMock.Object);
+
+            // Act
+            await extractTarkovDataAction.ExecuteAction();
+
+            // Assert
+            extractionResultFileContent.Should().NotBeNull();
+            fileWrapperMock.Verify();
+            directoryWrapperMock.Verify();
+            streamReaderWrapperMock.Verify();
+
+            foreach (ItemMissingProperties expectedItemMissingProperties in TestData.ItemMissingProperties)
+            {
+                bool hasBeenWritten = extractionResultFileContent!.Contains($"{{\"i\":\"{expectedItemMissingProperties.Id}\",\"a\":{expectedItemMissingProperties.MaxStackableAmount}}}");
+
+                if (!hasBeenWritten)
+                {
+                    throw new Exception($"No match for item \"{expectedItemMissingProperties.Id}\" has been found.");
+                }
+            }
+
+            // Clean
+            Directory.Delete("./TestData", true);
+        }
 
         //[Fact]
         //public void ExecuteAction_WithInvalidTarkovResourceFileContent_ShouldThrow()

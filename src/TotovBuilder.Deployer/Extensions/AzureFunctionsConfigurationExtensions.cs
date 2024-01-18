@@ -19,7 +19,7 @@ namespace TotovBuilder.Deployer.Extensions
             Type azureFunctionsConfigurationType = typeof(AzureFunctionsConfiguration);
             List<string> blobsToUpload = azureFunctionsConfigurationType.GetProperties()
                 .Where(p => p.Name.StartsWith("Raw") && p.Name.EndsWith("BlobName"))
-                .Select(p => p.GetValue(azureFunctionsConfiguration) as string ?? string.Empty)
+                .Select(p => (string)p.GetValue(azureFunctionsConfiguration)!)
                 .ToList();
             blobsToUpload.Add(azureFunctionsConfiguration.AzureFunctionsConfigurationBlobName);
 

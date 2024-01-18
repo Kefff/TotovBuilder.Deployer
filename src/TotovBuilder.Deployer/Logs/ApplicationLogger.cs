@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Shared.Abstractions.Utils;
 
 namespace TotovBuilder.Deployer.Logs
 {

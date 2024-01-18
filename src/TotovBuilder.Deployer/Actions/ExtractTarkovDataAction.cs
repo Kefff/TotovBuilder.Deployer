@@ -40,9 +40,19 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IFileWrapper FileWrapper;
 
         /// <summary>
+        /// Directory wrapper.
+        /// </summary>
+        private readonly IDirectoryWrapper DirectoryWrapper;
+
+        /// <summary>
         /// Logger.
         /// </summary>
         private readonly IApplicationLogger<ExtractTarkovDataAction> Logger;
+
+        /// <summary>
+        /// Stream reader wrapper factory.
+        /// </summary>
+        private readonly IStreamReaderWrapperFactory StreamReaderWrapperFactory;
 
         /// <summary>
         /// Initilizes a new instances of the <see cref="TarkovDataExtractor"/> class.
@@ -50,11 +60,20 @@ namespace TotovBuilder.Deployer.Actions
         /// <param name="logger">Logger.</param>
         /// <param name="configuration">Application configuration.</param>
         /// <param name="fileWrapper">File wrapper.</param>
-        public ExtractTarkovDataAction(IApplicationLogger<ExtractTarkovDataAction> logger, IApplicationConfiguration configuration, IFileWrapper fileWrapper)
+        /// <param name="directoryWrapper">Directory wrapper.</param>
+        /// <param name="streamReaderWrapperFactory">Stream reader wrapper factory.</param>
+        public ExtractTarkovDataAction(
+            IApplicationLogger<ExtractTarkovDataAction> logger,
+            IApplicationConfiguration configuration,
+            IFileWrapper fileWrapper,
+            IDirectoryWrapper directoryWrapper,
+            IStreamReaderWrapperFactory streamReaderWrapperFactory)
         {
             Configuration = configuration;
+            DirectoryWrapper = directoryWrapper;
             FileWrapper = fileWrapper;
             Logger = logger;
+            StreamReaderWrapperFactory = streamReaderWrapperFactory;
         }
 
         /// <inheritdoc/>
@@ -64,12 +83,12 @@ namespace TotovBuilder.Deployer.Actions
 
             StringBuilder tarkovResourcesFileContentStringBuilder = new StringBuilder();
 
-            using (StreamReader sr = new StreamReader(Configuration.DeployerConfiguration.TarkovResourcesFilePath))
+            using (IStreamReaderWrapper srw = StreamReaderWrapperFactory.Create(Configuration.DeployerConfiguration.TarkovResourcesFilePath))
             {
                 bool takeLines = false;
                 string? line;
 
-                while ((line = sr.ReadLine()) != null)
+                while ((line = srw.ReadLine()) != null)
                 {
                     // Reading only lines in the section that interests us
                     if (line.Contains(Configuration.DeployerConfiguration.ItemsExtractionStartSearchString))
@@ -114,7 +133,7 @@ namespace TotovBuilder.Deployer.Actions
             string fileName = Path.GetFileName(fileToArchivePath);
             string archivedFileName = DateTime.Now.ToString("yyyyMMddHHmmss_") + fileName;
 
-            Directory.CreateDirectory(archiveDirectory);
+            DirectoryWrapper.CreateDirectory(archiveDirectory);
 
             if (FileWrapper.Exists(fileToArchivePath))
             {
