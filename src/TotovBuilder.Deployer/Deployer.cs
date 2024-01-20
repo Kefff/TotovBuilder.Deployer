@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Deployer.Abstractions.Configuration;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Model;
-using TotovBuilder.Shared.Abstractions.Utils;
 
 namespace TotovBuilder.Deployer
 {
@@ -111,7 +111,7 @@ namespace TotovBuilder.Deployer
                     () => DisplayActionInstructions(Properties.Resources.CheckWebsiteInstructions)),
                 new DeploymentAction(
                     () => Properties.Resources.GitAction,
-                    () => DisplayActionInstructions(Properties.Resources.GitInstructions)),
+                    () => DisplayActionInstructions(Properties.Resources.GitActionInstructions)),
                 new DeploymentAction(
                     () => Properties.Resources.DiscordAction,
                     () => DisplayActionInstructions(Properties.Resources.DiscordInstructions)),

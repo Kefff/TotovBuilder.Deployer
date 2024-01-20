@@ -4,10 +4,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions.Configuration;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
-using TotovBuilder.Shared.Abstractions.Utils;
 
 namespace TotovBuilder.Deployer.Configuration
 {

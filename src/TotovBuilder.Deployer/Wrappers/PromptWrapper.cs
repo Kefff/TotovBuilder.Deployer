@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Sharprompt;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 
-namespace TotovBuilder.Deployer.Logs
+namespace TotovBuilder.Deployer.Wrappers
 {
     /// <summary>
     /// Represents a <see cref="PromptWrapper"/> wrapper.
@@ -20,7 +20,7 @@ namespace TotovBuilder.Deployer.Logs
         /// <inheritdoc/>
         public T Select<T>(string message, IEnumerable<T> items)
         {
-            return Prompt.Select<T>(message, items);
+            return Prompt.Select(message, items);
         }
     }
 }

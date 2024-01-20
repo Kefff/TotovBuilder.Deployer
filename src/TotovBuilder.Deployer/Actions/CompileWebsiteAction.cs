@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Deployer.Abstractions.Configuration;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 
 namespace TotovBuilder.Deployer.Actions
 {
@@ -33,14 +33,21 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationLogger<CompileWebsiteAction> Logger;
 
         /// <summary>
+        /// Process wrapper factory.
+        /// </summary>
+        private readonly IProcessWrapperFactory ProcessWrapperFactory;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CompileWebsiteAction"/> class.
         /// </summary>
         /// <param name="logger">Logger.</param>
         /// <param name="configuration">Configuration</param>
-        public CompileWebsiteAction(IApplicationLogger<CompileWebsiteAction> logger, IApplicationConfiguration configuration)
+        /// <param name="processWrapperFactory">Process wrapper factory.</param>
+        public CompileWebsiteAction(IApplicationLogger<CompileWebsiteAction> logger, IApplicationConfiguration configuration, IProcessWrapperFactory processWrapperFactory)
         {
             Configuration = configuration;
             Logger = logger;
+            ProcessWrapperFactory = processWrapperFactory;
         }
 
         /// <inheritdoc/>
@@ -48,29 +55,31 @@ namespace TotovBuilder.Deployer.Actions
         {
             Logger.LogInformation(string.Format(Properties.Resources.CompilingWebsite, Configuration.DeployerConfiguration.WebsiteCompilationCommand, Configuration.DeployerConfiguration.WebsiteDirectoryPath));
 
-            Process process = new Process();
-            process.StartInfo.FileName = "cmd";
-            process.StartInfo.RedirectStandardInput = true;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.WorkingDirectory = Configuration.DeployerConfiguration.WebsiteDirectoryPath;
-            process.Start();
-
-            process.StandardInput.WriteLine($"{Configuration.DeployerConfiguration.WebsiteCompilationCommand} & exit");
-
-            string? output = null;
-
-            do
+            using (IProcessWrapper processWrapper = ProcessWrapperFactory.Create())
             {
-                output = process.StandardOutput.ReadLine();
+                processWrapper.StartInfo.FileName = "cmd";
+                processWrapper.StartInfo.RedirectStandardInput = true;
+                processWrapper.StartInfo.RedirectStandardOutput = true;
+                processWrapper.StartInfo.WorkingDirectory = Configuration.DeployerConfiguration.WebsiteDirectoryPath;
+                processWrapper.Start();
 
-                if (output != null)
+                processWrapper.StandardInput!.WriteLine($"{Configuration.DeployerConfiguration.WebsiteCompilationCommand} & exit");
+
+                string? output = null;
+
+                do
                 {
-                    Console.WriteLine(output);
-                }
-            }
-            while (output != null);
+                    output = processWrapper.StandardOutput!.ReadLine();
 
-            process.WaitForExit();
+                    if (output != null)
+                    {
+                        Console.WriteLine(output);
+                    }
+                }
+                while (output != null);
+
+                processWrapper.WaitForExit();
+            }
 
             Logger.LogSuccess(Properties.Resources.WebsiteCompiled);
 

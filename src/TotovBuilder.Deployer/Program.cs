@@ -7,14 +7,14 @@ using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Deployer.Abstractions.Configuration;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Deployer.Configuration;
-using TotovBuilder.Deployer.Logs;
-using TotovBuilder.Shared.Abstractions.Utils;
+using TotovBuilder.Deployer.Utils;
+using TotovBuilder.Deployer.Wrappers;
 using TotovBuilder.Shared.Azure;
 using TotovBuilder.Shared.Extensions;
-using TotovBuilder.Shared.Utils;
 
 namespace TotovBuilder.Deployer
 {
@@ -40,8 +40,10 @@ namespace TotovBuilder.Deployer
                     services.AddSingleton<IDeployer, Deployer>();
                     services.AddSingleton<IDirectoryWrapper, DirectoryWrapper>();
                     services.AddSingleton<IFileWrapper, FileWrapper>();
+                    services.AddSingleton<IProcessWrapperFactory, ProcessWrapperFactory>();
                     services.AddSingleton<IPromtWrapper, PromptWrapper>();
                     services.AddSingleton<IStreamReaderWrapperFactory, StreamReaderWrapperFactory>();
+                    services.AddSingleton<IStreamWriterWrapperFactory, StreamWriterWrapperFactory>();
 
                     services.AddSingleton<IDeploymentAction<CompileWebsiteAction>, CompileWebsiteAction>();
                     services.AddSingleton<IDeploymentAction<DeployRawDataAction>, DeployRawDataAction>();

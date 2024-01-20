@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using TotovBuilder.Deployer.Abstractions.Logs;
-using TotovBuilder.Shared.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 
-namespace TotovBuilder.Deployer.Logs
+namespace TotovBuilder.Deployer.Utils
 {
     /// <summary>
     /// Represents a logger.

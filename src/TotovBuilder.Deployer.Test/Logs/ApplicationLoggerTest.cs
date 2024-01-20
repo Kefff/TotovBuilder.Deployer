@@ -2,8 +2,8 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using TotovBuilder.Deployer.Logs;
-using TotovBuilder.Shared.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
+using TotovBuilder.Deployer.Utils;
 using Xunit;
 
 namespace TotovBuilder.Deployer.Test.Logs

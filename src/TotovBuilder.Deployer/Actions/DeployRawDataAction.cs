@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Deployer.Abstractions.Configuration;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Extensions;
 using TotovBuilder.Shared.Abstractions.Azure;
-using TotovBuilder.Shared.Abstractions.Utils;
 
 namespace TotovBuilder.Deployer.Actions
 {

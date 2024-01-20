@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using Moq;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Deployer.Abstractions.Configuration;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Deployer.Configuration;
 using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
-using TotovBuilder.Shared.Abstractions.Utils;
 using Xunit;
 
 namespace TotovBuilder.Deployer.Test
@@ -101,14 +101,17 @@ namespace TotovBuilder.Deployer.Test
                 .Returns(DeploymentMode.Production);
             promptWrapperMock
                 .Setup(m => m.Input<string>("Are you sure you want to use deployment mode \"PRODUCTION\"? Confirm by typing \"Yes\""))
-                .Callback(() =>
+                .Returns(() =>
                 {
                     if (!hasFailedConfirmation)
                     {
                         hasFailedConfirmation = true;
+
+                        return "No";
                     }
-                })
-                .Returns(() => hasFailedConfirmation ? confirmationText : "No");
+
+                    return confirmationText;
+                });
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
@@ -232,8 +235,37 @@ namespace TotovBuilder.Deployer.Test
             loggerMock.Verify(m => m.LogError(It.IsAny<string>()));
         }
 
-        [Fact]
-        public async Task Run_ShouldExecuteAction()
+        [Theory]
+        [InlineData(" 3 - Update the changelog", @"In the ""TotovBuilder.Configuration"" directory, update the ""changelog.json"" file with new functionalities.
+
+Make sure to set the right version number and language for each entry.")]
+        [InlineData(" 4 - Check configuration files", @"In the ""TotovBuilder.Configuration"" directory, check each configuration file to make sure everything looks fine.
+
+When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same.")]
+        [InlineData(" 7 - Deploy Azure Functions to Azure", @"Azure Functions must manually be published from Visual Studio :
+- Open the ""TotovBuilder.AzureFunctions"" solution
+- Right click on the ""TotovBuilder.AzureFunctions"" project and choose ""Publish"".
+
+Make sure to CHOOSE THE RIGHT PROFILE at the top before publishing.
+
+When deploying in TEST, the ""TotovBuilder.AzureFunctions"" project can then be locally launched to immediatly update the website data files in the ""data"" folder of the website on Azure.")]
+        [InlineData(" 9 - Purge the Content Delivery Network on Azure", @"The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
+
+On Azure :
+- Open the storage account
+- Choose ""Front Door and CDN""
+- Select the website endpoint
+- Click on ""Purge"", check ""Purge all"" and click ""Purge""")]
+        [InlineData("10 - Check the website", @"After the update, launch the website in a browser and check that new functionalities are present and that everything works.")]
+        [InlineData("11 - Update Git", @"After the website is updated and tested, the develop branch can be merged on the main branch with a new version tag.
+
+In Git, for each project :
+- Merge ""develop"" on ""main""
+- Add a tag with the new version number on the head of the  ""main"" breanch
+- Checkout the ""develop"" branch
+- Push the ""main"" and ""develop"" branches")]
+        [InlineData("12 - Annonce the update on Discord", "")]
+        public async Task Run_ShouldExecuteAction(string actionCaption, string expected)
         {
             // Arrange
             bool hasExecutedAction = false;
@@ -257,7 +289,7 @@ namespace TotovBuilder.Deployer.Test
                     {
                         hasExecutedAction = true;
 
-                        return " 4 - Check configuration files";
+                        return actionCaption;
                     }
 
                     return "     Exit";
@@ -282,9 +314,7 @@ namespace TotovBuilder.Deployer.Test
 
             // Assert
             configurationLoaderMock.Verify();
-            consoleWrapperMock.Verify(m => m.WriteLine(@"In the ""TotovBuilder.Configuration"" directory, check each configuration file to make sure everything looks fine.
-
-When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same."));
+            consoleWrapperMock.Verify(m => m.WriteLine(expected));
         }
 
         [Fact]

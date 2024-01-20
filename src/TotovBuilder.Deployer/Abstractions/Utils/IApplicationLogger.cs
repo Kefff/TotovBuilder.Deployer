@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace TotovBuilder.Deployer.Abstractions.Logs
+namespace TotovBuilder.Deployer.Abstractions.Utils
 {
     /// <summary>
     /// Provides the functionalities of a logger.

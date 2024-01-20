@@ -1,8 +1,7 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Sharprompt;
 
-namespace TotovBuilder.Deployer.Abstractions.Logs
+namespace TotovBuilder.Deployer.Abstractions.Wrappers
 {
     /// <summary>
     /// Provides the functionalities of a <see cref="Prompt"/> wrapper.

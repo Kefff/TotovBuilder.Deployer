@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TotovBuilder.Deployer.Abstractions.Actions;
 using TotovBuilder.Deployer.Abstractions.Configuration;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 
 namespace TotovBuilder.Deployer.Actions
 {
@@ -32,14 +32,21 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationLogger<UpdateTarkovAction> Logger;
 
         /// <summary>
+        /// Process wrapper factory.
+        /// </summary>
+        private readonly IProcessWrapperFactory ProcessWrapperFactory;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UpdateTarkovAction"/> class.
         /// </summary>
         /// <param name="Logger">Logger.</param>
         /// <param name="configuration">Configuration</param>
-        public UpdateTarkovAction(IApplicationLogger<UpdateTarkovAction> logger, IApplicationConfiguration configuration)
+        /// <param name="processWrapperFactory">Process wrapper factory.</param>
+        public UpdateTarkovAction(IApplicationLogger<UpdateTarkovAction> logger, IApplicationConfiguration configuration, IProcessWrapperFactory processWrapperFactory)
         {
             Configuration = configuration;
             Logger = logger;
+            ProcessWrapperFactory = processWrapperFactory;
         }
 
         /// <inheritdoc/>
@@ -47,10 +54,12 @@ namespace TotovBuilder.Deployer.Actions
         {
             Logger.LogInformation(string.Format(Properties.Resources.StartingTarkovLauncher, Configuration.DeployerConfiguration.TarkovLauncherExecutableFilePath));
 
-            Process process = new Process();
-            process.StartInfo.FileName = Configuration.DeployerConfiguration.TarkovLauncherExecutableFilePath;
-            process.StartInfo.CreateNoWindow = true;
-            process.Start();
+            using (IProcessWrapper processWrapper = ProcessWrapperFactory.Create())
+            {
+                processWrapper.StartInfo.FileName = Configuration.DeployerConfiguration.TarkovLauncherExecutableFilePath;
+                processWrapper.StartInfo.CreateNoWindow = true;
+                processWrapper.Start();
+            }
 
             Logger.LogSuccess(Properties.Resources.TarkovLauncherStarted);
 

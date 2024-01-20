@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using TotovBuilder.Deployer.Abstractions.Logs;
+using TotovBuilder.Deployer.Abstractions.Utils;
+using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Configuration;
 using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Test;
-using TotovBuilder.Shared.Abstractions.Utils;
 using Xunit;
 
 namespace TotovBuilder.Deployer.Test.Configuration

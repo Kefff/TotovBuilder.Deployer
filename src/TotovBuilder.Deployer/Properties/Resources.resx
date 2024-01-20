@@ -209,7 +209,7 @@ Make sure the post contains the right version number.</value>
   <data name="GitAction" xml:space="preserve">
     <value>11 - Update Git</value>
   </data>
-  <data name="GitInstructions" xml:space="preserve">
+  <data name="GitActionInstructions" xml:space="preserve">
     <value>After the website is updated and tested, the develop branch can be merged on the main branch with a new version tag.
 
 In Git, for each project :

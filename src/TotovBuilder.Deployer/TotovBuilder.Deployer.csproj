@@ -44,6 +44,10 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Logs\" />
+	</ItemGroup>
+
 	<Target Name="CopyAppConfigToPublishedProject" AfterTargets="Publish">
 		<Copy SourceFiles="App.Publish.config" DestinationFiles="$(PublishDir)TotovBuilder.Deployer.dll.config" Condition=" '$(Configuration)' == 'Release' " />
 		<!--

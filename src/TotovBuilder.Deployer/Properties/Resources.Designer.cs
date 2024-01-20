@@ -323,9 +323,9 @@ namespace TotovBuilder.Deployer.Properties {
         ///- Checkout the &quot;develop&quot; branch
         ///- Push the &quot;main&quot; and &quot;develop&quot; branches.
         /// </summary>
-        internal static string GitInstructions {
+        internal static string GitActionInstructions {
             get {
-                return ResourceManager.GetString("GitInstructions", resourceCulture);
+                return ResourceManager.GetString("GitActionInstructions", resourceCulture);
             }
         }
         
