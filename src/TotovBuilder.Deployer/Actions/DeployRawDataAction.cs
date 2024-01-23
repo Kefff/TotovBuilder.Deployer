@@ -37,6 +37,11 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// Directory wrapper.
+        /// </summary>
+        private readonly IDirectoryWrapper DirectoryWrapper;
+
+        /// <summary>
         /// File wrapper.
         /// </summary>
         private readonly IFileWrapper FileWrapper;
@@ -53,10 +58,16 @@ namespace TotovBuilder.Deployer.Actions
         /// <param name="configuration">Configuration.</param>
         /// <param name="fileWrapper">File wrapper.</param>
         /// <param name="azureBlobStorageManager">Azure blob storage manager.</param>
-        public DeployRawDataAction(IApplicationLogger<DeployRawDataAction> logger, IApplicationConfiguration configuration, IFileWrapper fileWrapper, IAzureBlobStorageManager azureBlobStorageManager)
+        public DeployRawDataAction(
+            IApplicationLogger<DeployRawDataAction> logger,
+            IApplicationConfiguration configuration,
+            IFileWrapper fileWrapper,
+            IDirectoryWrapper directoryWrapper,
+            IAzureBlobStorageManager azureBlobStorageManager)
         {
             AzureBlobStorageManager = azureBlobStorageManager;
             Configuration = configuration;
+            DirectoryWrapper = directoryWrapper;
             FileWrapper = fileWrapper;
             Logger = logger;
         }
@@ -69,7 +80,7 @@ namespace TotovBuilder.Deployer.Actions
             List<Task> uploadTasks = new List<Task>();
             IEnumerable<string> blobNames = Configuration.AzureFunctionsConfiguration.GetBlobToUploadNames();
 
-            foreach (string filePath in Directory.GetFiles(Configuration.DeployerConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
+            foreach (string filePath in DirectoryWrapper.GetFiles(Configuration.DeployerConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
             {
                 string fileName = Path.GetFileName(filePath);
                 byte[] fileContent = FileWrapper.ReadAllBytes(filePath);

@@ -37,6 +37,11 @@ namespace TotovBuilder.Deployer.Actions
         private readonly IApplicationConfiguration Configuration;
 
         /// <summary>
+        /// Directory wrapper.
+        /// </summary>
+        private readonly IDirectoryWrapper DirectoryWrapper;
+
+        /// <summary>
         /// File wrapper.
         /// </summary>
         private readonly IFileWrapper FileWrapper;
@@ -53,10 +58,16 @@ namespace TotovBuilder.Deployer.Actions
         /// <param name="configuration">Configuration.</param>
         /// <param name="fileWrapper">File wrapper.</param>
         /// <param name="azureBlobStorageManager">Azure blob manager.</param>
-        public DeployWebsiteAction(IApplicationLogger<DeployWebsiteAction> logger, IApplicationConfiguration configuration, IFileWrapper fileWrapper, IAzureBlobStorageManager azureBlobStorageManager)
+        public DeployWebsiteAction(
+            IApplicationLogger<DeployWebsiteAction> logger,
+            IApplicationConfiguration configuration,
+            IFileWrapper fileWrapper,
+            IDirectoryWrapper directoryWrapper,
+            IAzureBlobStorageManager azureBlobStorageManager)
         {
             AzureBlobStorageManager = azureBlobStorageManager;
             Configuration = configuration;
+            DirectoryWrapper = directoryWrapper;
             FileWrapper = fileWrapper;
             Logger = logger;
         }
@@ -78,14 +89,13 @@ namespace TotovBuilder.Deployer.Actions
                 data.Add(azureFilePath, fileContent);
             }
 
-            BlobHttpHeaders createHttpHeaders() => new BlobHttpHeaders
-            {
-                CacheControl = Configuration.AzureFunctionsConfiguration.WebsiteFileCacheControl
-            };
             await AzureBlobStorageManager.UpdateContainer(
                 Configuration.AzureFunctionsConfiguration.AzureBlobStorageWebsiteContainerName,
                 data,
-                createHttpHeaders,
+                () => new BlobHttpHeaders
+                {
+                    CacheControl = Configuration.AzureFunctionsConfiguration.WebsiteFileCacheControl
+                },
                 Configuration.DeployerConfiguration.WebsiteDeploymentFileNotToDeletePattern);
 
             Logger.LogSuccess(Properties.Resources.WebsiteDeployed);
@@ -96,10 +106,10 @@ namespace TotovBuilder.Deployer.Actions
         /// </summary>
         /// <param name="directoryPath">Directory path.</param>
         /// <returns>File paths.</returns>
-        private static IEnumerable<string> GetDirectoryFilePaths(string directoryPath)
+        private IEnumerable<string> GetDirectoryFilePaths(string directoryPath)
         {
-            string[] files = Directory.GetFiles(directoryPath);
-            string[] subDirectoryFiles = Directory.GetDirectories(directoryPath)
+            string[] files = DirectoryWrapper.GetFiles(directoryPath);
+            string[] subDirectoryFiles = DirectoryWrapper.GetDirectories(directoryPath)
                 .SelectMany(dp => GetDirectoryFilePaths(dp))
                 .ToArray();
 
