@@ -71,8 +71,16 @@ namespace TotovBuilder.Deployer.Wrappers
         public void Start()
         {
             Instance.Start();
-            StandardInput = StreamWriterWrapperFactory.Create(Instance.StandardInput);
-            StandardOutput = StreamReaderWrapperFactory.Create(Instance.StandardOutput);
+
+            if (StartInfo.RedirectStandardInput)
+            {
+                StandardInput = StreamWriterWrapperFactory.Create(Instance.StandardInput);
+            }
+
+            if (StartInfo.RedirectStandardOutput)
+            {
+                StandardOutput = StreamReaderWrapperFactory.Create(Instance.StandardOutput);
+            }
         }
 
         /// <inheritdoc/>

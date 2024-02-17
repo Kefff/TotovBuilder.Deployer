@@ -53,7 +53,7 @@ namespace TotovBuilder.Deployer.Wrappers
         /// <inheritdoc/>
         public void WriteLine(string? value)
         {
-            Console.WriteLine(value = null);
+            Console.WriteLine(value);
         }
     }
 }
