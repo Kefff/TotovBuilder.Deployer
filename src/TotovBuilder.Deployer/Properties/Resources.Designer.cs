@@ -88,7 +88,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  4 - Check configuration files.
+        ///   Looks up a localized string similar to  4 - Update website version and check configuration files.
         /// </summary>
         internal static string CheckConfigurationFilesAction {
             get {
@@ -97,7 +97,9 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In the &quot;TotovBuilder.Configuration&quot; directory, check each configuration file to make sure everything looks fine.
+        ///   Looks up a localized string similar to In the &quot;TotovBuilder.Configuration&quot; directory, open &quot;WebsiteConfiguration&quot; and update the version of the website.
+        ///
+        ///Check each configuration file to make sure everything looks fine.
         ///
         ///When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same..
         /// </summary>

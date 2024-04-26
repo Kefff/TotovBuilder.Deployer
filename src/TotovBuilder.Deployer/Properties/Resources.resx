@@ -127,10 +127,12 @@
     <value>     Change deployment mode</value>
   </data>
   <data name="CheckConfigurationFilesAction" xml:space="preserve">
-    <value> 4 - Check configuration files</value>
+    <value> 4 - Update website version and check configuration files</value>
   </data>
   <data name="CheckConfigurationFilesInstructions" xml:space="preserve">
-    <value>In the "TotovBuilder.Configuration" directory, check each configuration file to make sure everything looks fine.
+    <value>In the "TotovBuilder.Configuration" directory, open "WebsiteConfiguration" and update the version of the website.
+
+Check each configuration file to make sure everything looks fine.
 
 When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same.</value>
   </data>
