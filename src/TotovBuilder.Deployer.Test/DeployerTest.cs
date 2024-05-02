@@ -239,7 +239,9 @@ namespace TotovBuilder.Deployer.Test
         [InlineData(" 3 - Update the changelog", @"In the ""TotovBuilder.Configuration"" directory, update the ""changelog.json"" file with new functionalities.
 
 Make sure to set the right version number and language for each entry.")]
-        [InlineData(" 4 - Check configuration files", @"In the ""TotovBuilder.Configuration"" directory, check each configuration file to make sure everything looks fine.
+        [InlineData(" 4 - Update website version and check configuration files", @"In the ""TotovBuilder.Configuration"" directory, open ""WebsiteConfiguration"" and update the version of the website.
+
+Check each configuration file to make sure everything looks fine.
 
 When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same.")]
         [InlineData(" 7 - Deploy Azure Functions to Azure", @"Azure Functions must manually be published from Visual Studio :
