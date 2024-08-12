@@ -17,7 +17,7 @@ namespace TotovBuilder.Deployer.Test.Logs
         public void IsEnableb_ShouldReturnTrue()
         {
             // Arrange
-            ApplicationLogger<object> applicationLogger = new ApplicationLogger<object>(new Mock<IConsoleWrapper>().Object);
+            ApplicationLogger<object> applicationLogger = new(new Mock<IConsoleWrapper>().Object);
 
             // Act / Assert
             applicationLogger.IsEnabled(LogLevel.Error).Should().BeTrue();
@@ -32,9 +32,9 @@ namespace TotovBuilder.Deployer.Test.Logs
         public void Log_ShouldLogMessageToConsole(LogLevel logLevel)
         {
             // Arrange
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            ApplicationLogger<object> applicationLogger = new ApplicationLogger<object>(consoleWrapperMock.Object);
+            ApplicationLogger<object> applicationLogger = new(consoleWrapperMock.Object);
 
             // Act
             applicationLogger.Log(logLevel, "Starting file uploading");
@@ -49,9 +49,9 @@ namespace TotovBuilder.Deployer.Test.Logs
         public void Log_WithError_ShouldLogErrorToConsoleInRed(LogLevel logLevel, bool useException)
         {
             // Arrange
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            ApplicationLogger<object> applicationLogger = new ApplicationLogger<object>(consoleWrapperMock.Object);
+            ApplicationLogger<object> applicationLogger = new(consoleWrapperMock.Object);
 
             // Act
             applicationLogger.Log(logLevel, useException ? new Exception("Invalid file") : null, "Error while uploading");
@@ -76,9 +76,9 @@ System.Exception: Invalid file"));
         public void LogError_ShouldWriteToConsoleInRed()
         {
             // Arrange
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            ApplicationLogger<object> applicationLogger = new ApplicationLogger<object>(consoleWrapperMock.Object);
+            ApplicationLogger<object> applicationLogger = new(consoleWrapperMock.Object);
 
             // Act
             applicationLogger.LogError("Error while uploading");
@@ -93,9 +93,9 @@ System.Exception: Invalid file"));
         public void LogSuccess_ShouldWriteToConsoleInGreen()
         {
             // Arrange
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            ApplicationLogger<object> applicationLogger = new ApplicationLogger<object>(consoleWrapperMock.Object);
+            ApplicationLogger<object> applicationLogger = new(consoleWrapperMock.Object);
 
             // Act
             applicationLogger.LogSuccess("Blob updated");

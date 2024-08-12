@@ -10,7 +10,6 @@ using TotovBuilder.Deployer.Abstractions.Utils;
 using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Deployer.Configuration;
-using TotovBuilder.Model.Configuration;
 using TotovBuilder.Shared.Abstractions.Azure;
 using Xunit;
 
@@ -25,7 +24,7 @@ namespace TotovBuilder.Deployer.Test.Actions
         public void Caption_ShouldReturnCaption()
         {
             // Arrange
-            DeployWebsiteAction action = new DeployWebsiteAction(
+            DeployWebsiteAction action = new(
                 new Mock<IApplicationLogger<DeployWebsiteAction>>().Object,
                 new ApplicationConfiguration(),
                 new Mock<IFileWrapper>().Object,
@@ -43,39 +42,38 @@ namespace TotovBuilder.Deployer.Test.Actions
             byte[] bytes = Encoding.UTF8.GetBytes("data");
             BlobHttpHeaders? createdBlobHttpHeaders = null;
 
-            ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+            ApplicationConfiguration applicationConfiguration = new();
             applicationConfiguration.AzureFunctionsConfiguration.AzureBlobStorageWebsiteContainerName = "$web";
             applicationConfiguration.AzureFunctionsConfiguration.WebsiteFileCacheControl = "max-age=31536000, must-revalidate";
             applicationConfiguration.DeployerConfiguration.WebsiteBuildDirectory = "dist";
             applicationConfiguration.DeployerConfiguration.WebsiteDeploymentFileNotToDeletePattern = "data/.*";
             applicationConfiguration.DeployerConfiguration.WebsiteDirectoryPath = "C:/TotovBuilder.Website";
 
-            Mock<IDirectoryWrapper> directoryWrapperMock = new Mock<IDirectoryWrapper>();
+            Mock<IDirectoryWrapper> directoryWrapperMock = new();
             directoryWrapperMock.Setup(m => m.GetDirectories("C:/TotovBuilder.Website\\dist"))
-                .Returns(new string[]
-                    {
+                .Returns([
                         "C:/TotovBuilder.Website\\dist/fonts",
-                        "C:/TotovBuilder.Website\\dist/images"
-                    });
+                    "C:/TotovBuilder.Website\\dist/images"
+                    ]);
             directoryWrapperMock
                 .Setup(m => m.GetFiles("C:/TotovBuilder.Website\\dist"))
-                .Returns(new string[] { "C:/TotovBuilder.Website\\dist/index.html" })
+                .Returns(["C:/TotovBuilder.Website\\dist/index.html"])
                 .Verifiable();
             directoryWrapperMock
                 .Setup(m => m.GetFiles("C:/TotovBuilder.Website\\dist/fonts"))
-                .Returns(new string[] { "C:/TotovBuilder.Website\\dist/fonts/escape-from-tarkov.ttf" })
+                .Returns(["C:/TotovBuilder.Website\\dist/fonts/escape-from-tarkov.ttf"])
                 .Verifiable();
             directoryWrapperMock
                 .Setup(m => m.GetFiles("C:/TotovBuilder.Website\\dist/images"))
-                .Returns(new string[] { "C:/TotovBuilder.Website\\dist/images/prapor.webp" })
+                .Returns(["C:/TotovBuilder.Website\\dist/images/prapor.webp"])
                 .Verifiable();
 
-            Mock<IFileWrapper> fileWrapperMock = new Mock<IFileWrapper>();
+            Mock<IFileWrapper> fileWrapperMock = new();
             fileWrapperMock.Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/index.html")).Returns(bytes).Verifiable();
             fileWrapperMock.Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/fonts/escape-from-tarkov.ttf")).Returns(bytes).Verifiable();
             fileWrapperMock.Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/images/prapor.webp")).Returns(bytes).Verifiable();
 
-            Mock<IAzureBlobStorageManager> azureBlobStorageManagerMock = new Mock<IAzureBlobStorageManager>();
+            Mock<IAzureBlobStorageManager> azureBlobStorageManagerMock = new();
             azureBlobStorageManagerMock
                 .Setup(m => m.UpdateContainer(
                     "$web",
@@ -91,7 +89,7 @@ namespace TotovBuilder.Deployer.Test.Actions
                 .Returns(Task.FromResult(Result.Ok()))
                 .Verifiable();
 
-            DeployWebsiteAction action = new DeployWebsiteAction(
+            DeployWebsiteAction action = new(
                 new Mock<IApplicationLogger<DeployWebsiteAction>>().Object,
                 applicationConfiguration,
                 fileWrapperMock.Object,

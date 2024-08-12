@@ -22,7 +22,7 @@ namespace TotovBuilder.Deployer.Test.Actions
         public void Caption_ShouldReturnCaption()
         {
             // Arrange
-            ExtractTarkovDataAction action = new ExtractTarkovDataAction(
+            ExtractTarkovDataAction action = new(
                 new Mock<IApplicationLogger<ExtractTarkovDataAction>>().Object,
                 new ApplicationConfiguration(),
                 new Mock<IFileWrapper>().Object,
@@ -39,7 +39,7 @@ namespace TotovBuilder.Deployer.Test.Actions
             // Arrange
             string? extractionResultFileContent = null;
 
-            ApplicationConfiguration configuration = new ApplicationConfiguration();
+            ApplicationConfiguration configuration = new();
             configuration.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName = "item-missing-properties.json";
             configuration.DeployerConfiguration.ConfigurationsDirectory = "../../../../../../TotovBuilder.Configuration\\TEST";
             configuration.DeployerConfiguration.ItemsExtractionEndSearchString = "LocalProfile";
@@ -47,26 +47,26 @@ namespace TotovBuilder.Deployer.Test.Actions
             configuration.DeployerConfiguration.PreviousExtractionsArchiveDirectory = "archive";
             configuration.DeployerConfiguration.TarkovResourcesFilePath = "C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets";
 
-            Mock<IFileWrapper> fileWrapperMock = new Mock<IFileWrapper>();
+            Mock<IFileWrapper> fileWrapperMock = new();
             fileWrapperMock
                 .Setup(m => m.Exists("../../../../../../TotovBuilder.Configuration\\TEST\\item-missing-properties.json"))
                 .Returns(true)
                 .Verifiable();
             fileWrapperMock
-                .Setup(m => m.Move("../../../../../../TotovBuilder.Configuration\\TEST\\item-missing-properties.json", $"../../../../../../TotovBuilder.Configuration\\TEST\\archive\\{DateTime.Now.ToString("yyyyMMddHHmmss_")}item-missing-properties.json"))
+                .Setup(m => m.Move("../../../../../../TotovBuilder.Configuration\\TEST\\item-missing-properties.json", $"../../../../../../TotovBuilder.Configuration\\TEST\\archive\\{DateTime.Now:yyyyMMddHHmmss_}item-missing-properties.json"))
                 .Verifiable();
             fileWrapperMock
                 .Setup(m => m.WriteAllText("../../../../../../TotovBuilder.Configuration\\TEST\\item-missing-properties.json", It.IsAny<string>()))
                 .Callback((string path, string contents) => extractionResultFileContent = contents)
                 .Verifiable();
 
-            Mock<IDirectoryWrapper> directoryWrapperMock = new Mock<IDirectoryWrapper>();
+            Mock<IDirectoryWrapper> directoryWrapperMock = new();
             directoryWrapperMock.Setup(m => m.CreateDirectory("../../../../../../TotovBuilder.Configuration\\TEST\\archive")).Verifiable();
 
             string[] lines = File.ReadAllLines("./TestData/resources.assets");
             int i = 0;
 
-            Mock<IStreamReaderWrapper> streamReaderWrapperMock = new Mock<IStreamReaderWrapper>();
+            Mock<IStreamReaderWrapper> streamReaderWrapperMock = new();
             streamReaderWrapperMock.Setup(m => m.ReadLine()).Returns(() =>
             {
                 string? line = null;
@@ -80,10 +80,10 @@ namespace TotovBuilder.Deployer.Test.Actions
                 return line;
             }).Verifiable();
 
-            Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new Mock<IStreamReaderWrapperFactory>();
+            Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new();
             streamReaderWrapperFactoryMock.Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets")).Returns(streamReaderWrapperMock.Object);
 
-            ExtractTarkovDataAction action = new ExtractTarkovDataAction(
+            ExtractTarkovDataAction action = new(
                 new Mock<IApplicationLogger<ExtractTarkovDataAction>>().Object,
                 configuration,
                 fileWrapperMock.Object,
@@ -114,7 +114,7 @@ namespace TotovBuilder.Deployer.Test.Actions
         public async Task ExecuteAction_WithNoTarkovResources_ShouldLogError()
         {
             // Arrange
-            ApplicationConfiguration configuration = new ApplicationConfiguration();
+            ApplicationConfiguration configuration = new();
             configuration.AzureFunctionsConfiguration.RawItemMissingPropertiesBlobName = "item-missing-properties.json";
             configuration.DeployerConfiguration.ConfigurationsDirectory = "../../../../../../TotovBuilder.Configuration\\TEST";
             configuration.DeployerConfiguration.ItemsExtractionEndSearchString = "LocalProfile";
@@ -122,21 +122,21 @@ namespace TotovBuilder.Deployer.Test.Actions
             configuration.DeployerConfiguration.PreviousExtractionsArchiveDirectory = "archive";
             configuration.DeployerConfiguration.TarkovResourcesFilePath = "C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets";
 
-            Mock<IApplicationLogger<ExtractTarkovDataAction>> loggerMock = new Mock<IApplicationLogger<ExtractTarkovDataAction>>();
+            Mock<IApplicationLogger<ExtractTarkovDataAction>> loggerMock = new();
             loggerMock.Setup(m => m.LogError("Cannot read Escape from Tarkov resources file content.")).Verifiable();
 
-            string[] lines = new string[]
-            {
+            string[] lines =
+            [
                 "LocalProfile",
                 "\"data\": {",
                 "{",
                 "}",
                 "}",
                 "TestItemTemplates"
-            };
+            ];
             int i = 0;
 
-            Mock<IStreamReaderWrapper> streamReaderWrapperMock = new Mock<IStreamReaderWrapper>();
+            Mock<IStreamReaderWrapper> streamReaderWrapperMock = new();
             streamReaderWrapperMock.Setup(m => m.ReadLine()).Returns(() =>
             {
                 string? line = null;
@@ -150,10 +150,10 @@ namespace TotovBuilder.Deployer.Test.Actions
                 return line;
             }).Verifiable();
 
-            Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new Mock<IStreamReaderWrapperFactory>();
+            Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new();
             streamReaderWrapperFactoryMock.Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets")).Returns(streamReaderWrapperMock.Object);
 
-            ExtractTarkovDataAction action = new ExtractTarkovDataAction(
+            ExtractTarkovDataAction action = new(
                 loggerMock.Object,
                 configuration,
                 new Mock<IFileWrapper>().Object,

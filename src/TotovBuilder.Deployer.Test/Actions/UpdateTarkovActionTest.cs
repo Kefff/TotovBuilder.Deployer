@@ -19,7 +19,7 @@ namespace TotovBuilder.Deployer.Test.Actions
         public void Caption_ShouldReturnCaption()
         {
             // Arrange
-            UpdateTarkovAction action = new UpdateTarkovAction(
+            UpdateTarkovAction action = new(
                 new Mock<IApplicationLogger<UpdateTarkovAction>>().Object,
                 new ApplicationConfiguration(),
                 new Mock<IProcessWrapperFactory>().Object);
@@ -32,19 +32,19 @@ namespace TotovBuilder.Deployer.Test.Actions
         public async Task ExecuteAction_ShouldStartTarkovLauncher()
         {
             // Arrange
-            ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+            ApplicationConfiguration applicationConfiguration = new();
             applicationConfiguration.DeployerConfiguration.TarkovLauncherExecutableFilePath = "C:/Battlestate Games/BsgLauncher/BsgLauncher.exe";
 
-            ProcessStartInfo startInfo = new ProcessStartInfo();
+            ProcessStartInfo startInfo = new();
 
-            Mock<IProcessWrapper> processWrapperMock = new Mock<IProcessWrapper>();
+            Mock<IProcessWrapper> processWrapperMock = new();
             processWrapperMock.SetupGet(m => m.StartInfo).Returns(startInfo).Verifiable();
             processWrapperMock.Setup(m => m.Start()).Verifiable();
 
-            Mock<IProcessWrapperFactory> processWrapperFactory = new Mock<IProcessWrapperFactory>();
+            Mock<IProcessWrapperFactory> processWrapperFactory = new();
             processWrapperFactory.Setup(m => m.Create()).Returns(processWrapperMock.Object);
 
-            UpdateTarkovAction action = new UpdateTarkovAction(
+            UpdateTarkovAction action = new(
                 new Mock<IApplicationLogger<UpdateTarkovAction>>().Object,
                 applicationConfiguration,
                 processWrapperFactory.Object);

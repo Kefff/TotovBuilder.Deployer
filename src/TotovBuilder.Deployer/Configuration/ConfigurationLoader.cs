@@ -20,6 +20,14 @@ namespace TotovBuilder.Deployer.Configuration
         private const string DeployerConfigurationFileNameKey = "DeployerConfigurationFileName";
 
         /// <summary>
+        /// Serialization options.
+        /// </summary>
+        private static readonly JsonSerializerOptions SerializationOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
         /// Logger.
         /// </summary>
         private readonly IApplicationConfiguration Configuration;
@@ -57,10 +65,7 @@ namespace TotovBuilder.Deployer.Configuration
             Logger.LogInformation(string.Format(Properties.Resources.LoadingDeployerConfiguration, deployerConfigurationFilePath));
 
             string deployerConfigurationJson = await FileWrapper.ReadAllTextAsync(deployerConfigurationFilePath);
-            Configuration.DeployerConfiguration = JsonSerializer.Deserialize<DeployerConfiguration>(deployerConfigurationJson, new JsonSerializerOptions()
-            {
-                PropertyNameCaseInsensitive = true
-            })!;
+            Configuration.DeployerConfiguration = JsonSerializer.Deserialize<DeployerConfiguration>(deployerConfigurationJson, SerializationOptions)!;
             Configuration.DeployerConfiguration.DeployerDeploymentMode = deploymentMode;
             Configuration.DeployerConfiguration.ConfigurationsDirectory = configurationsDirectory;
             Configuration.DeployerConfiguration.DeployerConfigurationFileName = deployerConfigurationFileName;
@@ -70,10 +75,7 @@ namespace TotovBuilder.Deployer.Configuration
             Logger.LogInformation(string.Format(Properties.Resources.LoadingAzureFunctionsConfiguration, azureFunctionsConfigurationFilePath));
 
             string azureFunctionsConfigurationJson = await FileWrapper.ReadAllTextAsync(azureFunctionsConfigurationFilePath);
-            Configuration.AzureFunctionsConfiguration = JsonSerializer.Deserialize<AzureFunctionsConfiguration>(azureFunctionsConfigurationJson, new JsonSerializerOptions()
-            {
-                PropertyNameCaseInsensitive = true
-            })!;
+            Configuration.AzureFunctionsConfiguration = JsonSerializer.Deserialize<AzureFunctionsConfiguration>(azureFunctionsConfigurationJson, SerializationOptions)!;
 
             Logger.LogSuccess(string.Format(Properties.Resources.ConfigurationLoaded));
         }

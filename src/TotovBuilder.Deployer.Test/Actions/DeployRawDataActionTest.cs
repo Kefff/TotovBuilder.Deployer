@@ -1,15 +1,12 @@
-﻿using System.Reflection.PortableExecutable;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentResults;
 using Moq;
-using TotovBuilder.Deployer.Abstractions.Configuration;
 using TotovBuilder.Deployer.Abstractions.Utils;
 using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Deployer.Configuration;
-using TotovBuilder.Deployer.Wrappers;
 using TotovBuilder.Shared.Abstractions.Azure;
 using Xunit;
 
@@ -24,7 +21,7 @@ namespace TotovBuilder.Deployer.Test.Actions
         public void Caption_ShouldReturnCaption()
         {
             // Arrange
-            DeployRawDataAction action = new DeployRawDataAction(
+            DeployRawDataAction action = new(
                 new Mock<IApplicationLogger<DeployRawDataAction>>().Object,
                 new ApplicationConfiguration(),
                 new Mock<IFileWrapper>().Object,
@@ -41,32 +38,31 @@ namespace TotovBuilder.Deployer.Test.Actions
             // Arrange
             byte[] bytes = Encoding.UTF8.GetBytes("data");
 
-            ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+            ApplicationConfiguration applicationConfiguration = new();
             applicationConfiguration.DeployerConfiguration.ConfigurationsDirectory = "../TotovBuilder.Configuration";
             applicationConfiguration.AzureFunctionsConfiguration.RawItemCategoriesBlobName = "item-categories.json";
             applicationConfiguration.AzureFunctionsConfiguration.RawChangelogBlobName = "changelog.json";
             applicationConfiguration.AzureFunctionsConfiguration.AzureBlobStorageRawDataContainerName = "raw-data";
 
-            Mock<IDirectoryWrapper> directoryWrapperMock = new Mock<IDirectoryWrapper>();
+            Mock<IDirectoryWrapper> directoryWrapperMock = new();
             directoryWrapperMock
                 .Setup(m => m.GetFiles("../TotovBuilder.Configuration"))
-                .Returns(new string[]
-                    {
+                .Returns([
                         "../TotovBuilder.Configuration/changelog.json",
-                        "../TotovBuilder.Configuration/item-categories.json",
-                        "../TotovBuilder.Configuration/invalid.json"
-                    })
+                    "../TotovBuilder.Configuration/item-categories.json",
+                    "../TotovBuilder.Configuration/invalid.json"
+                    ])
                 .Verifiable();
 
-            Mock<IFileWrapper> fileWrapperMock = new Mock<IFileWrapper>();
+            Mock<IFileWrapper> fileWrapperMock = new();
             fileWrapperMock.Setup(m => m.ReadAllBytes("../TotovBuilder.Configuration/changelog.json")).Returns(bytes).Verifiable();
             fileWrapperMock.Setup(m => m.ReadAllBytes("../TotovBuilder.Configuration/item-categories.json")).Returns(bytes).Verifiable();
 
-            Mock<IAzureBlobStorageManager> azureBlobStorageManagerMock = new Mock<IAzureBlobStorageManager>();
+            Mock<IAzureBlobStorageManager> azureBlobStorageManagerMock = new();
             azureBlobStorageManagerMock.Setup(m => m.UpdateBlob("raw-data", "changelog.json", bytes, null)).Returns(Task.FromResult(Result.Ok())).Verifiable();
             azureBlobStorageManagerMock.Setup(m => m.UpdateBlob("raw-data", "item-categories.json", bytes, null)).Returns(Task.FromResult(Result.Ok())).Verifiable();
 
-            DeployRawDataAction action = new DeployRawDataAction(
+            DeployRawDataAction action = new(
                 new Mock<IApplicationLogger<DeployRawDataAction>>().Object,
                 applicationConfiguration,
                 fileWrapperMock.Object,

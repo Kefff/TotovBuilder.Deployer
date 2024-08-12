@@ -13,7 +13,7 @@ namespace TotovBuilder.Deployer.Wrappers
         /// <inheritdoc/>
         public IStreamWriterWrapper Create(StreamWriter instance)
         {
-            StreamWriterWrapper wrapper = new StreamWriterWrapper(instance);
+            StreamWriterWrapper wrapper = new(instance);
 
             return wrapper;
         }

@@ -77,7 +77,7 @@ namespace TotovBuilder.Deployer.Actions
         {
             Logger.LogInformation(Properties.Resources.DeployingWebsite);
 
-            Dictionary<string, byte[]> data = new Dictionary<string, byte[]>();
+            Dictionary<string, byte[]> data = [];
 
             string websiteBuildDirectoryPath = Path.Combine(Configuration.DeployerConfiguration.WebsiteDirectoryPath, Configuration.DeployerConfiguration.WebsiteBuildDirectory);
             IEnumerable<string> filePaths = GetDirectoryFilePaths(websiteBuildDirectoryPath);

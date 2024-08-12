@@ -25,9 +25,9 @@ namespace TotovBuilder.Deployer.Test
             // Arrange
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
@@ -39,7 +39,7 @@ namespace TotovBuilder.Deployer.Test
                     It.IsAny<IEnumerable<string>>()))
                 .Returns("     Exit");
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
                 .Setup(m => m.Load(DeploymentMode.Test))
                 .Callback(() => configuration.DeployerConfiguration = new DeployerConfiguration()
@@ -61,7 +61,7 @@ namespace TotovBuilder.Deployer.Test
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 new Mock<IApplicationLogger<Deployer>>().Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,
@@ -91,9 +91,9 @@ namespace TotovBuilder.Deployer.Test
             bool hasFailedConfirmation = false;
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
@@ -118,7 +118,7 @@ namespace TotovBuilder.Deployer.Test
                     It.IsAny<IEnumerable<string>>()))
                 .Returns("     Exit");
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
                 .Setup(m => m.Load(DeploymentMode.Production))
                 .Callback(() => configuration.DeployerConfiguration = new DeployerConfiguration()
@@ -140,7 +140,7 @@ namespace TotovBuilder.Deployer.Test
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 new Mock<IApplicationLogger<Deployer>>().Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,
@@ -167,10 +167,10 @@ namespace TotovBuilder.Deployer.Test
             bool hasThrown = false;
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IApplicationLogger<Deployer>> loggerMock = new Mock<IApplicationLogger<Deployer>>();
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IApplicationLogger<Deployer>> loggerMock = new();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
@@ -182,7 +182,7 @@ namespace TotovBuilder.Deployer.Test
                     It.IsAny<IEnumerable<string>>()))
                 .Returns("     Exit");
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
                 .Setup(m => m.Load(DeploymentMode.Test))
                 .Callback(() =>
@@ -214,7 +214,7 @@ namespace TotovBuilder.Deployer.Test
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 loggerMock.Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,
@@ -273,9 +273,9 @@ In Git, for each project :
             bool hasExecutedAction = false;
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
@@ -297,9 +297,9 @@ In Git, for each project :
                     return "     Exit";
                 });
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 new Mock<IApplicationLogger<Deployer>>().Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,
@@ -326,10 +326,10 @@ In Git, for each project :
             bool hasExecutedAction = false;
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IApplicationLogger<Deployer>> loggerMock = new Mock<IApplicationLogger<Deployer>>();
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IApplicationLogger<Deployer>> loggerMock = new();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
@@ -351,13 +351,13 @@ In Git, for each project :
                     return "     Exit";
                 });
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
 
-            Mock<IDeploymentAction<CompileWebsiteAction>> compileWebsiteActionMock = new Mock<IDeploymentAction<CompileWebsiteAction>>();
+            Mock<IDeploymentAction<CompileWebsiteAction>> compileWebsiteActionMock = new();
             compileWebsiteActionMock.SetupGet(m => m.Caption).Returns(" 5 - Compile the website");
             compileWebsiteActionMock.Setup(m => m.ExecuteAction()).Throws(new Exception("Compilation error"));
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 loggerMock.Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,

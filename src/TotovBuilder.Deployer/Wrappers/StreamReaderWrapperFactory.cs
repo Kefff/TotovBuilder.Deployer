@@ -13,7 +13,7 @@ namespace TotovBuilder.Deployer.Wrappers
         /// <inheritdoc/>
         public IStreamReaderWrapper Create(StreamReader instance)
         {
-            StreamReaderWrapper wrapper = new StreamReaderWrapper(instance);
+            StreamReaderWrapper wrapper = new(instance);
 
             return wrapper;
         }
@@ -21,8 +21,8 @@ namespace TotovBuilder.Deployer.Wrappers
         /// <inheritdoc/>
         public IStreamReaderWrapper Create(string path)
         {
-            StreamReader instance = new StreamReader(path);
-            StreamReaderWrapper wrapper = new StreamReaderWrapper(instance);
+            StreamReader instance = new(path);
+            StreamReaderWrapper wrapper = new(instance);
 
             return wrapper;
         }

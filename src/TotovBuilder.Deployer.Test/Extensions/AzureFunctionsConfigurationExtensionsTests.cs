@@ -15,7 +15,7 @@ namespace TotovBuilder.Deployer.Test.Extensions
         public void GetBlobToUploadNames_ShouldGetBlobNames()
         {
             // Arrange
-            AzureFunctionsConfiguration azureFunctionsConfiguration = new AzureFunctionsConfiguration()
+            AzureFunctionsConfiguration azureFunctionsConfiguration = new()
             {
                 AzureFunctionsConfigurationBlobName = "azure-functions-configuration.json",
                 RawArmorPenetrationsBlobName = "raw-armor-penetrations.json",
@@ -37,8 +37,7 @@ namespace TotovBuilder.Deployer.Test.Extensions
             IEnumerable<string> blobNames = AzureFunctionsConfigurationExtensions.GetBlobToUploadNames(azureFunctionsConfiguration);
 
             // Assert
-            blobNames.Should().BeEquivalentTo(new string[]
-            {
+            blobNames.Should().BeEquivalentTo([
                 "raw-armor-penetrations.json",
                 "raw-changelog.json",
                 "raw-item-categories.json",
@@ -46,7 +45,7 @@ namespace TotovBuilder.Deployer.Test.Extensions
                 "raw-tarkov-values.json",
                 "raw-website-configuration.json",
                 "azure-functions-configuration.json"
-            });
+            ]);
         }
     }
 }

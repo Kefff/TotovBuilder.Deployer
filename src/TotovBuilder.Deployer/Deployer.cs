@@ -87,8 +87,8 @@ namespace TotovBuilder.Deployer
                 Properties.Resources.ExitAction,
                 () => Task.CompletedTask);
 
-            Actions = new List<IDeploymentAction>()
-            {
+            Actions =
+            [
                 updateTarkovAction,
                 extractTarkovDataAction,
                 new DeploymentAction(
@@ -119,7 +119,7 @@ namespace TotovBuilder.Deployer
                     () => Properties.Resources.ChangeDeploymentModeAction,
                     ChooseDeploymentMode),
                 ExitAction
-            };
+            ];
         }
 
         /// <inheritdoc/>
