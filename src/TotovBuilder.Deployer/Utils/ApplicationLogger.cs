@@ -27,7 +27,7 @@ namespace TotovBuilder.Deployer.Utils
 
         /// <inheritdoc/>
         [ExcludeFromCodeCoverage(Justification = "Should never be called.")]
-        public IDisposable BeginScope<TState>(TState state)
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull
         {
             throw new NotImplementedException();
         }
