@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- Configurations that affect the Test Framework -->
+  <RunConfiguration>
+    <!-- Path relative to directory that contains .runsettings file-->
+    <ResultsDirectory>./TestResults</ResultsDirectory>
+    
+    <!-- Value that specifies the exit code when no tests are discovered -->
+    <TreatNoTestsAsError>true</TreatNoTestsAsError>
+  </RunConfiguration>
+
+  <!-- Configurations for data collectors -->
+  <!-- See https://github.com/microsoft/codecoverage/blob/main/docs/configuration.md -->
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0">
+        <Configuration>
+          <Format>cobertura</Format>
+          <CodeCoverage>
+            <Attributes>
+                <Exclude>
+                  <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+                  <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+                  <Attribute>^System\.Diagnostics\.DebuggerHiddenAttribute$</Attribute>
+                  <Attribute>^System\.Diagnostics\.DebuggerNonUserCodeAttribute$</Attribute>
+                </Exclude>
+              </Attributes>
+              <CompanyNames>
+                <Exclude>
+                  <CompanyName>.*microsoft.*</CompanyName>
+                </Exclude>
+              </CompanyNames>
+              <Sources>
+                <Exclude>
+                  <Source>.*/_/src/Moq/*.</Source>
+                  <Source>.*/Program\.cs</Source>
+                  <Source>.*\.\g\.cs</Source>
+                  <Source>.*microsoft.*</Source>
+                </Exclude>
+              </Sources>
+          </CodeCoverage>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

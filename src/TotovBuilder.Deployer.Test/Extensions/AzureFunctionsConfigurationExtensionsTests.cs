@@ -18,7 +18,6 @@ namespace TotovBuilder.Deployer.Test.Extensions
             AzureFunctionsConfiguration azureFunctionsConfiguration = new()
             {
                 AzureFunctionsConfigurationBlobName = "azure-functions-configuration.json",
-                RawArmorPenetrationsBlobName = "raw-armor-penetrations.json",
                 RawChangelogBlobName = "raw-changelog.json",
                 RawItemCategoriesBlobName = "raw-item-categories.json",
                 RawItemMissingPropertiesBlobName = "raw-item-missing-properties.json",
@@ -38,7 +37,6 @@ namespace TotovBuilder.Deployer.Test.Extensions
 
             // Assert
             blobNames.Should().BeEquivalentTo([
-                "raw-armor-penetrations.json",
                 "raw-changelog.json",
                 "raw-item-categories.json",
                 "raw-item-missing-properties.json",
