@@ -111,7 +111,8 @@ namespace TotovBuilder.Deployer.Test
                     }
 
                     return confirmationText;
-                });
+                })
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
@@ -295,7 +296,8 @@ In Git, for each project :
                     }
 
                     return "     Exit";
-                });
+                })
+                .Verifiable();
 
             Mock<IConfigurationLoader> configurationLoaderMock = new();
 
@@ -349,7 +351,8 @@ In Git, for each project :
                     }
 
                     return "     Exit";
-                });
+                })
+                .Verifiable();
 
             Mock<IConfigurationLoader> configurationLoaderMock = new();
 

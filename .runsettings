@@ -17,27 +17,28 @@
         <Configuration>
           <Format>cobertura</Format>
           <CodeCoverage>
+            <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
+            <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
+            
             <Attributes>
-                <Exclude>
-                  <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
-                  <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
-                  <Attribute>^System\.Diagnostics\.DebuggerHiddenAttribute$</Attribute>
-                  <Attribute>^System\.Diagnostics\.DebuggerNonUserCodeAttribute$</Attribute>
-                </Exclude>
-              </Attributes>
-              <CompanyNames>
-                <Exclude>
-                  <CompanyName>.*microsoft.*</CompanyName>
-                </Exclude>
-              </CompanyNames>
-              <Sources>
-                <Exclude>
-                  <Source>.*/_/src/Moq/*.</Source>
-                  <Source>.*/Program\.cs</Source>
-                  <Source>.*\.\g\.cs</Source>
-                  <Source>.*microsoft.*</Source>
-                </Exclude>
-              </Sources>
+              <Exclude>
+                <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+                <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+                <Attribute>^System\.Diagnostics\.DebuggerHiddenAttribute$</Attribute>
+                <Attribute>^System\.Diagnostics\.DebuggerNonUserCodeAttribute$</Attribute>
+              </Exclude>
+            </Attributes>
+            <CompanyNames>
+              <Exclude>
+                <CompanyName>.*microsoft.*</CompanyName>
+              </Exclude>
+            </CompanyNames>
+            <Sources>
+              <Exclude>
+                <Source>.*/_/src/Moq/*.</Source> <!-- For VS Code code coverage that detects Moq files -->
+                <Source>.*microsoft.*</Source> <!-- For VS Code code coverage that test SDK files -->
+              </Exclude>
+            </Sources>
           </CodeCoverage>
         </Configuration>
       </DataCollector>

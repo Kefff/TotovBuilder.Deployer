@@ -67,18 +67,21 @@ namespace TotovBuilder.Deployer.Test.Actions
             int i = 0;
 
             Mock<IStreamReaderWrapper> streamReaderWrapperMock = new();
-            streamReaderWrapperMock.Setup(m => m.ReadLine()).Returns(() =>
-            {
-                string? line = null;
-
-                if (i < lines.Length)
+            streamReaderWrapperMock
+                .Setup(m => m.ReadLine())
+                .Returns(() =>
                 {
-                    line = lines[i];
-                    i++;
-                }
+                    string? line = null;
 
-                return line;
-            }).Verifiable();
+                    if (i < lines.Length)
+                    {
+                        line = lines[i];
+                        i++;
+                    }
+
+                    return line;
+                })
+                .Verifiable();
 
             Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new();
             streamReaderWrapperFactoryMock.Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets")).Returns(streamReaderWrapperMock.Object);
@@ -137,18 +140,21 @@ namespace TotovBuilder.Deployer.Test.Actions
             int i = 0;
 
             Mock<IStreamReaderWrapper> streamReaderWrapperMock = new();
-            streamReaderWrapperMock.Setup(m => m.ReadLine()).Returns(() =>
-            {
-                string? line = null;
-
-                if (i < lines.Length)
+            streamReaderWrapperMock
+                .Setup(m => m.ReadLine())
+                .Returns(() =>
                 {
-                    line = lines[i];
-                    i++;
-                }
+                    string? line = null;
 
-                return line;
-            }).Verifiable();
+                    if (i < lines.Length)
+                    {
+                        line = lines[i];
+                        i++;
+                    }
+
+                    return line;
+                })
+                .Verifiable();
 
             Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new();
             streamReaderWrapperFactoryMock.Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets")).Returns(streamReaderWrapperMock.Object);
