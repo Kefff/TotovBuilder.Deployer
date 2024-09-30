@@ -38,11 +38,19 @@ namespace TotovBuilder.Deployer.Test.Actions
             ProcessStartInfo startInfo = new();
 
             Mock<IProcessWrapper> processWrapperMock = new();
-            processWrapperMock.SetupGet(m => m.StartInfo).Returns(startInfo).Verifiable();
-            processWrapperMock.Setup(m => m.Start()).Verifiable();
+            processWrapperMock
+                .SetupGet(m => m.StartInfo)
+                .Returns(startInfo)
+                .Verifiable();
+            processWrapperMock
+                .Setup(m => m.Start())
+                .Verifiable();
 
             Mock<IProcessWrapperFactory> processWrapperFactory = new();
-            processWrapperFactory.Setup(m => m.Create()).Returns(processWrapperMock.Object);
+            processWrapperFactory
+                .Setup(m => m.Create())
+                .Returns(processWrapperMock.Object)
+                .Verifiable();
 
             UpdateTarkovAction action = new(
                 new Mock<IApplicationLogger<UpdateTarkovAction>>().Object,

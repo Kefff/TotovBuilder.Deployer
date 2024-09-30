@@ -55,12 +55,24 @@ namespace TotovBuilder.Deployer.Test.Actions
                 .Verifiable();
 
             Mock<IFileWrapper> fileWrapperMock = new();
-            fileWrapperMock.Setup(m => m.ReadAllBytes("../TotovBuilder.Configuration/changelog.json")).Returns(bytes).Verifiable();
-            fileWrapperMock.Setup(m => m.ReadAllBytes("../TotovBuilder.Configuration/item-categories.json")).Returns(bytes).Verifiable();
+            fileWrapperMock
+                .Setup(m => m.ReadAllBytes("../TotovBuilder.Configuration/changelog.json"))
+                .Returns(bytes)
+                .Verifiable();
+            fileWrapperMock
+                .Setup(m => m.ReadAllBytes("../TotovBuilder.Configuration/item-categories.json"))
+                .Returns(bytes)
+                .Verifiable();
 
             Mock<IAzureBlobStorageManager> azureBlobStorageManagerMock = new();
-            azureBlobStorageManagerMock.Setup(m => m.UpdateBlob("raw-data", "changelog.json", bytes, null)).Returns(Task.FromResult(Result.Ok())).Verifiable();
-            azureBlobStorageManagerMock.Setup(m => m.UpdateBlob("raw-data", "item-categories.json", bytes, null)).Returns(Task.FromResult(Result.Ok())).Verifiable();
+            azureBlobStorageManagerMock
+                .Setup(m => m.UpdateBlob("raw-data", "changelog.json", bytes, null))
+                .Returns(Task.FromResult(Result.Ok()))
+                .Verifiable();
+            azureBlobStorageManagerMock
+                .Setup(m => m.UpdateBlob("raw-data", "item-categories.json", bytes, null))
+                .Returns(Task.FromResult(Result.Ok()))
+                .Verifiable();
 
             DeployRawDataAction action = new(
                 new Mock<IApplicationLogger<DeployRawDataAction>>().Object,

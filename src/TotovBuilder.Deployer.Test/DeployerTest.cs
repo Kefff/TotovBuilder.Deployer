@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using TotovBuilder.Deployer.Abstractions.Actions;
@@ -32,12 +33,14 @@ namespace TotovBuilder.Deployer.Test
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Test);
+                .Returns(DeploymentMode.Test)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
                     It.IsAny<IEnumerable<string>>()))
-                .Returns("     Exit");
+                .Returns("     Exit")
+                .Verifiable();
 
             Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
@@ -79,6 +82,7 @@ namespace TotovBuilder.Deployer.Test
             // Assert
             configurationLoaderMock.Verify();
             consoleWrapperMock.Verify(m => m.WriteLine(DeploymentMode.Test.ToString()!.ToUpperInvariant()));
+            promptWrapperMock.Verify();
         }
 
         [Theory]
@@ -98,7 +102,8 @@ namespace TotovBuilder.Deployer.Test
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Production);
+                .Returns(DeploymentMode.Production)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Input<string>("Are you sure you want to use deployment mode \"PRODUCTION\"? Confirm by typing \"Yes\""))
                 .Returns(() =>
@@ -117,7 +122,8 @@ namespace TotovBuilder.Deployer.Test
                 .Setup(m => m.Select(
                     "Select an action",
                     It.IsAny<IEnumerable<string>>()))
-                .Returns("     Exit");
+                .Returns("     Exit")
+                .Verifiable();
 
             Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
@@ -176,12 +182,14 @@ namespace TotovBuilder.Deployer.Test
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Test);
+                .Returns(DeploymentMode.Test)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
                     It.IsAny<IEnumerable<string>>()))
-                .Returns("     Exit");
+                .Returns("     Exit")
+                .Verifiable();
 
             Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
@@ -268,6 +276,7 @@ In Git, for each project :
 - Checkout the ""develop"" branch
 - Push the ""main"" and ""develop"" branches")]
         [InlineData("12 - Annonce the update on Discord", "")]
+        [InlineData("     Exit", "")]
         public async Task Run_ShouldExecuteAction(string actionCaption, string expected)
         {
             // Arrange
@@ -281,11 +290,14 @@ In Git, for each project :
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Test);
+                .Callback((string s, IEnumerable<DeploymentMode> d) => d.ToArray()) // For code coverage
+                .Returns(DeploymentMode.Test)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
                     It.IsAny<IEnumerable<string>>()))
+                .Callback((string s, IEnumerable<string> i) => i.ToArray()) // For code coverage
                 .Returns(() =>
                 {
                     if (!hasExecutedAction)
@@ -336,7 +348,8 @@ In Git, for each project :
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Test);
+                .Returns(DeploymentMode.Test)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
@@ -357,8 +370,14 @@ In Git, for each project :
             Mock<IConfigurationLoader> configurationLoaderMock = new();
 
             Mock<IDeploymentAction<CompileWebsiteAction>> compileWebsiteActionMock = new();
-            compileWebsiteActionMock.SetupGet(m => m.Caption).Returns(" 5 - Compile the website");
-            compileWebsiteActionMock.Setup(m => m.ExecuteAction()).Throws(new Exception("Compilation error"));
+            compileWebsiteActionMock
+                .SetupGet(m => m.Caption)
+                .Returns(" 5 - Compile the website")
+                .Verifiable();
+            compileWebsiteActionMock
+                .Setup(m => m.ExecuteAction())
+                .Throws(new Exception("Compilation error"))
+                .Verifiable();
 
             Deployer deployer = new(
                 loggerMock.Object,

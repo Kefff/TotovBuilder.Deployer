@@ -54,7 +54,8 @@ namespace TotovBuilder.Deployer.Test.Actions
                 .Returns([
                         "C:/TotovBuilder.Website\\dist/fonts",
                     "C:/TotovBuilder.Website\\dist/images"
-                    ]);
+                    ])
+                .Verifiable();
             directoryWrapperMock
                 .Setup(m => m.GetFiles("C:/TotovBuilder.Website\\dist"))
                 .Returns(["C:/TotovBuilder.Website\\dist/index.html"])
@@ -69,9 +70,17 @@ namespace TotovBuilder.Deployer.Test.Actions
                 .Verifiable();
 
             Mock<IFileWrapper> fileWrapperMock = new();
-            fileWrapperMock.Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/index.html")).Returns(bytes).Verifiable();
-            fileWrapperMock.Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/fonts/escape-from-tarkov.ttf")).Returns(bytes).Verifiable();
-            fileWrapperMock.Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/images/prapor.webp")).Returns(bytes).Verifiable();
+            fileWrapperMock
+                .Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/index.html")).Returns(bytes)
+                .Verifiable();
+            fileWrapperMock
+                .Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/fonts/escape-from-tarkov.ttf"))
+                .Returns(bytes)
+                .Verifiable();
+            fileWrapperMock
+                .Setup(m => m.ReadAllBytes("C:/TotovBuilder.Website\\dist/images/prapor.webp"))
+                .Returns(bytes)
+                .Verifiable();
 
             Mock<IAzureBlobStorageManager> azureBlobStorageManagerMock = new();
             azureBlobStorageManagerMock

@@ -59,14 +59,29 @@ namespace TotovBuilder.Deployer.Test.Actions
             streamWriterWrapperMock.Setup(m => m.WriteLine("npm build-test & exit")).Verifiable();
 
             Mock<IProcessWrapper> processWrapperMock = new();
-            processWrapperMock.SetupGet(m => m.StandardInput).Returns(streamWriterWrapperMock.Object).Verifiable();
-            processWrapperMock.SetupGet(m => m.StandardOutput).Returns(streamReaderWrapperMock.Object).Verifiable();
-            processWrapperMock.SetupGet(m => m.StartInfo).Returns(startInfo).Verifiable();
-            processWrapperMock.Setup(m => m.Start()).Verifiable();
-            processWrapperMock.Setup(m => m.WaitForExit()).Verifiable();
+            processWrapperMock
+                .SetupGet(m => m.StandardInput)
+                .Returns(streamWriterWrapperMock.Object)
+                .Verifiable();
+            processWrapperMock
+                .SetupGet(m => m.StandardOutput)
+                .Returns(streamReaderWrapperMock.Object)
+                .Verifiable();
+            processWrapperMock
+                .SetupGet(m => m.StartInfo)
+                .Returns(startInfo)
+                .Verifiable();
+            processWrapperMock
+                .Setup(m => m.Start())
+                .Verifiable();
+            processWrapperMock
+                .Setup(m => m.WaitForExit())
+                .Verifiable();
 
             Mock<IProcessWrapperFactory> processWrapperFactory = new();
-            processWrapperFactory.Setup(m => m.Create()).Returns(processWrapperMock.Object);
+            processWrapperFactory.Setup(m => m.Create())
+                .Returns(processWrapperMock.Object)
+                .Verifiable();
 
             CompileWebsiteAction action = new(
                 new Mock<IApplicationLogger<CompileWebsiteAction>>().Object,

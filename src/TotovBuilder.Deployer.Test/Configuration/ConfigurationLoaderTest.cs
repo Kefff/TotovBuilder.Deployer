@@ -36,10 +36,12 @@ namespace TotovBuilder.Deployer.Test.Configuration
   ""WebsiteCompilationCommand"": ""npm run build-test"",
   ""WebsiteDeploymentFileNotToDeletePattern"": ""data/.*"",
   ""WebsiteDirectoryPath"": ""D:/TotovBuilder/TotovBuilder.Website""
-}"));
+}"))
+                .Verifiable();
             fileWrapperMock
                 .Setup(m => m.ReadAllTextAsync($"../../../../../../TotovBuilder.Configuration\\{deploymentMode.ToString().ToUpperInvariant()}\\azure-functions-configuration.json"))
-                .Returns(Task.FromResult(TestData.AzureFunctionsConfigurationJson));
+                .Returns(Task.FromResult(TestData.AzureFunctionsConfigurationJson))
+                .Verifiable();
 
             ApplicationConfiguration configuration = new();
 

@@ -9,30 +9,31 @@ namespace TotovBuilder.Deployer.Actions
     /// </summary>
     public class DeploymentAction : IDeploymentAction
     {
-        /// <summary>
-        /// Function for getting the caption to display in the menu.
-        /// Is also used to identify which action has been chosen by the user.
-        /// </summary>
+        /// <inheritdoc/>
         public string Caption
         {
             get
             {
-                return _getCaptionFunction();
+                return GetCaptionFunction();
             }
         }
-        private readonly Func<string> _getCaptionFunction;
 
         /// <summary>
         /// Function for executing the action.
         /// </summary>
-        private readonly Func<Task> ExecutionTask;
+        private readonly Func<Task> ExecutionTask = () => Task.CompletedTask;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref=""/> class.
+        /// Function for getting the caption to display in the menu.
+        /// </summary>
+        private readonly Func<string> GetCaptionFunction;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeploymentAction"/> class.
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="executionTask"></param>
-        public DeploymentAction(string caption, Func<Task> executionTask)
+        public DeploymentAction(string caption, Func<Task>? executionTask = null)
             : this(() => caption, executionTask)
         {
         }
@@ -42,10 +43,14 @@ namespace TotovBuilder.Deployer.Actions
         /// </summary>
         /// <param name="getCaptionFunction"></param>
         /// <param name="executionTask"></param>
-        public DeploymentAction(Func<string> getCaptionFunction, Func<Task> executionTask)
+        public DeploymentAction(Func<string> getCaptionFunction, Func<Task>? executionTask = null)
         {
-            ExecutionTask = executionTask;
-            _getCaptionFunction = getCaptionFunction;
+            GetCaptionFunction = getCaptionFunction;
+
+            if (executionTask != null)
+            {
+                ExecutionTask = executionTask;
+            }
 
         }
 

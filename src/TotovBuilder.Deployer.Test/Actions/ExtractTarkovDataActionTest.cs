@@ -84,7 +84,10 @@ namespace TotovBuilder.Deployer.Test.Actions
                 .Verifiable();
 
             Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new();
-            streamReaderWrapperFactoryMock.Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets")).Returns(streamReaderWrapperMock.Object);
+            streamReaderWrapperFactoryMock
+                .Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets"))
+                .Returns(streamReaderWrapperMock.Object)
+                .Verifiable();
 
             ExtractTarkovDataAction action = new(
                 new Mock<IApplicationLogger<ExtractTarkovDataAction>>().Object,
@@ -157,7 +160,9 @@ namespace TotovBuilder.Deployer.Test.Actions
                 .Verifiable();
 
             Mock<IStreamReaderWrapperFactory> streamReaderWrapperFactoryMock = new();
-            streamReaderWrapperFactoryMock.Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets")).Returns(streamReaderWrapperMock.Object);
+            streamReaderWrapperFactoryMock
+                .Setup(m => m.Create("C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets"))
+                .Returns(streamReaderWrapperMock.Object);
 
             ExtractTarkovDataAction action = new(
                 loggerMock.Object,
