@@ -16,6 +16,7 @@
       <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0">
         <Configuration>
           <Format>cobertura</Format>
+          <IncludeTestAssembly>False</IncludeTestAssembly>
           <CodeCoverage>
             <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
             <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
