@@ -4,7 +4,6 @@ using Moq;
 using TotovBuilder.Deployer.Abstractions.Utils;
 using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Configuration;
-using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Test;
 using Xunit;

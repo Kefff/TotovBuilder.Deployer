@@ -8,7 +8,7 @@ using TotovBuilder.Deployer.Abstractions.Configuration;
 using TotovBuilder.Deployer.Abstractions.Utils;
 using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
-using TotovBuilder.Model;
+using TotovBuilder.Model.Configuration;
 
 namespace TotovBuilder.Deployer
 {

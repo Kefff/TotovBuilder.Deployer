@@ -51,7 +51,6 @@ namespace TotovBuilder.Deployer.Actions
             {
                 ExecutionTask = executionTask;
             }
-
         }
 
         /// <summary>

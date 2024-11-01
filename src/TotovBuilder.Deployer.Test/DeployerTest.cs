@@ -9,7 +9,6 @@ using TotovBuilder.Deployer.Abstractions.Utils;
 using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Deployer.Configuration;
-using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
 using Xunit;
 
@@ -248,9 +247,9 @@ namespace TotovBuilder.Deployer.Test
         [InlineData(" 3 - Update the changelog", @"In the ""TotovBuilder.Configuration"" directory, update the ""changelog.json"" file with new functionalities.
 
 Make sure to set the right version number and language for each entry.")]
-        [InlineData(" 4 - Update website version and check configuration files", @"In the ""TotovBuilder.Configuration"" directory, open ""WebsiteConfiguration"" and update the version of the website.
+        [InlineData(" 4 - Update website version and check configuration files", @"In the ""TotovBuilder.Website"" directory, open ""src/websiteConfiguration.ts"" and update the version of the website.
 
-Check each configuration file to make sure everything looks fine.
+In the ""TotovBuilder.Configuration"" directory, check each configuration file to make sure everything looks fine.
 
 When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same.")]
         [InlineData(" 7 - Deploy Azure Functions to Azure", @"Azure Functions must manually be published from Visual Studio :
@@ -277,6 +276,7 @@ In Git, for each project :
 - Push the ""main"" and ""develop"" branches")]
         [InlineData("12 - Annonce the update on Discord", "")]
         [InlineData("     Exit", "")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "For code coverage")]
         public async Task Run_ShouldExecuteAction(string actionCaption, string expected)
         {
             // Arrange
