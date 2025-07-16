@@ -77,7 +77,7 @@ namespace TotovBuilder.Deployer.Actions
         {
             Logger.LogInformation(Properties.Resources.DeployingRawData);
 
-            List<Task> uploadTasks = new List<Task>();
+            List<Task> uploadTasks = [];
             IEnumerable<string> blobNames = Configuration.AzureFunctionsConfiguration.GetBlobToUploadNames();
 
             foreach (string filePath in DirectoryWrapper.GetFiles(Configuration.DeployerConfiguration.ConfigurationsDirectory).Where(f => blobNames.Any(bn => f.EndsWith(bn))))
@@ -87,7 +87,7 @@ namespace TotovBuilder.Deployer.Actions
                 uploadTasks.Add(AzureBlobStorageManager.UpdateBlob(Configuration.AzureFunctionsConfiguration.AzureBlobStorageRawDataContainerName, fileName, fileContent));
             }
 
-            Task.WaitAll(uploadTasks.ToArray());
+            Task.WaitAll([.. uploadTasks]);
 
             Logger.LogSuccess(Properties.Resources.RawDataDeployed);
 

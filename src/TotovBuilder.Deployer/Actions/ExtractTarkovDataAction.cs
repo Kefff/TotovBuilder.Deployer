@@ -20,6 +20,12 @@ namespace TotovBuilder.Deployer.Actions
     /// </summary>
     public class ExtractTarkovDataAction : IDeploymentAction<ExtractTarkovDataAction>
     {
+        private static readonly JsonSerializerOptions SerializationOptions = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
         /// <inheritdoc/>
         public string Caption
         {
@@ -81,7 +87,7 @@ namespace TotovBuilder.Deployer.Actions
         {
             Logger.LogInformation(string.Format(Properties.Resources.ReadingTarkovResourcesFile, Configuration.DeployerConfiguration.TarkovResourcesFilePath));
 
-            StringBuilder tarkovResourcesFileContentStringBuilder = new StringBuilder();
+            StringBuilder tarkovResourcesFileContentStringBuilder = new();
 
             using (IStreamReaderWrapper srw = StreamReaderWrapperFactory.Create(Configuration.DeployerConfiguration.TarkovResourcesFilePath))
             {
@@ -152,9 +158,9 @@ namespace TotovBuilder.Deployer.Actions
         /// </summary>
         /// <param name="tarkovItemsJson">Json string representing the items.</param>
         /// <returns>Items.</returns>
-        private static IEnumerable<ItemMissingProperties> DeserializeItemMissingProperties(string tarkovItemsJson)
+        private static List<ItemMissingProperties> DeserializeItemMissingProperties(string tarkovItemsJson)
         {
-            List<ItemMissingProperties> extractedItems = new List<ItemMissingProperties>();
+            List<ItemMissingProperties> extractedItems = [];
             JsonElement itemsJson = JsonDocument.Parse(tarkovItemsJson).RootElement;
 
             foreach (JsonProperty itemJson in itemsJson.EnumerateObject())
@@ -177,7 +183,7 @@ namespace TotovBuilder.Deployer.Actions
         /// <returns>Item.</returns>
         private static ItemMissingProperties? DeserializeItemMissingProperties(JsonProperty itemJson)
         {
-            ItemMissingProperties itemMissingProperties = new ItemMissingProperties()
+            ItemMissingProperties itemMissingProperties = new()
             {
                 Id = itemJson.Value.GetProperty("_id").GetString()!
             };
@@ -211,11 +217,7 @@ namespace TotovBuilder.Deployer.Actions
                 Logger.LogInformation(string.Format(Properties.Resources.ExtractingMissingItemProperties));
 
                 IEnumerable<ItemMissingProperties> items = DeserializeItemMissingProperties(tarkovItemsJson);
-                string itemsJson = JsonSerializer.Serialize(items, new JsonSerializerOptions()
-                {
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                });
+                string itemsJson = JsonSerializer.Serialize(items, SerializationOptions);
 
                 string missingItemPropertiesFilePath = Path.Combine(
                     Configuration.DeployerConfiguration.ConfigurationsDirectory,

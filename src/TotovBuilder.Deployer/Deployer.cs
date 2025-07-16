@@ -8,7 +8,7 @@ using TotovBuilder.Deployer.Abstractions.Configuration;
 using TotovBuilder.Deployer.Abstractions.Utils;
 using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
-using TotovBuilder.Model;
+using TotovBuilder.Model.Configuration;
 
 namespace TotovBuilder.Deployer
 {
@@ -83,12 +83,10 @@ namespace TotovBuilder.Deployer
             Logger = logger;
             PromptWrapper = promptWrapper;
 
-            ExitAction = new DeploymentAction(
-                Properties.Resources.ExitAction,
-                () => Task.CompletedTask);
+            ExitAction = new DeploymentAction(Properties.Resources.ExitAction);
 
-            Actions = new List<IDeploymentAction>()
-            {
+            Actions =
+            [
                 updateTarkovAction,
                 extractTarkovDataAction,
                 new DeploymentAction(
@@ -119,7 +117,7 @@ namespace TotovBuilder.Deployer
                     () => Properties.Resources.ChangeDeploymentModeAction,
                     ChooseDeploymentMode),
                 ExitAction
-            };
+            ];
         }
 
         /// <inheritdoc/>
@@ -155,11 +153,6 @@ namespace TotovBuilder.Deployer
             DisplayTitle();
             DisplayCurrentDeploymentMode();
 
-            if (choice == ExitAction.Caption)
-            {
-                return false;
-            }
-
             IDeploymentAction selectedAction = Actions.Single(a => a.Caption == choice);
 
             try
@@ -170,6 +163,11 @@ namespace TotovBuilder.Deployer
             {
                 string error = e.ToString();
                 Logger.LogError(error);
+            }
+
+            if (choice == ExitAction.Caption)
+            {
+                return false;
             }
 
             return true;

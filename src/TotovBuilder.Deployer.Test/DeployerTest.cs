@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using TotovBuilder.Deployer.Abstractions.Actions;
@@ -8,7 +9,6 @@ using TotovBuilder.Deployer.Abstractions.Utils;
 using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Actions;
 using TotovBuilder.Deployer.Configuration;
-using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
 using Xunit;
 
@@ -25,21 +25,23 @@ namespace TotovBuilder.Deployer.Test
             // Arrange
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Test);
+                .Returns(DeploymentMode.Test)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
                     It.IsAny<IEnumerable<string>>()))
-                .Returns("     Exit");
+                .Returns("     Exit")
+                .Verifiable();
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
                 .Setup(m => m.Load(DeploymentMode.Test))
                 .Callback(() => configuration.DeployerConfiguration = new DeployerConfiguration()
@@ -61,7 +63,7 @@ namespace TotovBuilder.Deployer.Test
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 new Mock<IApplicationLogger<Deployer>>().Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,
@@ -79,6 +81,7 @@ namespace TotovBuilder.Deployer.Test
             // Assert
             configurationLoaderMock.Verify();
             consoleWrapperMock.Verify(m => m.WriteLine(DeploymentMode.Test.ToString()!.ToUpperInvariant()));
+            promptWrapperMock.Verify();
         }
 
         [Theory]
@@ -91,14 +94,15 @@ namespace TotovBuilder.Deployer.Test
             bool hasFailedConfirmation = false;
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Production);
+                .Returns(DeploymentMode.Production)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Input<string>("Are you sure you want to use deployment mode \"PRODUCTION\"? Confirm by typing \"Yes\""))
                 .Returns(() =>
@@ -111,14 +115,16 @@ namespace TotovBuilder.Deployer.Test
                     }
 
                     return confirmationText;
-                });
+                })
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
                     It.IsAny<IEnumerable<string>>()))
-                .Returns("     Exit");
+                .Returns("     Exit")
+                .Verifiable();
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
                 .Setup(m => m.Load(DeploymentMode.Production))
                 .Callback(() => configuration.DeployerConfiguration = new DeployerConfiguration()
@@ -140,7 +146,7 @@ namespace TotovBuilder.Deployer.Test
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 new Mock<IApplicationLogger<Deployer>>().Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,
@@ -167,22 +173,24 @@ namespace TotovBuilder.Deployer.Test
             bool hasThrown = false;
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IApplicationLogger<Deployer>> loggerMock = new Mock<IApplicationLogger<Deployer>>();
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IApplicationLogger<Deployer>> loggerMock = new();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Test);
+                .Returns(DeploymentMode.Test)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
                     It.IsAny<IEnumerable<string>>()))
-                .Returns("     Exit");
+                .Returns("     Exit")
+                .Verifiable();
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
             configurationLoaderMock
                 .Setup(m => m.Load(DeploymentMode.Test))
                 .Callback(() =>
@@ -214,7 +222,7 @@ namespace TotovBuilder.Deployer.Test
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 loggerMock.Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,
@@ -239,7 +247,9 @@ namespace TotovBuilder.Deployer.Test
         [InlineData(" 3 - Update the changelog", @"In the ""TotovBuilder.Configuration"" directory, update the ""changelog.json"" file with new functionalities.
 
 Make sure to set the right version number and language for each entry.")]
-        [InlineData(" 4 - Check configuration files", @"In the ""TotovBuilder.Configuration"" directory, check each configuration file to make sure everything looks fine.
+        [InlineData(" 4 - Update website version and check configuration files", @"In the ""TotovBuilder.Website"" directory, open ""src/websiteConfiguration.ts"" and update the version of the website.
+
+In the ""TotovBuilder.Configuration"" directory, check each configuration file to make sure everything looks fine.
 
 When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same.")]
         [InlineData(" 7 - Deploy Azure Functions to Azure", @"Azure Functions must manually be published from Visual Studio :
@@ -249,13 +259,12 @@ When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files wi
 Make sure to CHOOSE THE RIGHT PROFILE at the top before publishing.
 
 When deploying in TEST, the ""TotovBuilder.AzureFunctions"" project can then be locally launched to immediatly update the website data files in the ""data"" folder of the website on Azure.")]
-        [InlineData(" 9 - Purge the Content Delivery Network on Azure", @"The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
+        [InlineData(" 9 - Purge the Content Delivery Network", @"The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
 
-On Azure :
-- Open the storage account
-- Choose ""Front Door and CDN""
-- Select the website endpoint
-- Click on ""Purge"", check ""Purge all"" and click ""Purge""")]
+On Cloudflare :
+- Open the domain
+- In the menu, extend ""Caching"" and choose ""Configuration""
+- Click on ""Pure Everything""")]
         [InlineData("10 - Check the website", @"After the update, launch the website in a browser and check that new functionalities are present and that everything works.")]
         [InlineData("11 - Update Git", @"After the website is updated and tested, the develop branch can be merged on the main branch with a new version tag.
 
@@ -265,24 +274,29 @@ In Git, for each project :
 - Checkout the ""develop"" branch
 - Push the ""main"" and ""develop"" branches")]
         [InlineData("12 - Annonce the update on Discord", "")]
+        [InlineData("     Exit", "")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "For code coverage")]
         public async Task Run_ShouldExecuteAction(string actionCaption, string expected)
         {
             // Arrange
             bool hasExecutedAction = false;
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Test);
+                .Callback((string s, IEnumerable<DeploymentMode> d) => d.ToArray()) // For code coverage
+                .Returns(DeploymentMode.Test)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
                     It.IsAny<IEnumerable<string>>()))
+                .Callback((string s, IEnumerable<string> i) => i.ToArray()) // For code coverage
                 .Returns(() =>
                 {
                     if (!hasExecutedAction)
@@ -293,11 +307,12 @@ In Git, for each project :
                     }
 
                     return "     Exit";
-                });
+                })
+                .Verifiable();
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 new Mock<IApplicationLogger<Deployer>>().Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,
@@ -324,15 +339,16 @@ In Git, for each project :
             bool hasExecutedAction = false;
             IApplicationConfiguration configuration = new ApplicationConfiguration();
 
-            Mock<IApplicationLogger<Deployer>> loggerMock = new Mock<IApplicationLogger<Deployer>>();
-            Mock<IConsoleWrapper> consoleWrapperMock = new Mock<IConsoleWrapper>();
+            Mock<IApplicationLogger<Deployer>> loggerMock = new();
+            Mock<IConsoleWrapper> consoleWrapperMock = new();
 
-            Mock<IPromtWrapper> promptWrapperMock = new Mock<IPromtWrapper>();
+            Mock<IPromtWrapper> promptWrapperMock = new();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Deployment mode",
                     It.IsAny<DeploymentMode[]>()))
-                .Returns(DeploymentMode.Test);
+                .Returns(DeploymentMode.Test)
+                .Verifiable();
             promptWrapperMock
                 .Setup(m => m.Select(
                     "Select an action",
@@ -347,15 +363,22 @@ In Git, for each project :
                     }
 
                     return "     Exit";
-                });
+                })
+                .Verifiable();
 
-            Mock<IConfigurationLoader> configurationLoaderMock = new Mock<IConfigurationLoader>();
+            Mock<IConfigurationLoader> configurationLoaderMock = new();
 
-            Mock<IDeploymentAction<CompileWebsiteAction>> compileWebsiteActionMock = new Mock<IDeploymentAction<CompileWebsiteAction>>();
-            compileWebsiteActionMock.SetupGet(m => m.Caption).Returns(" 5 - Compile the website");
-            compileWebsiteActionMock.Setup(m => m.ExecuteAction()).Throws(new Exception("Compilation error"));
+            Mock<IDeploymentAction<CompileWebsiteAction>> compileWebsiteActionMock = new();
+            compileWebsiteActionMock
+                .SetupGet(m => m.Caption)
+                .Returns(" 5 - Compile the website")
+                .Verifiable();
+            compileWebsiteActionMock
+                .Setup(m => m.ExecuteAction())
+                .Throws(new Exception("Compilation error"))
+                .Verifiable();
 
-            Deployer deployer = new Deployer(
+            Deployer deployer = new(
                 loggerMock.Object,
                 consoleWrapperMock.Object,
                 promptWrapperMock.Object,

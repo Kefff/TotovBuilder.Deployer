@@ -15,7 +15,7 @@ namespace TotovBuilder.Deployer.Wrappers
         {
             Directory.CreateDirectory(path);
         }
-        
+
         /// <inheritdoc/>
         public string[] GetDirectories(string path)
         {

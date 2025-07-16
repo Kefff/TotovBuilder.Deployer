@@ -97,9 +97,9 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In the &quot;TotovBuilder.Configuration&quot; directory, open &quot;WebsiteConfiguration&quot; and update the version of the website.
+        ///   Looks up a localized string similar to In the &quot;TotovBuilder.Website&quot; directory, open &quot;src/websiteConfiguration.ts&quot; and update the version of the website.
         ///
-        ///Check each configuration file to make sure everything looks fine.
+        ///In the &quot;TotovBuilder.Configuration&quot; directory, check each configuration file to make sure everything looks fine.
         ///
         ///When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same..
         /// </summary>
@@ -359,7 +359,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  9 - Purge the Content Delivery Network on Azure.
+        ///   Looks up a localized string similar to  9 - Purge the Content Delivery Network.
         /// </summary>
         internal static string PurgeCdnAction {
             get {
@@ -370,11 +370,10 @@ namespace TotovBuilder.Deployer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
         ///
-        ///On Azure :
-        ///- Open the storage account
-        ///- Choose &quot;Front Door and CDN&quot;
-        ///- Select the website endpoint
-        ///- Click on &quot;Purge&quot;, check &quot;Purge all&quot; and click &quot;Purge&quot;.
+        ///On Cloudflare :
+        ///- Open the domain
+        ///- In the menu, extend &quot;Caching&quot; and choose &quot;Configuration&quot;
+        ///- Click on &quot;Pure Everything&quot;.
         /// </summary>
         internal static string PurgeCdnInstructions {
             get {

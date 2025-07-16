@@ -33,7 +33,7 @@ namespace TotovBuilder.Deployer.Wrappers
         /// <inheritdoc/>
         public IProcessWrapper Create()
         {
-            ProcessWrapper wrapper = new ProcessWrapper(StreamReaderWrapperFactory, StreamWriterWrapperFactory);
+            ProcessWrapper wrapper = new(StreamReaderWrapperFactory, StreamWriterWrapperFactory);
 
             return wrapper;
         }

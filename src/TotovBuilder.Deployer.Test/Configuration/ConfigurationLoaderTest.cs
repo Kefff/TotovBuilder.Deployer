@@ -4,7 +4,6 @@ using Moq;
 using TotovBuilder.Deployer.Abstractions.Utils;
 using TotovBuilder.Deployer.Abstractions.Wrappers;
 using TotovBuilder.Deployer.Configuration;
-using TotovBuilder.Model;
 using TotovBuilder.Model.Configuration;
 using TotovBuilder.Model.Test;
 using Xunit;
@@ -22,7 +21,7 @@ namespace TotovBuilder.Deployer.Test.Configuration
         public async Task Load_ShouldLoadConfiguration(DeploymentMode deploymentMode)
         {
             // Arrange
-            Mock<IFileWrapper> fileWrapperMock = new Mock<IFileWrapper>();
+            Mock<IFileWrapper> fileWrapperMock = new();
             fileWrapperMock
                 .Setup(m => m.ReadAllTextAsync($"../../../../../../TotovBuilder.Configuration\\{deploymentMode.ToString().ToUpperInvariant()}\\deployer-configuration.json"))
                 .Returns(Task.FromResult(@"{
@@ -36,14 +35,16 @@ namespace TotovBuilder.Deployer.Test.Configuration
   ""WebsiteCompilationCommand"": ""npm run build-test"",
   ""WebsiteDeploymentFileNotToDeletePattern"": ""data/.*"",
   ""WebsiteDirectoryPath"": ""D:/TotovBuilder/TotovBuilder.Website""
-}"));
+}"))
+                .Verifiable();
             fileWrapperMock
                 .Setup(m => m.ReadAllTextAsync($"../../../../../../TotovBuilder.Configuration\\{deploymentMode.ToString().ToUpperInvariant()}\\azure-functions-configuration.json"))
-                .Returns(Task.FromResult(TestData.AzureFunctionsConfigurationJson));
+                .Returns(Task.FromResult(TestData.AzureFunctionsConfigurationJson))
+                .Verifiable();
 
-            ApplicationConfiguration configuration = new ApplicationConfiguration();
+            ApplicationConfiguration configuration = new();
 
-            ConfigurationLoader configurationReader = new ConfigurationLoader(
+            ConfigurationLoader configurationReader = new(
                 new Mock<IApplicationLogger<ConfigurationLoader>>().Object,
                 configuration,
                 fileWrapperMock.Object);
