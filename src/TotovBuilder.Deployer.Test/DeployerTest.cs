@@ -259,13 +259,12 @@ When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files wi
 Make sure to CHOOSE THE RIGHT PROFILE at the top before publishing.
 
 When deploying in TEST, the ""TotovBuilder.AzureFunctions"" project can then be locally launched to immediatly update the website data files in the ""data"" folder of the website on Azure.")]
-        [InlineData(" 9 - Purge the Content Delivery Network on Azure", @"The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
+        [InlineData(" 9 - Purge the Content Delivery Network", @"The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
 
-On Azure :
-- Open the storage account
-- Choose ""Front Door and CDN""
-- Select the website endpoint
-- Click on ""Purge"", check ""Purge all"" and click ""Purge""")]
+On Cloudflare :
+- Open the domain
+- In the menu, extend ""Caching"" and choose ""Configuration""
+- Click on ""Pure Everything""")]
         [InlineData("10 - Check the website", @"After the update, launch the website in a browser and check that new functionalities are present and that everything works.")]
         [InlineData("11 - Update Git", @"After the website is updated and tested, the develop branch can be merged on the main branch with a new version tag.
 

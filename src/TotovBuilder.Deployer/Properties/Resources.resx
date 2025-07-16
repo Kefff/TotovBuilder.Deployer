@@ -230,16 +230,15 @@ In Git, for each project :
     <value>Missing properties from {0} items extracted from Escape from Tarkov resources file.</value>
   </data>
   <data name="PurgeCdnAction" xml:space="preserve">
-    <value> 9 - Purge the Content Delivery Network on Azure</value>
+    <value> 9 - Purge the Content Delivery Network</value>
   </data>
   <data name="PurgeCdnInstructions" xml:space="preserve">
     <value>The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
 
-On Azure :
-- Open the storage account
-- Choose "Front Door and CDN"
-- Select the website endpoint
-- Click on "Purge", check "Purge all" and click "Purge"</value>
+On Cloudflare :
+- Open the domain
+- In the menu, extend "Caching" and choose "Configuration"
+- Click on "Pure Everything"</value>
   </data>
   <data name="RawDataDeployed" xml:space="preserve">
     <value>Raw data deployed to Azure.</value>
