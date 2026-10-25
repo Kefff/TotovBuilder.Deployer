@@ -25,7 +25,7 @@ namespace TotovBuilder.Deployer.Test.Actions
                 new Mock<IProcessWrapperFactory>().Object);
 
             // Act / Assert
-            action.Caption.Should().Be(" 5 - Compile the website");
+            action.Caption.Should().Be(" 3 - Compile the website");
         }
 
         [Fact]

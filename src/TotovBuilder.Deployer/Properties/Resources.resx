@@ -117,17 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArchivingFile" xml:space="preserve">
-    <value>Archiving file "{0}" to "{1}".</value>
-  </data>
-  <data name="CannotReadTarkovResourcesFileContent" xml:space="preserve">
-    <value>Cannot read Escape from Tarkov resources file content.</value>
-  </data>
   <data name="ChangeDeploymentModeAction" xml:space="preserve">
     <value>     Change deployment mode</value>
   </data>
   <data name="CheckConfigurationFilesAction" xml:space="preserve">
-    <value> 4 - Update website version and check configuration files</value>
+    <value> 2 - Update website version and check configuration files</value>
   </data>
   <data name="CheckConfigurationFilesInstructions" xml:space="preserve">
     <value>In the "TotovBuilder.Website" directory, open "src/websiteConfiguration.ts" and update the version of the website.
@@ -137,13 +131,13 @@ In the "TotovBuilder.Configuration" directory, check each configuration file to 
 When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same.</value>
   </data>
   <data name="CheckWebsiteAction" xml:space="preserve">
-    <value>10 - Check the website</value>
+    <value> 8 - Check the website</value>
   </data>
   <data name="CheckWebsiteInstructions" xml:space="preserve">
     <value>After the update, launch the website in a browser and check that new functionalities are present and that everything works.</value>
   </data>
   <data name="CompileWebsiteAction" xml:space="preserve">
-    <value> 5 - Compile the website</value>
+    <value> 3 - Compile the website</value>
   </data>
   <data name="CompilingWebsite" xml:space="preserve">
     <value>Compiling the website using command "{0}" in "{1}".</value>
@@ -158,7 +152,7 @@ When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files wi
     <value>Current deployment mode : </value>
   </data>
   <data name="DeployAzureFunctionsAction" xml:space="preserve">
-    <value> 7 - Deploy Azure Functions to Azure</value>
+    <value> 5 - Deploy Azure Functions to Azure</value>
   </data>
   <data name="DeployAzureFunctionsInstructions" xml:space="preserve">
     <value>Azure Functions must manually be published from Visual Studio :
@@ -179,13 +173,13 @@ When deploying in TEST, the "TotovBuilder.AzureFunctions" project can then be lo
     <value>Deployment mode</value>
   </data>
   <data name="DeployRawDataAction" xml:space="preserve">
-    <value> 6 - Deploy raw data to Azure</value>
+    <value> 4 - Deploy raw data to Azure</value>
   </data>
   <data name="DeployWebsiteAction" xml:space="preserve">
-    <value> 8 - Deploy website to Azure</value>
+    <value> 6 - Deploy website to Azure</value>
   </data>
   <data name="DiscordAction" xml:space="preserve">
-    <value>12 - Annonce the update on Discord</value>
+    <value>10 - Annonce the update on Discord</value>
   </data>
   <data name="DiscordInstructions" xml:space="preserve">
     <value>After everything is done, an update notification can be sent on Discord.
@@ -199,17 +193,8 @@ Make sure the post contains the right version number.</value>
   <data name="ExitAction" xml:space="preserve">
     <value>     Exit</value>
   </data>
-  <data name="ExtractingMissingItemProperties" xml:space="preserve">
-    <value>Extracting missing items form Escape from Tarkov resources file.</value>
-  </data>
-  <data name="ExtractTarkovDataAction" xml:space="preserve">
-    <value> 2 - Extract missing item properties from Escape from Tarkov</value>
-  </data>
-  <data name="FileArchived" xml:space="preserve">
-    <value>File "{0}" archived.</value>
-  </data>
   <data name="GitAction" xml:space="preserve">
-    <value>11 - Update Git</value>
+    <value> 9 - Update Git</value>
   </data>
   <data name="GitActionInstructions" xml:space="preserve">
     <value>After the website is updated and tested, the develop branch can be merged on the main branch with a new version tag.
@@ -226,11 +211,8 @@ In Git, for each project :
   <data name="LoadingDeployerConfiguration" xml:space="preserve">
     <value>Loading deployer configuration from "{0}".</value>
   </data>
-  <data name="MissingItemPropertiesExtracted" xml:space="preserve">
-    <value>Missing properties from {0} items extracted from Escape from Tarkov resources file.</value>
-  </data>
   <data name="PurgeCdnAction" xml:space="preserve">
-    <value> 9 - Purge the Content Delivery Network</value>
+    <value> 7 - Purge the Content Delivery Network</value>
   </data>
   <data name="PurgeCdnInstructions" xml:space="preserve">
     <value>The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
@@ -243,17 +225,8 @@ On Cloudflare :
   <data name="RawDataDeployed" xml:space="preserve">
     <value>Raw data deployed to Azure.</value>
   </data>
-  <data name="ReadingTarkovResourcesFile" xml:space="preserve">
-    <value>Reading Escape from Tarkov resources file ({0}).</value>
-  </data>
   <data name="SelectedAction" xml:space="preserve">
     <value>Select an action</value>
-  </data>
-  <data name="StartingTarkovLauncher" xml:space="preserve">
-    <value>Starting Escape from Tarkov launcher at "{0}".</value>
-  </data>
-  <data name="TarkovLauncherStarted" xml:space="preserve">
-    <value>Escape from Tarkov launcher started.</value>
   </data>
   <data name="Title_Part1" xml:space="preserve">
     <value>/////////////////////////////////////////
@@ -275,15 +248,12 @@ On Cloudflare :
 /////////////////////////////////////////</value>
   </data>
   <data name="UpdateChangelogAction" xml:space="preserve">
-    <value> 3 - Update the changelog</value>
+    <value> 1 - Update the changelog</value>
   </data>
   <data name="UpdateChangelogInstructions" xml:space="preserve">
     <value>In the "TotovBuilder.Configuration" directory, update the "changelog.json" file with new functionalities.
 
 Make sure to set the right version number and language for each entry.</value>
-  </data>
-  <data name="UpdateTarkovAction" xml:space="preserve">
-    <value> 1 - Update Escape from Tarkov</value>
   </data>
   <data name="WebsiteCompiled" xml:space="preserve">
     <value>Website compiled.</value>

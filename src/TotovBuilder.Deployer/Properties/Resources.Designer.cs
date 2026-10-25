@@ -61,24 +61,6 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Archiving file &quot;{0}&quot; to &quot;{1}&quot;..
-        /// </summary>
-        internal static string ArchivingFile {
-            get {
-                return ResourceManager.GetString("ArchivingFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot read Escape from Tarkov resources file content..
-        /// </summary>
-        internal static string CannotReadTarkovResourcesFileContent {
-            get {
-                return ResourceManager.GetString("CannotReadTarkovResourcesFileContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to      Change deployment mode.
         /// </summary>
         internal static string ChangeDeploymentModeAction {
@@ -88,7 +70,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  4 - Update website version and check configuration files.
+        ///   Looks up a localized string similar to  2 - Update website version and check configuration files.
         /// </summary>
         internal static string CheckConfigurationFilesAction {
             get {
@@ -110,7 +92,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 10 - Check the website.
+        ///   Looks up a localized string similar to  8 - Check the website.
         /// </summary>
         internal static string CheckWebsiteAction {
             get {
@@ -128,7 +110,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  5 - Compile the website.
+        ///   Looks up a localized string similar to  3 - Compile the website.
         /// </summary>
         internal static string CompileWebsiteAction {
             get {
@@ -173,7 +155,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  7 - Deploy Azure Functions to Azure.
+        ///   Looks up a localized string similar to  5 - Deploy Azure Functions to Azure.
         /// </summary>
         internal static string DeployAzureFunctionsAction {
             get {
@@ -224,7 +206,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  6 - Deploy raw data to Azure.
+        ///   Looks up a localized string similar to  4 - Deploy raw data to Azure.
         /// </summary>
         internal static string DeployRawDataAction {
             get {
@@ -233,7 +215,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  8 - Deploy website to Azure.
+        ///   Looks up a localized string similar to  6 - Deploy website to Azure.
         /// </summary>
         internal static string DeployWebsiteAction {
             get {
@@ -242,7 +224,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 12 - Annonce the update on Discord.
+        ///   Looks up a localized string similar to 10 - Annonce the update on Discord.
         /// </summary>
         internal static string DiscordAction {
             get {
@@ -281,34 +263,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extracting missing items form Escape from Tarkov resources file..
-        /// </summary>
-        internal static string ExtractingMissingItemProperties {
-            get {
-                return ResourceManager.GetString("ExtractingMissingItemProperties", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  2 - Extract missing item properties from Escape from Tarkov.
-        /// </summary>
-        internal static string ExtractTarkovDataAction {
-            get {
-                return ResourceManager.GetString("ExtractTarkovDataAction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File &quot;{0}&quot; archived..
-        /// </summary>
-        internal static string FileArchived {
-            get {
-                return ResourceManager.GetString("FileArchived", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 11 - Update Git.
+        ///   Looks up a localized string similar to  9 - Update Git.
         /// </summary>
         internal static string GitAction {
             get {
@@ -350,16 +305,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing properties from {0} items extracted from Escape from Tarkov resources file..
-        /// </summary>
-        internal static string MissingItemPropertiesExtracted {
-            get {
-                return ResourceManager.GetString("MissingItemPropertiesExtracted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  9 - Purge the Content Delivery Network.
+        ///   Looks up a localized string similar to  7 - Purge the Content Delivery Network.
         /// </summary>
         internal static string PurgeCdnAction {
             get {
@@ -391,38 +337,11 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading Escape from Tarkov resources file ({0})..
-        /// </summary>
-        internal static string ReadingTarkovResourcesFile {
-            get {
-                return ResourceManager.GetString("ReadingTarkovResourcesFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select an action.
         /// </summary>
         internal static string SelectedAction {
             get {
                 return ResourceManager.GetString("SelectedAction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Starting Escape from Tarkov launcher at &quot;{0}&quot;..
-        /// </summary>
-        internal static string StartingTarkovLauncher {
-            get {
-                return ResourceManager.GetString("StartingTarkovLauncher", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Escape from Tarkov launcher started..
-        /// </summary>
-        internal static string TarkovLauncherStarted {
-            get {
-                return ResourceManager.GetString("TarkovLauncherStarted", resourceCulture);
             }
         }
         
@@ -476,7 +395,7 @@ namespace TotovBuilder.Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  3 - Update the changelog.
+        ///   Looks up a localized string similar to  1 - Update the changelog.
         /// </summary>
         internal static string UpdateChangelogAction {
             get {
@@ -492,15 +411,6 @@ namespace TotovBuilder.Deployer.Properties {
         internal static string UpdateChangelogInstructions {
             get {
                 return ResourceManager.GetString("UpdateChangelogInstructions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  1 - Update Escape from Tarkov.
-        /// </summary>
-        internal static string UpdateTarkovAction {
-            get {
-                return ResourceManager.GetString("UpdateTarkovAction", resourceCulture);
             }
         }
         

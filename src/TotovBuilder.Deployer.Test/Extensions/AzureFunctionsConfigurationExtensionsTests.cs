@@ -20,7 +20,6 @@ namespace TotovBuilder.Deployer.Test.Extensions
                 AzureFunctionsConfigurationBlobName = "azure-functions-configuration.json",
                 RawChangelogBlobName = "raw-changelog.json",
                 RawItemCategoriesBlobName = "raw-item-categories.json",
-                RawItemMissingPropertiesBlobName = "raw-item-missing-properties.json",
                 RawTarkovValuesBlobName = "raw-tarkov-values.json",
                 RawWebsiteConfigurationBlobName = "raw-website-configuration.json",
                 WebsiteChangelogBlobName = "website-changelog.json",
@@ -39,7 +38,6 @@ namespace TotovBuilder.Deployer.Test.Extensions
             blobNames.Should().BeEquivalentTo([
                 "raw-changelog.json",
                 "raw-item-categories.json",
-                "raw-item-missing-properties.json",
                 "raw-tarkov-values.json",
                 "raw-website-configuration.json",
                 "azure-functions-configuration.json"

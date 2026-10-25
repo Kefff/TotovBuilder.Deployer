@@ -63,8 +63,6 @@ namespace TotovBuilder.Deployer
         /// <param name="compileWebsiteAction">Action to compile the Totov Builder website.</param>
         /// <param name="deployRawDataAction">Action to deploy to Azure raw data used by Azure Functions to generated website data.</param>
         /// <param name="deployWebsiteAction">Action to deploy the website to Azure.</param>
-        /// <param name="extractTarkovDataAction">Action to extract missing item properties from Tarkov data.</param>
-        /// <param name="updateTarkovAction">Action to launch the Escape from Tarkov launcher to update the game.</param>
         public Deployer(
             IApplicationLogger<Deployer> logger,
             IConsoleWrapper consoleWrapper,
@@ -73,9 +71,7 @@ namespace TotovBuilder.Deployer
             IApplicationConfiguration configuration,
             IDeploymentAction<CompileWebsiteAction> compileWebsiteAction,
             IDeploymentAction<DeployRawDataAction> deployRawDataAction,
-            IDeploymentAction<DeployWebsiteAction> deployWebsiteAction,
-            IDeploymentAction<ExtractTarkovDataAction> extractTarkovDataAction,
-            IDeploymentAction<UpdateTarkovAction> updateTarkovAction)
+            IDeploymentAction<DeployWebsiteAction> deployWebsiteAction)
         {
             Configuration = configuration;
             ConfigurationLoader = configurationLoader;
@@ -87,8 +83,6 @@ namespace TotovBuilder.Deployer
 
             Actions =
             [
-                updateTarkovAction,
-                extractTarkovDataAction,
                 new DeploymentAction(
                     () => Properties.Resources.UpdateChangelogAction,
                     () => DisplayActionInstructions(Properties.Resources.UpdateChangelogInstructions)),
