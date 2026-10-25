@@ -48,8 +48,6 @@ namespace TotovBuilder.Deployer
                     services.AddSingleton<IDeploymentAction<CompileWebsiteAction>, CompileWebsiteAction>();
                     services.AddSingleton<IDeploymentAction<DeployRawDataAction>, DeployRawDataAction>();
                     services.AddSingleton<IDeploymentAction<DeployWebsiteAction>, DeployWebsiteAction>();
-                    services.AddSingleton<IDeploymentAction<ExtractTarkovDataAction>, ExtractTarkovDataAction>();
-                    services.AddSingleton<IDeploymentAction<UpdateTarkovAction>, UpdateTarkovAction>();
 
                     services.AddAzureBlobStorageManager(
                         (IServiceProvider serviceProvider) =>

@@ -32,7 +32,7 @@ namespace TotovBuilder.Deployer.Test.Actions
                 new Mock<IAzureBlobStorageManager>().Object);
 
             // Act / Assert
-            action.Caption.Should().Be(" 8 - Deploy website to Azure");
+            action.Caption.Should().Be(" 6 - Deploy website to Azure");
         }
 
         [Fact]

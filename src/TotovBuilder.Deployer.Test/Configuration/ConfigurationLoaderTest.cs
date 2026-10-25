@@ -26,11 +26,6 @@ namespace TotovBuilder.Deployer.Test.Configuration
                 .Setup(m => m.ReadAllTextAsync($"../../../../../../TotovBuilder.Configuration\\{deploymentMode.ToString().ToUpperInvariant()}\\deployer-configuration.json"))
                 .Returns(Task.FromResult(@"{
   ""AzureFunctionsConfigurationBlobName"": ""azure-functions-configuration.json"",
-  ""ItemsExtractionEndSearchString"": ""LocalProfile"",
-  ""ItemsExtractionStartSearchString"": ""TestItemTemplates"",
-  ""PreviousExtractionsArchiveDirectory"": ""archive"",
-  ""TarkovLauncherExecutableFilePath"": ""C:/Battlestate Games/BsgLauncher/BsgLauncher.exe"",
-  ""TarkovResourcesFilePath"": ""C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets"",
   ""WebsiteBuildDirectory"": ""dist"",
   ""WebsiteCompilationCommand"": ""npm run build-test"",
   ""WebsiteDeploymentFileNotToDeletePattern"": ""data/.*"",
@@ -60,11 +55,6 @@ namespace TotovBuilder.Deployer.Test.Configuration
                 ConfigurationsDirectory = $"../../../../../../TotovBuilder.Configuration\\{deploymentMode.ToString().ToUpperInvariant()}",
                 DeployerConfigurationFileName = "deployer-configuration.json",
                 DeployerDeploymentMode = deploymentMode,
-                ItemsExtractionEndSearchString = "LocalProfile",
-                ItemsExtractionStartSearchString = "TestItemTemplates",
-                PreviousExtractionsArchiveDirectory = "archive",
-                TarkovLauncherExecutableFilePath = "C:/Battlestate Games/BsgLauncher/BsgLauncher.exe",
-                TarkovResourcesFilePath = "C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets",
                 WebsiteBuildDirectory = "dist",
                 WebsiteCompilationCommand = "npm run build-test",
                 WebsiteDeploymentFileNotToDeletePattern = "data/.*",

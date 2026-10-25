@@ -29,12 +29,6 @@
     <ProjectReference Include="..\TotovBuilder.Deployer\TotovBuilder.Deployer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="TestData\resources.assets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
   <Target Name="CopyAppConfig" AfterTargets="AfterBuild">
     <!--
           Copies the test equivalent of App.config to the output directory.

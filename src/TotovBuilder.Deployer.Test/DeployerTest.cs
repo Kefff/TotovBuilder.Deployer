@@ -50,11 +50,6 @@ namespace TotovBuilder.Deployer.Test
                     ConfigurationsDirectory = $"../../../../../../TotovBuilder.Configuration\\{DeploymentMode.Test.ToString().ToUpperInvariant()}",
                     DeployerConfigurationFileName = "deployer-configuration.json",
                     DeployerDeploymentMode = DeploymentMode.Test,
-                    ItemsExtractionEndSearchString = "LocalProfile",
-                    ItemsExtractionStartSearchString = "TestItemTemplates",
-                    PreviousExtractionsArchiveDirectory = "archive",
-                    TarkovLauncherExecutableFilePath = "C:/Battlestate Games/BsgLauncher/BsgLauncher.exe",
-                    TarkovResourcesFilePath = "C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets",
                     WebsiteBuildDirectory = "dist",
                     WebsiteCompilationCommand = "npm run build-test",
                     WebsiteDeploymentFileNotToDeletePattern = "data/.*",
@@ -71,9 +66,7 @@ namespace TotovBuilder.Deployer.Test
                 configuration,
                 new Mock<IDeploymentAction<CompileWebsiteAction>>().Object,
                 new Mock<IDeploymentAction<DeployRawDataAction>>().Object,
-                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object,
-                new Mock<IDeploymentAction<ExtractTarkovDataAction>>().Object,
-                new Mock<IDeploymentAction<UpdateTarkovAction>>().Object);
+                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object);
 
             // Act
             await deployer.Run();
@@ -133,11 +126,6 @@ namespace TotovBuilder.Deployer.Test
                     ConfigurationsDirectory = $"../../../../../../TotovBuilder.Configuration\\{DeploymentMode.Production.ToString().ToUpperInvariant()}",
                     DeployerConfigurationFileName = "deployer-configuration.json",
                     DeployerDeploymentMode = DeploymentMode.Production,
-                    ItemsExtractionEndSearchString = "LocalProfile",
-                    ItemsExtractionStartSearchString = "TestItemTemplates",
-                    PreviousExtractionsArchiveDirectory = "archive",
-                    TarkovLauncherExecutableFilePath = "C:/Battlestate Games/BsgLauncher/BsgLauncher.exe",
-                    TarkovResourcesFilePath = "C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets",
                     WebsiteBuildDirectory = "dist",
                     WebsiteCompilationCommand = "npm run build-test",
                     WebsiteDeploymentFileNotToDeletePattern = "data/.*",
@@ -154,9 +142,7 @@ namespace TotovBuilder.Deployer.Test
                 configuration,
                 new Mock<IDeploymentAction<CompileWebsiteAction>>().Object,
                 new Mock<IDeploymentAction<DeployRawDataAction>>().Object,
-                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object,
-                new Mock<IDeploymentAction<ExtractTarkovDataAction>>().Object,
-                new Mock<IDeploymentAction<UpdateTarkovAction>>().Object);
+                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object);
 
             // Act
             await deployer.Run();
@@ -208,11 +194,6 @@ namespace TotovBuilder.Deployer.Test
                         ConfigurationsDirectory = $"../../../../../../TotovBuilder.Configuration\\{DeploymentMode.Test.ToString().ToUpperInvariant()}",
                         DeployerConfigurationFileName = "deployer-configuration.json",
                         DeployerDeploymentMode = DeploymentMode.Test,
-                        ItemsExtractionEndSearchString = "LocalProfile",
-                        ItemsExtractionStartSearchString = "TestItemTemplates",
-                        PreviousExtractionsArchiveDirectory = "archive",
-                        TarkovLauncherExecutableFilePath = "C:/Battlestate Games/BsgLauncher/BsgLauncher.exe",
-                        TarkovResourcesFilePath = "C:/Battlestate Games/EFT (live)/EscapeFromTarkov_Data/resources.assets",
                         WebsiteBuildDirectory = "dist",
                         WebsiteCompilationCommand = "npm run build-test",
                         WebsiteDeploymentFileNotToDeletePattern = "data/.*",
@@ -230,9 +211,7 @@ namespace TotovBuilder.Deployer.Test
                 configuration,
                 new Mock<IDeploymentAction<CompileWebsiteAction>>().Object,
                 new Mock<IDeploymentAction<DeployRawDataAction>>().Object,
-                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object,
-                new Mock<IDeploymentAction<ExtractTarkovDataAction>>().Object,
-                new Mock<IDeploymentAction<UpdateTarkovAction>>().Object);
+                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object);
 
             // Act
             await deployer.Run();
@@ -244,36 +223,36 @@ namespace TotovBuilder.Deployer.Test
         }
 
         [Theory]
-        [InlineData(" 3 - Update the changelog", @"In the ""TotovBuilder.Configuration"" directory, update the ""changelog.json"" file with new functionalities.
+        [InlineData(" 1 - Update the changelog", @"In the ""TotovBuilder.Configuration"" directory, update the ""changelog.json"" file with new functionalities.
 
 Make sure to set the right version number and language for each entry.")]
-        [InlineData(" 4 - Update website version and check configuration files", @"In the ""TotovBuilder.Website"" directory, open ""src/websiteConfiguration.ts"" and update the version of the website.
+        [InlineData(" 2 - Update website version and check configuration files", @"In the ""TotovBuilder.Website"" directory, open ""src/websiteConfiguration.ts"" and update the version of the website.
 
 In the ""TotovBuilder.Configuration"" directory, check each configuration file to make sure everything looks fine.
 
 When deploying in PRODUCTION, use a diff tool to compare the PRODUCTION files with the TEST files to check if properties are still the same.")]
-        [InlineData(" 7 - Deploy Azure Functions to Azure", @"Azure Functions must manually be published from Visual Studio :
+        [InlineData(" 5 - Deploy Azure Functions to Azure", @"Azure Functions must manually be published from Visual Studio :
 - Open the ""TotovBuilder.AzureFunctions"" solution
 - Right click on the ""TotovBuilder.AzureFunctions"" project and choose ""Publish"".
 
 Make sure to CHOOSE THE RIGHT PROFILE at the top before publishing.
 
 When deploying in TEST, the ""TotovBuilder.AzureFunctions"" project can then be locally launched to immediatly update the website data files in the ""data"" folder of the website on Azure.")]
-        [InlineData(" 9 - Purge the Content Delivery Network", @"The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
+        [InlineData(" 7 - Purge the Content Delivery Network", @"The content delivery network of the website needs to be purged to make the new version of the website accessible as soon as possible.
 
 On Cloudflare :
 - Open the domain
 - In the menu, extend ""Caching"" and choose ""Configuration""
 - Click on ""Pure Everything""")]
-        [InlineData("10 - Check the website", @"After the update, launch the website in a browser and check that new functionalities are present and that everything works.")]
-        [InlineData("11 - Update Git", @"After the website is updated and tested, the develop branch can be merged on the main branch with a new version tag.
+        [InlineData(" 8 - Check the website", @"After the update, launch the website in a browser and check that new functionalities are present and that everything works.")]
+        [InlineData(" 9 - Update Git", @"After the website is updated and tested, the develop branch can be merged on the main branch with a new version tag.
 
 In Git, for each project :
 - Merge ""develop"" on ""main""
 - Add a tag with the new version number on the head of the  ""main"" breanch
 - Checkout the ""develop"" branch
 - Push the ""main"" and ""develop"" branches")]
-        [InlineData("12 - Annonce the update on Discord", "")]
+        [InlineData("10 - Annonce the update on Discord", "")]
         [InlineData("     Exit", "")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "For code coverage")]
         public async Task Run_ShouldExecuteAction(string actionCaption, string expected)
@@ -320,9 +299,7 @@ In Git, for each project :
                 configuration,
                 new Mock<IDeploymentAction<CompileWebsiteAction>>().Object,
                 new Mock<IDeploymentAction<DeployRawDataAction>>().Object,
-                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object,
-                new Mock<IDeploymentAction<ExtractTarkovDataAction>>().Object,
-                new Mock<IDeploymentAction<UpdateTarkovAction>>().Object);
+                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object);
 
             // Act
             await deployer.Run();
@@ -359,7 +336,7 @@ In Git, for each project :
                     {
                         hasExecutedAction = true;
 
-                        return " 5 - Compile the website";
+                        return " 3 - Compile the website";
                     }
 
                     return "     Exit";
@@ -371,7 +348,7 @@ In Git, for each project :
             Mock<IDeploymentAction<CompileWebsiteAction>> compileWebsiteActionMock = new();
             compileWebsiteActionMock
                 .SetupGet(m => m.Caption)
-                .Returns(" 5 - Compile the website")
+                .Returns(" 3 - Compile the website")
                 .Verifiable();
             compileWebsiteActionMock
                 .Setup(m => m.ExecuteAction())
@@ -386,9 +363,7 @@ In Git, for each project :
                 configuration,
                 compileWebsiteActionMock.Object,
                 new Mock<IDeploymentAction<DeployRawDataAction>>().Object,
-                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object,
-                new Mock<IDeploymentAction<ExtractTarkovDataAction>>().Object,
-                new Mock<IDeploymentAction<UpdateTarkovAction>>().Object);
+                new Mock<IDeploymentAction<DeployWebsiteAction>>().Object);
 
             // Act
             await deployer.Run();

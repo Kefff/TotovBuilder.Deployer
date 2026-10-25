@@ -29,7 +29,7 @@ namespace TotovBuilder.Deployer.Test.Actions
                 new Mock<IAzureBlobStorageManager>().Object);
 
             // Act / Assert
-            action.Caption.Should().Be(" 6 - Deploy raw data to Azure");
+            action.Caption.Should().Be(" 4 - Deploy raw data to Azure");
         }
 
         [Fact]
